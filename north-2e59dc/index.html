@@ -62,7 +62,6 @@ a{color:inherit;text-decoration:none}
 .top .logo{width:36px;height:36px;border-radius:50%;flex:none}
 .top .brand{color:var(--dim);font-size:14px;letter-spacing:0}
 .top .year{margin-left:auto;color:var(--dim);font-size:14px}
-@media(max-width:640px){.top .brand{font-size:12.5px}}
 
 /* ───────── герой (веб-версия титульного слайда деки) ───────── */
 .hero{padding:clamp(56px,10vw,110px) 0 clamp(48px,8vw,80px)}
@@ -140,7 +139,7 @@ h2 .n{font-family:Helvetica,Arial,sans-serif;font-size:max(13px,.42em);color:var
 .pdf{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:34px;
      background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px}
 .pdf .ico{width:52px;height:52px;flex:none;border-radius:14px;background:var(--card2);
-          border:1px solid #3a3320;display:grid;place-items:center;color:var(--acc)}
+          border:1px solid var(--line);display:grid;place-items:center;color:var(--acc)}
 .pdf .ico svg{width:24px;height:24px}
 .pdf .txt{min-width:180px;flex:1}
 .pdf .t{display:block;font-family:'Manrope',sans-serif;font-weight:500;font-size:18px;letter-spacing:-.02em}
@@ -170,8 +169,9 @@ footer .who{font-size:14px;color:var(--mut);line-height:1.45}
 footer .who span{display:block;color:var(--mut);font-size:13px}
 footer .stamp{margin-left:auto;color:var(--dim);font-size:13px}
 
-/* ───────── единственный медиазапрос ───────── */
+/* ───────── единственный медиазапрос (приём эталона) ───────── */
 @media(max-width:640px){
+  .top .brand{font-size:12.5px}
   h2{gap:12px}
   .hero-sub{max-width:none}
   .row{padding:18px;gap:14px;align-items:flex-start}
