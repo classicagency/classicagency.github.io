@@ -113,6 +113,37 @@ h2 .n{font-family:Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums;
 .vmedia.on::after{display:none}          /* подложка не должна затемнять запущенный плеер */
 .vmedia iframe,.vmedia video{position:absolute;inset:0;width:100%;height:100%;border:0}
 .vmedia video{background:#000;object-fit:contain}
+
+/* ───────── свои контролы плеера ─────────
+   Штатные браузерные выглядят системно и ломают стилистику страницы, поэтому панель
+   собрана вручную на палитре Classic. Живёт только у своих MP4: у Rutube-iframe
+   контролы чужие и снаружи не достать. */
+.vmedia:fullscreen{aspect-ratio:auto;width:100%;height:100%;border-radius:0}
+.pctl{position:absolute;left:0;right:0;bottom:0;z-index:4;display:flex;align-items:center;gap:8px;
+      padding:8px 12px;background:rgba(14,14,14,.88);border-top:1px solid var(--line);
+      transition:opacity .22s,transform .22s}
+.vmedia.idle .pctl{opacity:0;transform:translateY(100%);pointer-events:none}
+.vmedia.idle{cursor:none}
+.pbtn{width:40px;height:40px;flex:none;border:0;padding:0;background:none;color:var(--txt);
+      border-radius:10px;display:grid;place-items:center;cursor:pointer;
+      transition:color .15s,background .15s}
+.pbtn:hover{color:var(--acc);background:#26262b}
+.pbtn svg{width:19px;height:19px}
+/* Дорожка: сама 40 px высотой ради тапа, визуально — полоска 4 px по центру. */
+.ptrack{flex:1;min-width:52px;height:40px;position:relative;cursor:pointer;touch-action:none}
+.ptrack span{position:absolute;top:50%;height:4px;margin-top:-2px;border-radius:2px;pointer-events:none}
+.ptrack .bg{left:0;right:0;background:#3A3A3E}
+.ptrack .buf{left:0;width:0;background:#5A5A5A}
+.ptrack .pos{left:0;width:0;background:var(--acc)}
+.ptrack .knob{left:0;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;
+      background:var(--acc);opacity:0;transition:opacity .15s}
+.ptrack:hover .knob,.vmedia.scrub .knob{opacity:1}
+.ptrack:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:4px}
+.ptime{flex:none;font-family:Helvetica,Arial,sans-serif;font-size:12.5px;
+      font-variant-numeric:tabular-nums;color:var(--mut)}
+/* Кнопка по центру, когда плеер на паузе: без неё пауза выглядит как зависший кадр. */
+.playbtn.ctr{display:none}
+.vmedia.pz .playbtn.ctr{display:grid}
 .playbtn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;
   width:64px;height:64px;border:0;border-radius:50%;background:var(--acc);color:var(--acc-txt);
   display:grid;place-items:center;cursor:pointer;transition:transform .15s}
@@ -185,11 +216,11 @@ footer .stamp{margin-left:auto;color:var(--dim);font-size:13px}
 /* ───────── единственный медиазапрос (приём эталона) ───────── */
 @media(max-width:640px){
   .top .brand{font-size:12.5px}
-  /* Ручные переносы заголовка — только для широкого экрана. Гасим их не display:none
+  /* Ручные переносы — только для широкого экрана. Гасим их не display:none
      (тогда слова слипаются: «предложениена разработку»), а превращением br в инлайн
      с пробелом-псевдоэлементом. */
-  h1 br{display:inline}
-  h1 br::after{content:" "}
+  h1 br,.lead br{display:inline}
+  h1 br::after,.lead br::after{content:" "}
   .hero-sub{max-width:none}
   .row{padding:18px;gap:14px;align-items:flex-start}
   .row .ico{width:40px;height:40px;border-radius:10px}
@@ -199,6 +230,8 @@ footer .stamp{margin-left:auto;color:var(--dim);font-size:13px}
   .pdf{padding:20px;gap:16px}
   .acts{width:100%}
   .acts .btn{flex:1;justify-content:center}
+  .pctl{gap:4px;padding:6px 8px}
+  .pbtn.vol{display:none}   /* на телефоне громкость и так аппаратная */
   footer .stamp{margin-left:0;width:100%}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}</style>
@@ -230,7 +263,7 @@ footer .stamp{margin-left:auto;color:var(--dim);font-size:13px}
 <section>
   <div class="wrap">
     <h2><span class="n">01</span>Видеопрезентация КП</h2>
-    <p class="lead">Две части, вместе — 46 минут. Смотреть строго по порядку: во второй части мы опираемся на то, что разобрали в первой, поэтому без неё предложение читается как голый прайс.</p>
+    <p class="lead">Две части, вместе — 46 минут. Важно смотреть по порядку: во второй части мы опираемся на то, что разобрали в первой.</p>
     <div class="videos">
       <article class="vcard">
         <div class="vmedia" data-src="part-1.mp4" data-title="Агентство, этапы работы и юридическая сторона">
@@ -254,7 +287,7 @@ footer .stamp{margin-left:auto;color:var(--dim);font-size:13px}
         </div>
         <div class="vbody">
           <h3 class="vtitle">Предложение по сайту «ПроДом»</h3>
-          <p class="vdesc">Обещанная предпроектная работа — два дизайн-концепта вашего будущего сайта. Большая идея проекта, наше видение карты сайта и структуры по блокам. И три варианта сотрудничества: по объёму, срокам и стоимости.</p>
+          <p class="vdesc">Обещанная предпроектная работа — два дизайн-концепта главного экрана вашего будущего сайта. Большая идея проекта, наше видение карты сайта и структуры по блокам. И три варианта сотрудничества: по объёму, срокам и стоимости.</p>
           <noscript><a class="btn" href="part-2.mp4"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.3-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14z"/></svg>Открыть видео</a></noscript>
         </div>
       </article></div>
@@ -282,7 +315,7 @@ footer .stamp{margin-left:auto;color:var(--dim);font-size:13px}
 <section>
   <div class="wrap">
     <h2><span class="n">03</span>Статьи, представленные в презентации</h2>
-    <p class="lead">Два наших проекта, разобранных по шагам на vc.ru — от первого созвона до результата.</p>
+    <p class="lead">Два наших проекта, разобранных по шагам на vc.ru —<br>от первого созвона до результата.</p>
     <div class="rows">
       <a class="row" href="https://vc.ru/design/1696158-kak-my-razrabotali-prodayushii-sait-kotoryi-za-2-goda-prines-klientu-4500-zayavok" target="_blank" rel="noopener">
         <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>
@@ -332,32 +365,150 @@ footer .stamp{margin-left:auto;color:var(--dim);font-size:13px}
    data-embed → запасной путь: Rutube-iframe для конфигов, ещё не переведённых на файлы.
    ⚠️ src ставим ТОЛЬКО после вставки в DOM: у отвязанного элемента плеер стартует
    с нулевой высотой и виснет на спиннере. */
+var IC = {"play":"<svg viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M8 5.14v13.72a1 1 0 0 0 1.54.84l10.3-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14z\"/></svg>","pause":"<svg viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><rect x=\"6.5\" y=\"5\" width=\"3.8\" height=\"14\" rx=\"1.2\"/><rect x=\"13.7\" y=\"5\" width=\"3.8\" height=\"14\" rx=\"1.2\"/></svg>","vol":"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 9.5h3.2L12 5.5v13l-4.8-4H4z\"/><path d=\"M16 9.6a3.4 3.4 0 0 1 0 4.8\"/><path d=\"M18.4 7a6.8 6.8 0 0 1 0 10\"/></svg>","mute":"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 9.5h3.2L12 5.5v13l-4.8-4H4z\"/><path d=\"m16.5 9.5 4 5M20.5 9.5l-4 5\"/></svg>","fs":"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 9V5h4M20 9V5h-4M4 15v4h4M20 15v4h-4\"/></svg>","fsx":"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M9 4v4H5M15 4v4h4M9 20v-4H5M15 20v-4h4\"/></svg>"};
+var fmt = function(s){
+  if (!isFinite(s)) return '--:--';
+  s = Math.max(0, Math.floor(s));
+  return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+};
+
+/* Свой плеер поверх <video>: штатные контролы браузера выглядят системно и рушат
+   стилистику страницы. Наружу торчит только сам тег video, всё остальное — наше. */
+function ownPlayer(box){
+  var v = document.createElement('video');
+  v.playsInline = true;
+  v.preload = 'auto';
+  v.title = box.dataset.title;
+  v.setAttribute('controlslist','nodownload');   /* КП — закрытые материалы */
+  v.setAttribute('disablepictureinpicture','');
+  v.oncontextmenu = function(){ return false; };
+
+  var ctr = document.createElement('button');
+  ctr.type = 'button';
+  ctr.className = 'playbtn ctr';
+  ctr.setAttribute('aria-label','Продолжить');
+  ctr.innerHTML = IC.play;
+
+  var c = document.createElement('div');
+  c.className = 'pctl';
+  c.innerHTML =
+    '<button class="pbtn pp" type="button" aria-label="Пауза">' + IC.pause + '</button>' +
+    '<span class="ptrack" role="slider" tabindex="0" aria-label="Перемотка" aria-valuemin="0" aria-valuenow="0">' +
+      '<span class="bg"></span><span class="buf"></span><span class="pos"></span><span class="knob"></span>' +
+    '</span>' +
+    '<span class="ptime">0:00 / --:--</span>' +
+    '<button class="pbtn vol" type="button" aria-label="Выключить звук">' + IC.vol + '</button>' +
+    '<button class="pbtn fs" type="button" aria-label="Во весь экран">' + IC.fs + '</button>';
+
+  box.innerHTML = '';
+  box.appendChild(v);
+  box.appendChild(ctr);
+  box.appendChild(c);
+  box.tabIndex = 0;
+
+  var pp = c.querySelector('.pp'), vol = c.querySelector('.vol'), fs = c.querySelector('.fs'),
+      tr = c.querySelector('.ptrack'), buf = c.querySelector('.buf'),
+      pos = c.querySelector('.pos'), knob = c.querySelector('.knob'), tm = c.querySelector('.ptime');
+
+  var toggle = function(){ v.paused ? v.play().catch(function(){}) : v.pause(); };
+  var seekTo = function(x){
+    var r = tr.getBoundingClientRect();
+    if (isFinite(v.duration)) v.currentTime = Math.min(1, Math.max(0, (x - r.left) / r.width)) * v.duration;
+  };
+
+  /* Панель прячется через 2.6 с покоя — но только пока видео играет. */
+  var timer;
+  var wake = function(){
+    box.classList.remove('idle');
+    clearTimeout(timer);
+    if (!v.paused) timer = setTimeout(function(){ box.classList.add('idle'); }, 2600);
+  };
+  box.addEventListener('mousemove', wake);
+  box.addEventListener('touchstart', wake, { passive: true });
+
+  v.addEventListener('click', toggle);
+  ctr.addEventListener('click', toggle);
+  pp.addEventListener('click', toggle);
+  vol.addEventListener('click', function(){ v.muted = !v.muted; });
+  fs.addEventListener('click', function(){
+    if (document.fullscreenElement) return document.exitFullscreen();
+    if (box.requestFullscreen) box.requestFullscreen().catch(function(){});
+    else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();   /* iOS: только нативно */
+  });
+
+  v.addEventListener('play', function(){ pp.innerHTML = IC.pause; pp.setAttribute('aria-label','Пауза'); box.classList.remove('pz'); wake(); });
+  v.addEventListener('pause', function(){ pp.innerHTML = IC.play; pp.setAttribute('aria-label','Смотреть'); box.classList.add('pz'); wake(); });
+  v.addEventListener('volumechange', function(){
+    vol.innerHTML = v.muted ? IC.mute : IC.vol;
+    vol.setAttribute('aria-label', v.muted ? 'Включить звук' : 'Выключить звук');
+  });
+  document.addEventListener('fullscreenchange', function(){
+    var on = document.fullscreenElement === box;
+    fs.innerHTML = on ? IC.fsx : IC.fs;
+    fs.setAttribute('aria-label', on ? 'Выйти из полного экрана' : 'Во весь экран');
+  });
+
+  var draw = function(){
+    var d = v.duration;
+    var p = isFinite(d) && d ? v.currentTime / d * 100 : 0;
+    pos.style.width = p + '%';
+    knob.style.left = p + '%';
+    tm.textContent = fmt(v.currentTime) + ' / ' + fmt(d);
+    tr.setAttribute('aria-valuenow', Math.round(v.currentTime));
+    if (isFinite(d)) tr.setAttribute('aria-valuemax', Math.round(d));
+    if (v.buffered.length && isFinite(d) && d) buf.style.width = v.buffered.end(v.buffered.length - 1) / d * 100 + '%';
+  };
+  v.addEventListener('timeupdate', draw);
+  v.addEventListener('progress', draw);
+  v.addEventListener('loadedmetadata', draw);
+
+  /* Перемотка мышью и пальцем — один код на pointer-событиях. */
+  tr.addEventListener('pointerdown', function(e){
+    tr.setPointerCapture(e.pointerId);
+    box.classList.add('scrub');
+    seekTo(e.clientX);
+  });
+  tr.addEventListener('pointermove', function(e){ if (box.classList.contains('scrub')) seekTo(e.clientX); });
+  var stop = function(e){ box.classList.remove('scrub'); if (tr.hasPointerCapture(e.pointerId)) tr.releasePointerCapture(e.pointerId); };
+  tr.addEventListener('pointerup', stop);
+  tr.addEventListener('pointercancel', stop);
+
+  box.addEventListener('keydown', function(e){
+    var k = e.key;
+    if (k === ' ' || k === 'k') { toggle(); }
+    else if (k === 'ArrowRight') { v.currentTime += 5; }
+    else if (k === 'ArrowLeft') { v.currentTime -= 5; }
+    else if (k === 'm') { v.muted = !v.muted; }
+    else if (k === 'f') { fs.click(); }
+    else return;
+    e.preventDefault();
+    wake();
+  });
+
+  v.src = box.dataset.src;
+  v.play().catch(function(){ box.classList.add('pz'); });
+  box.focus({ preventScroll: true });
+  return v;
+}
+
+/* Фасад: до клика — статичный постер, по клику поднимаем плеер. */
 document.querySelectorAll('.vmedia').forEach(function(box){
   box.addEventListener('click', function(){
     if (box.dataset.on) return;
     box.dataset.on = '1';
-    var el;
-    if (box.dataset.src) {
-      el = document.createElement('video');
-      el.controls = true;
-      el.autoplay = true;
-      el.playsInline = true;
-      el.preload = 'auto';
-      el.setAttribute('controlslist','nodownload');   /* КП — закрытые материалы */
-      el.setAttribute('disablepictureinpicture','');
-      el.oncontextmenu = function(){ return false; };
-    } else {
-      el = document.createElement('iframe');
-      el.allow = 'clipboard-write; autoplay; fullscreen';
-      el.setAttribute('allowfullscreen','');
-    }
-    el.title = box.dataset.title;
-    box.innerHTML = '';
     box.className += ' on';   /* снимает затемняющую подложку поверх плеера */
     box.style.cursor = 'default';
-    box.appendChild(el);
-    el.src = box.dataset.src || (box.dataset.embed + '&autoplay=1');
-    if (box.dataset.src) { var p = el.play(); if (p && p.catch) p.catch(function(){}); }
+    if (box.dataset.src) return void ownPlayer(box);
+
+    /* Запасной путь — Rutube-iframe. ⚠️ src ставим ТОЛЬКО после вставки в DOM:
+       у отвязанного элемента плеер стартует с нулевой высотой и виснет на спиннере. */
+    var f = document.createElement('iframe');
+    f.title = box.dataset.title;
+    f.allow = 'clipboard-write; autoplay; fullscreen';
+    f.setAttribute('allowfullscreen','');
+    box.innerHTML = '';
+    box.appendChild(f);
+    f.src = box.dataset.embed + '&autoplay=1';
   });
 });
 </script>
