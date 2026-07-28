@@ -144,6 +144,17 @@ h2 .n{font-family:Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums;
 /* Кнопка по центру, когда плеер на паузе: без неё пауза выглядит как зависший кадр. */
 .playbtn.ctr{display:none}
 .vmedia.pz .playbtn.ctr{display:grid}
+/* Постер остаётся под плеером — видео перекрывает его целиком. Так есть куда
+   откатиться, если движок запретил инлайн-видео (см. videoFallback). */
+.vmedia.on .vkick,.vmedia.on .vdur,.vmedia.on .playbtn:not(.ctr){display:none}
+.vmedia.fail .playbtn,.vmedia.fail .vdur,.vmedia.fail .vkick{display:none}
+/* Откат кладём на собственную тёмную подложку: поверх кадра презентации любой текст
+   нечитаем, а кнопка без nowrap ломалась на две строки. */
+.vfall{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;
+       display:grid;justify-items:center;gap:12px;text-align:center;width:min(88%,340px);
+       padding:22px 18px;border-radius:18px;background:var(--card2);border:1px solid var(--line2)}
+.vfall .btn{white-space:nowrap}
+.vfall .why{font-size:13px;line-height:1.45;color:var(--mut)}
 .playbtn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;
   width:64px;height:64px;border:0;border-radius:50%;background:var(--acc);color:var(--acc-txt);
   display:grid;place-items:center;cursor:pointer;transition:transform .15s}
@@ -439,7 +450,10 @@ function ownPlayer(box){
     '<button class="pbtn vol" type="button" aria-label="Выключить звук">' + IC.vol + '</button>' +
     '<button class="pbtn fs" type="button" aria-label="Во весь экран">' + IC.fs + '</button>';
 
-  box.innerHTML = '';
+  // Постер НЕ стираем: видео ложится поверх него (position:absolute;inset:0), а кикер,
+  // хронометраж и большая кнопка гасятся классом .on. Так при отказе плеера есть куда
+  // вернуться — кадр на месте, поверх него встаёт кнопка.
+  [...box.querySelectorAll('iframe,video,.pctl,.vfall')].forEach(function(e){ e.remove(); });
   box.appendChild(v);
   box.appendChild(ctr);
   box.appendChild(c);
@@ -525,21 +539,41 @@ function ownPlayer(box){
   });
 
   v.src = box.dataset.src;
-  v.play().catch(function(){ box.classList.add('pz'); });
+  var p = v.play();
+  if (p && p.catch) p.catch(function(){ videoFallback(box); });
+  // Сторож: движок мог и не отклонить play(), а просто ничего не начать.
+  setTimeout(function(){
+    if (box.classList.contains('fail')) return;
+    if (v.paused && !v.currentTime) videoFallback(box);
+  }, 4000);
   box.focus({ preventScroll: true });
   return v;
 }
 
-/* Фасад: до клика — статичный постер, по клику поднимаем плеер.
+/* Откат, когда движок запретил играть видео внутри страницы.
+   Так ведёт себя встроенная смотрелка телеграма на айфоне: страница рисуется,
+   ссылки работают, а плеер молча стоит. В обычном браузере — и на компе, и в Safari —
+   сюда не попадаем вовсе, видео играет на месте и никаких переходов не нужно. */
+function videoFallback(box){
+  if (box.classList.contains('fail')) return;
+  box.classList.add('fail');
+  box.classList.remove('on', 'pz', 'idle');
+  [...box.querySelectorAll('video,.pctl')].forEach(function(e){ e.remove(); });
+  delete box.dataset.on;
+  var a = document.createElement('a');
+  a.className = 'vfall';
+  a.href = box.dataset.src;
+  a.target = '_blank';
+  a.rel = 'noopener';
+  a.innerHTML = '<span class="btn primary"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.3-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14z"/></svg>Открыть видео</span>'
+    + '<span class="why">Этот просмотрщик не проигрывает видео внутри страницы</span>';
+  box.appendChild(a);
+}
 
-   ⚠️ Исключение — когда файл открыт как вложение (export-file.js проставляет
-   window.__KP_HOSTED__). Телеграм на айфоне открывает HTML не в Safari, а в своей
-   встроенной смотрелке, где инлайн-видео запрещено: ссылки работают, а плеер молча
-   не стартует. Поэтому из файла тап по видео уводит на страницу в настоящий браузер. */
-var HOSTED = window.__KP_HOSTED__;
+/* Фасад: до клика — статичный постер, по клику поднимаем плеер. */
 document.querySelectorAll('.vmedia').forEach(function(box){
-  box.addEventListener('click', function(){
-    if (HOSTED) { window.open(HOSTED, '_blank', 'noopener'); return; }
+  box.addEventListener('click', function(e){
+    if (box.classList.contains('fail')) return;   /* там уже своя ссылка */
     if (box.dataset.on) return;
     box.dataset.on = '1';
     box.className += ' on';   /* снимает затемняющую подложку поверх плеера */
