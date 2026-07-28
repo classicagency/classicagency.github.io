@@ -219,13 +219,20 @@ footer{border-top:1px solid var(--line);padding:clamp(40px,6vw,64px) 0 46px}
     letter-spacing:-.02em;line-height:1.25}
 .me .rl{color:var(--mut);font-size:15px;line-height:1.5;max-width:34em;margin:10px auto 0}
 .socs{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:26px}
-.soc{display:inline-flex;align-items:center;gap:9px;border-radius:100px;padding:13px 22px;
+/* ⚠️ У заливных кнопок рамки НЕТ вовсе. Раньше стоял border:1px solid transparent
+   ради одинаковой высоты с контурной кнопкой — и по краям Instagram вылезали плоские
+   нашлёпки: фон красится по border-box, а размер градиента считается по padding-box,
+   и недостающую полосу под прозрачной рамкой браузер добирал повтором. Артефакт
+   проявлялся только на зуме, в 1× сглаживался в незаметный субпиксель.
+   Лечится не подкруткой background-origin, а тем, что красить под рамкой больше нечего:
+   высоту контурной кнопке добираем padding'ом. */
+.soc{display:inline-flex;align-items:center;gap:9px;border-radius:100px;padding:14px 23px;
      font-family:'Onest',sans-serif;font-weight:500;font-size:15px;line-height:1;
-     color:#FFFFFF;border:1px solid transparent;transition:transform .16s,filter .16s}
+     color:#FFFFFF;border:0;transition:transform .16s,filter .16s}
 .soc svg{width:18px;height:18px;flex:none}
 .soc:hover{transform:translateY(-2px);filter:brightness(1.08)}   /* микроподъём, как в эталоне */
 .soc.tg{background:#229ED9}
-.soc.tgc{background:none;border-color:#229ED9;color:#5EC2EE}
+.soc.tgc{background:none;border:1px solid #229ED9;padding:13px 22px;color:#5EC2EE}
 .soc.tgc:hover{background:#12303F}
 .soc.ig{background:linear-gradient(96deg,#F9CE34,#EE2A7B 52%,#6228D7)}
 .legal{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;
@@ -374,7 +381,7 @@ footer{border-top:1px solid var(--line);padding:clamp(40px,6vw,64px) 0 46px}
       <div class="rl">Руководитель агентства маркетинговой упаковки бизнеса «Classic»</div>
       <div class="socs">
         <a class="soc tg" href="https://t.me/nik_aleksaaandrov" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.7 4.3 2.9 11.5c-.9.35-.9 1.6.02 1.9l4.7 1.5 1.8 5.5c.24.72 1.16.9 1.66.33l2.5-2.9 4.7 3.45c.66.48 1.6.12 1.77-.68l3-14.1c.2-.9-.7-1.63-1.55-1.2zM9.7 14.1l8.6-5.3-7 6.3c-.2.18-.33.44-.36.72l-.26 2.3-1-3.4z"/></svg>Написать в Telegram</a>
-        <a class="soc tgc" href="https://t.me/nik_alexandrov" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.4L15 5.2v13.6L7.4 14.5H4z"/><path d="M7.4 14.5V19h3v-3.6"/><path d="M18.6 8.6a5 5 0 0 1 0 6.8"/></svg>Телеграм-канал</a>
+        <a class="soc tgc" href="https://t.me/nik_alexandrov" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.7 4.3 2.9 11.5c-.9.35-.9 1.6.02 1.9l4.7 1.5 1.8 5.5c.24.72 1.16.9 1.66.33l2.5-2.9 4.7 3.45c.66.48 1.6.12 1.77-.68l3-14.1c.2-.9-.7-1.63-1.55-1.2zM9.7 14.1l8.6-5.3-7 6.3c-.2.18-.33.44-.36.72l-.26 2.3-1-3.4z"/></svg>Телеграм-канал</a>
         <a class="soc ig" href="https://instagram.com/nik__alex" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="3.8"/><circle cx="17.2" cy="6.8" r="1.15" fill="currentColor" stroke="none"/></svg>Instagram</a>
       </div>
     </div>
