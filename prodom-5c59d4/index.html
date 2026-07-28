@@ -530,9 +530,16 @@ function ownPlayer(box){
   return v;
 }
 
-/* Фасад: до клика — статичный постер, по клику поднимаем плеер. */
+/* Фасад: до клика — статичный постер, по клику поднимаем плеер.
+
+   ⚠️ Исключение — когда файл открыт как вложение (export-file.js проставляет
+   window.__KP_HOSTED__). Телеграм на айфоне открывает HTML не в Safari, а в своей
+   встроенной смотрелке, где инлайн-видео запрещено: ссылки работают, а плеер молча
+   не стартует. Поэтому из файла тап по видео уводит на страницу в настоящий браузер. */
+var HOSTED = window.__KP_HOSTED__;
 document.querySelectorAll('.vmedia').forEach(function(box){
   box.addEventListener('click', function(){
+    if (HOSTED) { window.open(HOSTED, '_blank', 'noopener'); return; }
     if (box.dataset.on) return;
     box.dataset.on = '1';
     box.className += ' on';   /* снимает затемняющую подложку поверх плеера */
