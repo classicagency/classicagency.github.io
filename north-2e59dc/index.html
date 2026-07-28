@@ -82,14 +82,24 @@ h1 .mut{color:var(--mut)}
       border-radius:100px;padding:9px 16px;font-size:14px;color:var(--mut)}
 .fact svg{width:16px;height:16px;color:var(--dim2);flex:none}
 .fact b{color:var(--txt);font-weight:400}
+/* Подсказка «листай вниз» — приём эталона: рамка-мышка с бегающим акцентным
+   штрихом. Герой у нас не на весь экран, поэтому не absolute, а обычным потоком. */
+.scroll-hint{display:block;width:24px;height:38px;margin:clamp(40px,6vw,60px) auto 0;
+     border:2px solid var(--line2);border-radius:13px;position:relative;opacity:.85}
+.scroll-hint::after{content:"";position:absolute;top:7px;left:50%;width:3px;height:7px;
+     background:var(--acc);border-radius:2px;transform:translateX(-50%);
+     animation:scrolly 1.8s ease-in-out infinite}
+@keyframes scrolly{0%{opacity:0;transform:translate(-50%,0)}40%{opacity:1}
+     80%{opacity:0;transform:translate(-50%,11px)}}
 
 /* ───────── разделы ───────── */
 section{padding:clamp(44px,7vw,76px) 0;border-top:1px solid var(--line)}
 h2{font-family:'Manrope',sans-serif;font-weight:500;font-size:clamp(24px,3.6vw,38px);
-   line-height:1.2;letter-spacing:-.03em;display:flex;gap:16px;align-items:baseline}
-/* max() — на мобилке .42em от clamp'нутого h2 даёт 10px, это уже нечитаемо */
-h2 .n{font-family:Helvetica,Arial,sans-serif;font-size:max(13px,.42em);color:var(--acc);
-      letter-spacing:.08em;flex:none;position:relative;top:-.15em}
+   line-height:1.2;letter-spacing:-.03em}
+/* Приём эталона: номер раздела — того же кегля и веса, что заголовок, отличается
+   только цветом. Мелкая «надстрочная» нумерация читалась как служебный мусор. */
+h2 .n{font-family:Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums;
+      color:var(--acc);margin-right:.34em}
 .lead{color:var(--mut);margin-top:14px;max-width:62ch;font-size:clamp(15px,1.8vw,17px)}
 
 /* ───────── видео ───────── */
@@ -101,7 +111,8 @@ h2 .n{font-family:Helvetica,Arial,sans-serif;font-size:max(13px,.42em);color:var
 .vmedia:hover::after{background:rgba(14,14,14,.18)}
 .vmedia.on{cursor:default}
 .vmedia.on::after{display:none}          /* подложка не должна затемнять запущенный плеер */
-.vmedia iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vmedia iframe,.vmedia video{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vmedia video{background:#000;object-fit:contain}
 .playbtn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;
   width:64px;height:64px;border:0;border-radius:50%;background:var(--acc);color:var(--acc-txt);
   display:grid;place-items:center;cursor:pointer;transition:transform .15s}
@@ -174,7 +185,11 @@ footer .stamp{margin-left:auto;color:var(--dim);font-size:13px}
 /* ───────── единственный медиазапрос (приём эталона) ───────── */
 @media(max-width:640px){
   .top .brand{font-size:12.5px}
-  h2{gap:12px}
+  /* Ручные переносы заголовка — только для широкого экрана. Гасим их не display:none
+     (тогда слова слипаются: «предложениена разработку»), а превращением br в инлайн
+     с пробелом-псевдоэлементом. */
+  h1 br{display:inline}
+  h1 br::after{content:" "}
   .hero-sub{max-width:none}
   .row{padding:18px;gap:14px;align-items:flex-start}
   .row .ico{width:40px;height:40px;border-radius:10px}
@@ -206,14 +221,15 @@ footer .stamp{margin-left:auto;color:var(--dim);font-size:13px}
     <div class="facts">
       <span class="fact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 11 5-3v8l-5-3z"/></svg><b class="num">2</b> видео · <b class="num">47</b> минут</span>
       <span class="fact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>Презентация PDF · <b class="num">35</b> стр.</span>
-      <span class="fact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v14a2 2 0 0 0 2-2V8"/><path d="M4 5v14a2 2 0 0 0 2 2h13"/><path d="M8 8h7M8 12h7M8 16h4"/></svg><b class="num">2</b> разбора наших проектов</span>
+      <span class="fact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><b class="num">2</b> статьи о наших проектах</span>
     </div>
+    <span class="scroll-hint" aria-hidden="true"></span>
   </div>
 </div>
 
 <section>
   <div class="wrap">
-    <h2><span class="n">01</span>Видео-презентация</h2>
+    <h2><span class="n">01</span>Видеопрезентация КП</h2>
     <p class="lead">Две части. Первая — про агентство и то, как устроена работа: она одинаковая для всех, с кем мы начинаем. Вторая — только про ваш проект: что мы увидели, что предлагаем сделать, объём, сроки и стоимость.</p>
     <div class="videos">
       <article class="vcard">
@@ -266,11 +282,11 @@ footer .stamp{margin-left:auto;color:var(--dim);font-size:13px}
 
 <section>
   <div class="wrap">
-    <h2><span class="n">03</span>Как это работает на других проектах</h2>
+    <h2><span class="n">03</span>Статьи, представленные в презентации</h2>
     <p class="lead">Два наших проекта, разобранных по шагам на vc.ru — от первого созвона до результата.</p>
     <div class="rows">
       <a class="row" href="https://vc.ru/design/1696158-kak-my-razrabotali-prodayushii-sait-kotoryi-za-2-goda-prines-klientu-4500-zayavok" target="_blank" rel="noopener">
-        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v14a2 2 0 0 0 2-2V8"/><path d="M4 5v14a2 2 0 0 0 2 2h13"/><path d="M8 8h7M8 12h7M8 16h4"/></svg></span>
+        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>
         <span class="txt">
           <span class="t">Продающий сайт, который за 2 года принёс клиенту 4500 заявок</span>
           <span class="d">Разбор проекта на vc.ru: структура, тексты, связка с рекламой</span>
@@ -278,7 +294,7 @@ footer .stamp{margin-left:auto;color:var(--dim);font-size:13px}
         <span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></span>
       </a>
       <a class="row" href="https://vc.ru/design/2147882-razrabotka-sayta-dlya-seryoznoe-delo-sochi" target="_blank" rel="noopener">
-        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v14a2 2 0 0 0 2-2V8"/><path d="M4 5v14a2 2 0 0 0 2 2h13"/><path d="M8 8h7M8 12h7M8 16h4"/></svg></span>
+        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>
         <span class="txt">
           <span class="t">Сайт для строительной компании №1 в Сочи «Серьёзное дело»</span>
           <span class="d">Разбор проекта на vc.ru: 26 страниц, прототип, дизайн, сборка</span>
@@ -290,7 +306,7 @@ footer .stamp{margin-left:auto;color:var(--dim);font-size:13px}
 
 <section>
   <div class="wrap">
-    <h2><span class="n">04</span>Что дальше</h2>
+    <h2><span class="n">04</span>Что важно сделать сейчас</h2>
     <div class="steps">
       <div class="step"><span class="k num">01</span><span class="s">Посмотрите обе части — там весь процесс и предложение по вашему проекту.</span></div>
       <div class="step"><span class="k num">02</span><span class="s">Откройте PDF, если удобнее читать глазами, а не смотреть: те же слайды текстом.</span></div>
@@ -308,23 +324,41 @@ footer .stamp{margin-left:auto;color:var(--dim);font-size:13px}
 </footer>
 
 <script>
-/* Фасад плеера: до клика — статичный постер (страница не тянет два тяжёлых iframe'а
-   на мобильном интернете), по клику подставляем Rutube-embed с автостартом.
-   ⚠️ src ставим ТОЛЬКО после вставки в DOM: если задать его отвязанному элементу,
-   плеер Rutube стартует с нулевой высотой и навсегда виснет на спиннере. */
+/* Фасад плеера: до клика — статичный постер (страница не тянет два тяжёлых видео
+   на мобильном интернете), по клику подставляем сам плеер.
+
+   data-src  → свой MP4 рядом со страницей: тег <video>, никакой рекламы и никакого
+               чужого бренда в кадре. Файлы записаны с moov в начале, поэтому играют
+               сразу, не дожидаясь полной загрузки.
+   data-embed → запасной путь: Rutube-iframe для конфигов, ещё не переведённых на файлы.
+   ⚠️ src ставим ТОЛЬКО после вставки в DOM: у отвязанного элемента плеер стартует
+   с нулевой высотой и виснет на спиннере. */
 document.querySelectorAll('.vmedia').forEach(function(box){
   box.addEventListener('click', function(){
     if (box.dataset.on) return;
     box.dataset.on = '1';
-    var f = document.createElement('iframe');
-    f.title = box.dataset.title;
-    f.allow = 'clipboard-write; autoplay; fullscreen';
-    f.setAttribute('allowfullscreen','');
+    var el;
+    if (box.dataset.src) {
+      el = document.createElement('video');
+      el.controls = true;
+      el.autoplay = true;
+      el.playsInline = true;
+      el.preload = 'auto';
+      el.setAttribute('controlslist','nodownload');   /* КП — закрытые материалы */
+      el.setAttribute('disablepictureinpicture','');
+      el.oncontextmenu = function(){ return false; };
+    } else {
+      el = document.createElement('iframe');
+      el.allow = 'clipboard-write; autoplay; fullscreen';
+      el.setAttribute('allowfullscreen','');
+    }
+    el.title = box.dataset.title;
     box.innerHTML = '';
     box.className += ' on';   /* снимает затемняющую подложку поверх плеера */
     box.style.cursor = 'default';
-    box.appendChild(f);
-    f.src = box.dataset.embed + '&autoplay=1';
+    box.appendChild(el);
+    el.src = box.dataset.src || (box.dataset.embed + '&autoplay=1');
+    if (box.dataset.src) { var p = el.play(); if (p && p.catch) p.catch(function(){}); }
   });
 });
 </script>
