@@ -141,6 +141,11 @@ h2 .n{font-family:Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums;
 .ptrack:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:4px}
 .ptime{flex:none;font-family:Helvetica,Arial,sans-serif;font-size:12.5px;
       font-variant-numeric:tabular-nums;color:var(--mut)}
+/* Скорость: кнопка-надпись, ширина по тексту, но высота те же 40 px ради тапа.
+   Табличные цифры — чтобы «1,75×» не дёргало соседей при переключении. */
+.pbtn.spd{width:auto;min-width:44px;padding:0 8px;font-family:Helvetica,Arial,sans-serif;
+      font-size:13px;font-variant-numeric:tabular-nums;font-weight:500;letter-spacing:.01em}
+.pbtn.spd.on{color:var(--acc)}
 /* Кнопка по центру, когда плеер на паузе: без неё пауза выглядит как зависший кадр. */
 .playbtn.ctr{display:none}
 .vmedia.pz .playbtn.ctr{display:grid}
@@ -447,6 +452,7 @@ function ownPlayer(box){
       '<span class="bg"></span><span class="buf"></span><span class="pos"></span><span class="knob"></span>' +
     '</span>' +
     '<span class="ptime">0:00 / --:--</span>' +
+    '<button class="pbtn spd" type="button" aria-label="Скорость воспроизведения">1×</button>' +
     '<button class="pbtn vol" type="button" aria-label="Выключить звук">' + IC.vol + '</button>' +
     '<button class="pbtn fs" type="button" aria-label="Во весь экран">' + IC.fs + '</button>';
 
@@ -460,8 +466,20 @@ function ownPlayer(box){
   box.tabIndex = 0;
 
   var pp = c.querySelector('.pp'), vol = c.querySelector('.vol'), fs = c.querySelector('.fs'),
-      tr = c.querySelector('.ptrack'), buf = c.querySelector('.buf'),
+      spd = c.querySelector('.spd'), tr = c.querySelector('.ptrack'), buf = c.querySelector('.buf'),
       pos = c.querySelector('.pos'), knob = c.querySelector('.knob'), tm = c.querySelector('.ptime');
+
+  /* Скорость. 46 минут КП мало кто готов смотреть целиком — на 1.5× это 30 минут,
+     и человек досматривает вместо того, чтобы бросить. Переключаем по кругу тапом:
+     всплывающее меню на 16:9-карточке некуда разместить, а тап работает и на телефоне. */
+  var RATES = [1, 1.25, 1.5, 1.75, 2], ri = 0;
+  var setRate = function(i){
+    ri = (i + RATES.length) % RATES.length;
+    v.playbackRate = RATES[ri];
+    spd.textContent = String(RATES[ri]).replace('.', ',') + '×';
+    spd.classList.toggle('on', RATES[ri] !== 1);
+    spd.setAttribute('aria-label', 'Скорость ' + RATES[ri] + '×, нажмите чтобы изменить');
+  };
 
   var toggle = function(){ v.paused ? v.play().catch(function(){}) : v.pause(); };
   var seekTo = function(x){
@@ -483,6 +501,11 @@ function ownPlayer(box){
   ctr.addEventListener('click', toggle);
   pp.addEventListener('click', toggle);
   vol.addEventListener('click', function(){ v.muted = !v.muted; });
+  spd.addEventListener('click', function(){ setRate(ri + 1); });
+  // Браузер может сбросить скорость при смене источника — держим свою.
+  v.addEventListener('ratechange', function(){
+    if (v.playbackRate !== RATES[ri]) v.playbackRate = RATES[ri];
+  });
   fs.addEventListener('click', function(){
     if (document.fullscreenElement) return document.exitFullscreen();
     if (box.requestFullscreen) box.requestFullscreen().catch(function(){});
@@ -533,6 +556,8 @@ function ownPlayer(box){
     else if (k === 'ArrowLeft') { v.currentTime -= 5; }
     else if (k === 'm') { v.muted = !v.muted; }
     else if (k === 'f') { fs.click(); }
+    else if (k === '>' || k === '.') { setRate(ri + 1); }
+    else if (k === '<' || k === ',') { setRate(ri - 1); }
     else return;
     e.preventDefault();
     wake();
