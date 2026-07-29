@@ -1,0 +1,2908 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0A0B0D">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Тренировки">
+<title>Дневник тренировок — Никита</title>
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9IiMwRjExMTUiLz48ZyBmaWxsPSIjQzdGMjRFIj48cmVjdCB4PSIxNy4zIiB5PSIyOC41IiB3aWR0aD0iMjkuNCIgaGVpZ2h0PSI3IiByeD0iMiIvPjxyZWN0IHg9IjEzLjYiIHk9IjE5LjIiIHdpZHRoPSI3LjQiIGhlaWdodD0iMjUuNiIgcng9IjIuNCIvPjxyZWN0IHg9IjQzIiB5PSIxOS4yIiB3aWR0aD0iNy40IiBoZWlnaHQ9IjI1LjYiIHJ4PSIyLjQiLz48cmVjdCB4PSI3LjYiIHk9IjIzLjciIHdpZHRoPSI0LjgiIGhlaWdodD0iMTYuNiIgcng9IjEuOCIvPjxyZWN0IHg9IjUxLjYiIHk9IjIzLjciIHdpZHRoPSI0LjgiIGhlaWdodD0iMTYuNiIgcng9IjEuOCIvPjwvZz48L3N2Zz4=">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root {
+  --bg:          #0A0B0D;
+  --surface-1:   #14161A;
+  --surface-2:   #1B1E24;
+  --surface-3:   #23272F;
+  --line:        #282D35;
+  --line-soft:   #1E2229;
+  --grid:        #21252C;
+
+  --ink:         #F3F5F8;
+  --ink-2:       #A3AAB6;
+  --ink-3:       #6E7683;
+
+  --accent:      #C7F24E;
+  --accent-ink:  #0A0B0D;
+  --accent-soft: rgba(199, 242, 78, 0.13);
+  --accent-line: rgba(199, 242, 78, 0.32);
+
+  --down:        #F2555A;
+  --down-soft:   rgba(242, 85, 90, 0.13);
+  --warm:        #FFB454;
+  --warm-soft:   rgba(255, 180, 84, 0.13);
+
+  --r-s:  10px;
+  --r-m:  14px;
+  --r-l:  20px;
+  --tap:  44px;
+
+  --pad:  16px;
+  --ease: cubic-bezier(.2, .8, .3, 1);
+
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+/* clip, а не hidden: hidden делает элемент контейнером прокрутки и ломает
+   прилипание шапки — она уезжает вместе со страницей */
+html, body { overflow-x: clip; }
+
+body {
+  margin: 0;
+  padding: 0 0 96px;
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(199,242,78,0.05), transparent 60%),
+    var(--bg);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+::selection { background: var(--accent); color: var(--accent-ink); }
+
+.wrap { max-width: 720px; margin: 0 auto; padding: 0 var(--pad); }
+
+/* ───────────────────────────── шапка ───────────────────────────── */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(10, 11, 13, 0.86);
+  backdrop-filter: saturate(160%) blur(14px);
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.topbar__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px var(--pad) 10px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+
+.brand__mark {
+  width: 30px; height: 30px; flex: none;
+  border-radius: 9px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  display: grid; place-items: center;
+  font-weight: 800; font-size: 15px;
+  letter-spacing: -0.02em;
+}
+
+.brand__text { min-width: 0; }
+.brand__title { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; }
+/* подзаголовок держим в одну строку: перенос наезжал на дату справа */
+.brand__sub {
+  display: block;
+  font-size: 12px; color: var(--ink-3); line-height: 1.3;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.updated { font-size: 12px; color: var(--ink-3); white-space: nowrap; text-align: right; line-height: 1.3; }
+
+/* лента вкладок: на узком экране прокручивается, справа затухает —
+   иначе не видно, что за краем есть ещё разделы */
+.tabs {
+  position: relative;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.tabs::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 10px;
+  width: 34px;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(10,11,13,0), rgba(10,11,13,.92));
+}
+.tabs__scroll {
+  display: flex;
+  gap: 6px;
+  padding: 0 var(--pad) 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.tabs__scroll::-webkit-scrollbar { display: none; }
+
+.tab {
+  flex: none;
+  min-height: var(--tap);
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface-1);
+  color: var(--ink-2);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+  transition: transform .12s var(--ease), background .16s var(--ease), color .16s var(--ease), border-color .16s var(--ease);
+}
+.tab:active { transform: scale(.96); }
+.tab.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* ───────────────────────────── разделы ───────────────────────────── */
+
+.section { padding-top: 22px; scroll-margin-top: 108px; }
+.section__head { margin-bottom: 14px; }
+.section__title {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.section__note { margin: 6px 0 0; font-size: 14px; color: var(--ink-2); }
+
+/* с включённым JS показывается один раздел; без JS видны все подряд */
+body.js .section { display: none; }
+body.js .section.is-active { display: block; }
+
+/* ───────────────────────────── карточки ───────────────────────────── */
+
+.card {
+  background: linear-gradient(180deg, var(--surface-1), #121419);
+  border: 1px solid var(--line);
+  border-radius: var(--r-l);
+  padding: 18px;
+  margin-bottom: 12px;
+}
+
+.card--flat { background: var(--surface-1); }
+.card--accent { border-color: var(--accent-line); background: linear-gradient(180deg, rgba(199,242,78,0.07), var(--surface-1) 60%); }
+
+.card__label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 8px;
+}
+
+.card__title { font-size: 19px; font-weight: 750; letter-spacing: -0.01em; margin: 0 0 4px; }
+
+/* ───────────────────────────── плитки чисел ───────────────────────────── */
+
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.stats--2 { grid-template-columns: repeat(2, 1fr); }
+.stats--4 { grid-template-columns: repeat(4, 1fr); }
+
+.stat {
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-radius: var(--r-m);
+  padding: 12px 12px 11px;
+  min-width: 0;
+}
+.stat__value {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  display: block;
+}
+.stat__unit { font-size: 13px; font-weight: 600; color: var(--ink-3); margin-left: 3px; letter-spacing: 0; }
+.stat__label { font-size: 12px; color: var(--ink-3); margin-top: 4px; line-height: 1.3; }
+.stat--accent .stat__value { color: var(--accent); }
+
+/* ───────────────────────────── дельта ───────────────────────────── */
+
+.delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+.delta__arrow { font-size: 11px; line-height: 1; }
+.delta--up { background: var(--accent-soft); color: var(--accent); border-color: var(--accent-line); }
+.delta--down { background: var(--down-soft); color: var(--down); border-color: rgba(242,85,90,0.3); }
+.delta--same { background: var(--surface-3); color: var(--ink-2); border-color: var(--line); }
+.delta--neutral { background: var(--surface-3); color: var(--ink-2); border-color: var(--line); }
+.delta--first { background: var(--surface-3); color: var(--ink-3); border-color: var(--line); }
+
+.delta-note { font-size: 12px; color: var(--ink-3); margin-top: 6px; }
+
+/* ───────────────────────────── лесенка ───────────────────────────── */
+
+.ladder { margin-top: 12px; }
+.ladder__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 7px;
+}
+/* подпись состояния не переносится: «Вес мал» ломалось на две строки
+   и наезжало на пояснение справа */
+.ladder__label { font-size: 13px; font-weight: 700; white-space: nowrap; flex: none; }
+.ladder__hint { font-size: 12px; color: var(--ink-3); text-align: right; min-width: 0; }
+
+.ladder__track {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface-3);
+  overflow: hidden;
+}
+.ladder__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(199,242,78,.55), var(--accent));
+}
+.ladder--ready .ladder__fill { background: linear-gradient(90deg, var(--warm), #FFD08A); }
+.ladder--almost .ladder__fill { background: linear-gradient(90deg, rgba(199,242,78,.5), var(--accent)); }
+.ladder--heavy .ladder__fill { background: linear-gradient(90deg, rgba(163,170,182,.4), var(--ink-2)); }
+.ladder--light .ladder__fill { background: linear-gradient(90deg, var(--warm), #FFD08A); }
+
+.ladder__scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--ink-3);
+  margin-top: 5px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ───────────────────────────── упражнения ───────────────────────────── */
+
+.ex {
+  border: 1px solid var(--line);
+  border-radius: var(--r-m);
+  background: var(--surface-1);
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.ex--main { border-color: var(--accent-line); background: linear-gradient(180deg, rgba(199,242,78,.05), var(--surface-1) 55%); }
+
+.ex__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.ex__name { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
+.ex__role {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 3px;
+}
+.ex__role--acc { color: var(--ink-3); }
+.ex__note { font-size: 12.5px; color: var(--ink-3); margin-top: 5px; line-height: 1.4; }
+
+.ex__target {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line-soft);
+  flex-wrap: wrap;
+}
+.ex__target-value { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
+.ex__target-label { font-size: 13px; color: var(--ink-3); }
+
+/* ───────────────────────────── подходы ───────────────────────────── */
+
+.sets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.set {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: var(--r-s);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  font-size: 13.5px;
+  font-variant-numeric: tabular-nums;
+}
+.set__w { font-weight: 700; }
+.set__x { color: var(--ink-3); font-size: 12px; }
+.set__r { font-weight: 700; color: var(--accent); }
+.set--probe { border-style: dashed; opacity: .72; }
+.set--probe .set__r { color: var(--ink-2); }
+.set--best { border-color: var(--accent-line); }
+
+.set-note { font-size: 12px; color: var(--warm); margin-top: 7px; display: flex; gap: 6px; }
+
+/* ───────────────────────────── аккордеоны ───────────────────────────── */
+
+details { margin-bottom: 10px; }
+
+summary {
+  list-style: none;
+  cursor: pointer;
+  min-height: var(--tap);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--r-m);
+  border: 1px solid var(--line);
+  background: var(--surface-1);
+  transition: background .16s var(--ease), transform .12s var(--ease);
+}
+summary::-webkit-details-marker { display: none; }
+summary:active { transform: scale(.99); }
+details[open] > summary { border-radius: var(--r-m) var(--r-m) 0 0; background: var(--surface-2); }
+
+.sum__main { min-width: 0; }
+.sum__title { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
+.sum__sub { font-size: 12.5px; color: var(--ink-3); margin-top: 2px; }
+.sum__right { display: flex; align-items: center; gap: 10px; flex: none; }
+.sum__chev {
+  width: 22px; height: 22px; flex: none;
+  display: grid; place-items: center;
+  color: var(--ink-3);
+  transition: transform .2s var(--ease);
+}
+details[open] > summary .sum__chev { transform: rotate(180deg); }
+
+.details__body {
+  border: 1px solid var(--line);
+  border-top: 0;
+  border-radius: 0 0 var(--r-m) var(--r-m);
+  padding: 14px;
+  background: #101318;
+}
+
+/* ───────────────────────────── графики ───────────────────────────── */
+
+.chart { margin: 12px 0 4px; }
+.chart__svg { width: 100%; height: 200px; display: block; overflow: visible; }
+.chart--single .chart__solo {
+  padding: 18px;
+  border: 1px dashed var(--line);
+  border-radius: var(--r-m);
+  text-align: center;
+}
+.chart__solo-value { display: block; font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
+.chart__solo-note { display: block; font-size: 12.5px; color: var(--ink-3); margin-top: 4px; }
+
+.ch-grid { stroke: var(--grid); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.ch-axis { fill: var(--ink-3); font-size: 11px; font-family: system-ui, -apple-system, sans-serif; font-variant-numeric: tabular-nums; }
+.ch-line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.ch-dot { fill: var(--surface-1); stroke: var(--accent); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.ch-dot--calib { stroke: var(--ink-3); stroke-dasharray: 2 2; }
+.ch-value { fill: var(--ink); font-size: 13px; font-weight: 700; font-family: system-ui, -apple-system, sans-serif; }
+.ch-bar { fill: var(--accent); }
+.ch-bar--muted { fill: var(--surface-3); }
+
+.spark { width: 120px; height: 32px; flex: none; }
+.spark__line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.spark__dot { fill: var(--accent); }
+
+.chart-legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--ink-3); margin-top: 8px; }
+.chart-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend-dot { width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--accent); background: var(--surface-1); flex: none; }
+.legend-dot--calib { border-color: var(--ink-3); border-style: dashed; }
+
+/* ───────────────────────────── кнопки ───────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: var(--tap);
+  padding: 11px 18px;
+  border-radius: var(--r-m);
+  border: 0;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform .12s var(--ease), filter .16s var(--ease);
+}
+.btn:active { transform: scale(.97); filter: brightness(.94); }
+.btn--ghost {
+  background: var(--surface-2);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.btn--wide { width: 100%; }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+
+/* ───────────────────────────── таблица ───────────────────────────── */
+
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; }
+table { border-collapse: collapse; width: 100%; min-width: 420px; font-size: 13.5px; }
+th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line-soft); font-variant-numeric: tabular-nums; }
+th { font-size: 11.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-3); font-weight: 700; }
+td.num, th.num { text-align: right; }
+tr:last-child td { border-bottom: 0; }
+
+/* ───────────────────────────── прочее ───────────────────────────── */
+
+.pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 9px; border-radius: 999px;
+  font-size: 11.5px; font-weight: 700;
+  background: var(--surface-3); color: var(--ink-2);
+  border: 1px solid var(--line);
+}
+.pill--calib { background: var(--surface-3); color: var(--ink-3); }
+.pill--day { background: var(--accent-soft); color: var(--accent); border-color: var(--accent-line); }
+
+.hint {
+  font-size: 13px;
+  color: var(--ink-2);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--r-s);
+  padding: 11px 13px;
+  margin: 12px 0;
+  line-height: 1.5;
+}
+.hint--warm { border-left-color: var(--warm); }
+
+.empty { color: var(--ink-3); font-size: 14px; padding: 20px; text-align: center; border: 1px dashed var(--line); border-radius: var(--r-m); }
+
+.foot { margin-top: 34px; padding-top: 18px; border-top: 1px solid var(--line-soft); font-size: 12.5px; color: var(--ink-3); line-height: 1.6; }
+
+/* ───────────────────────── режим тренировки ───────────────────────── */
+
+.live-bar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 60;
+  padding: 10px var(--pad) calc(10px + env(safe-area-inset-bottom));
+  background: rgba(10,11,13,.9);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid var(--line);
+}
+.live-bar__inner { max-width: 720px; margin: 0 auto; display: flex; gap: 8px; align-items: center; }
+
+.live-ex { border: 1px solid var(--line); border-radius: var(--r-m); background: var(--surface-1); margin-bottom: 10px; overflow: hidden; }
+.live-ex__head { padding: 13px 14px; display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.live-ex__body { padding: 0 14px 13px; }
+
+/* Строка подхода — сетка, а не гибкая лента: при двух регуляторах
+   в ряд поля ввода схлопывались в ноль и цифр не было видно.
+   Подписи «кг» и «раз» вынесены в шапку колонок, чтобы не съедать ширину. */
+.live-set {
+  display: grid;
+  grid-template-columns: 16px 1fr 1fr 40px;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 0;
+  border-top: 1px solid var(--line-soft);
+}
+.live-set--wide { grid-template-columns: 16px 1fr 40px; }
+.live-set--single { grid-template-columns: 1fr; }
+
+.live-set__n { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+
+.live-head {
+  display: grid;
+  grid-template-columns: 16px 1fr 1fr 40px;
+  gap: 7px;
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding-bottom: 4px;
+}
+.live-head--wide { grid-template-columns: 16px 1fr 40px; }
+.live-head span { text-align: center; }
+.live-head span:first-child, .live-head span:last-child { text-align: left; }
+
+.stepper { display: flex; align-items: center; min-width: 0; }
+.stepper__btn {
+  width: 40px; height: 44px; flex: none;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: 20px; font-weight: 700;
+  cursor: pointer;
+  display: grid; place-items: center;
+  transition: transform .1s var(--ease), background .16s var(--ease);
+}
+.stepper__btn:active { transform: scale(.92); background: var(--surface-3); }
+.stepper__btn--minus { border-radius: var(--r-s) 0 0 var(--r-s); }
+.stepper__btn--plus { border-radius: 0 var(--r-s) var(--r-s) 0; }
+.stepper__field {
+  flex: 1; min-width: 34px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-left: 0; border-right: 0;
+  background: var(--surface-1);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  -moz-appearance: textfield;
+}
+.stepper__field::-webkit-outer-spin-button,
+.stepper__field::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.stepper__field:focus { outline: 2px solid var(--accent-line); outline-offset: -2px; }
+.live-field { margin-bottom: 10px; }
+.live-field__cap {
+  display: block;
+  font-size: 12px; color: var(--ink-3);
+  margin-bottom: 5px;
+}
+.live-date {
+  border-radius: var(--r-s);
+  border: 1px solid var(--line);
+  width: 100%;
+  padding: 0 12px;
+  text-align: left;
+}
+
+.live-check {
+  display: flex; align-items: center; gap: 10px;
+  min-height: var(--tap);
+  cursor: pointer;
+  font-size: 13.5px; color: var(--ink-2);
+}
+.live-check input { width: 22px; height: 22px; flex: none; accent-color: var(--accent); }
+
+.live-done {
+  width: 40px; height: 44px; flex: none;
+  border-radius: var(--r-s);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--ink-3);
+  font-size: 18px;
+  cursor: pointer;
+  display: grid; place-items: center;
+  transition: transform .1s var(--ease), background .16s var(--ease), color .16s var(--ease);
+}
+.live-done:active { transform: scale(.92); }
+.live-done.is-done { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+.live-target { font-size: 12.5px; color: var(--ink-3); margin-top: 2px; }
+
+.copybox {
+  width: 100%;
+  min-height: 160px;
+  background: #0D1015;
+  border: 1px solid var(--line);
+  border-radius: var(--r-m);
+  color: var(--ink-2);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12.5px;
+  line-height: 1.6;
+  padding: 12px;
+  margin-top: 10px;
+  resize: vertical;
+}
+
+.toast {
+  position: fixed;
+  left: 50%; bottom: 86px;
+  transform: translateX(-50%) translateY(12px);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 11px 18px;
+  border-radius: 999px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s var(--ease), transform .2s var(--ease);
+  z-index: 70;
+}
+.toast.is-on { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+.noscript {
+  background: var(--warm-soft);
+  border: 1px solid rgba(255,180,84,.3);
+  border-radius: var(--r-m);
+  padding: 12px 14px;
+  font-size: 13.5px;
+  color: var(--ink-2);
+  margin: 12px 0;
+}
+
+/* ───────────────────────────── адаптив ───────────────────────────── */
+
+@media (max-width: 640px) {
+  .stats--4 { grid-template-columns: repeat(2, 1fr); }
+  .section__title { font-size: 21px; }
+  .card { padding: 15px; border-radius: var(--r-m); }
+  .stat__value { font-size: 20px; }
+  .chart__svg { height: 178px; }
+}
+
+/* На узком экране мини-график в заголовке упражнения перестаёт помещаться
+   рядом с чипом изменения и стрелкой — вылезает за край. Он декоративный,
+   те же данные есть внутри карточки полноценным графиком, поэтому прячем. */
+@media (max-width: 430px) {
+  .spark { display: none; }
+}
+
+@media (max-width: 380px) {
+  :root { --pad: 13px; }
+  .stats--4 { grid-template-columns: 1fr 1fr; }
+  .stat { padding: 10px 9px; }
+  .stat__value { font-size: 17px; }
+  .stat__label { font-size: 11px; }
+  .sum__title { font-size: 14px; }
+  .delta { font-size: 12px; padding: 3px 7px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar__head">
+    <div class="brand">
+      <span class="brand__mark" aria-hidden="true">Н</span>
+      <span class="brand__text">
+        <span class="brand__title">Дневник тренировок</span>
+        <span class="brand__sub">Грудь · спина · ноги</span>
+      </span>
+    </div>
+    <span class="updated">обновлён<br>29 июля</span>
+  </div>
+  <nav class="tabs" aria-label="Разделы">
+    <div class="tabs__scroll">
+      <a class="tab is-active" href="#today" data-tab="today">Сегодня</a>
+      <a class="tab" href="#exercises" data-tab="exercises">Упражнения</a>
+      <a class="tab" href="#history" data-tab="history">История</a>
+      <a class="tab" href="#progress" data-tab="progress">Итоги</a>
+      <a class="tab" href="#body" data-tab="body">Тело</a>
+    </div>
+  </nav>
+</header>
+
+<main class="wrap">
+<section class="section" id="today">
+    <div class="section__head">
+      <h2 class="section__title">Сегодня — спина</h2>
+      <p class="section__note">Спина + плечи + трицепс. Очередь считается по журналу, а не по календарю: пропустил неделю — порядок не сбился.</p>
+    </div>
+    <div class="stats">
+    <div class="stat stat--accent">
+      <span class="stat__value">4</span>
+      <div class="stat__label">тренировки в журнале</div>
+    </div>
+    <div class="stat">
+      <span class="stat__value">1</span>
+      <div class="stat__label">день с прошлой</div>
+    </div>
+    <div class="stat">
+      <span class="stat__value">79,8<span class="stat__unit">кг</span></span>
+      <div class="stat__label">вес тела, 28.07</div>
+    </div>
+  </div>
+    <div class="card card--accent">
+      <div class="card__label">Программа на эту тренировку</div>
+      <p style="margin:0 0 12px;font-size:14px;color:var(--ink-2)">Веса взяты с последней такой тренировки 23 июля. Где написано «поднять вес» — ты дошёл до девяти повторений, лесенка сработала.</p>
+      <div class="ex ex--main">
+      <div class="ex__head">
+        <div style="min-width:0">
+          <span class="ex__role">Основное</span>
+          <h3 class="ex__name">Подтягивания</h3>
+        </div>
+        <span class="delta delta--first">Впервые</span>
+      </div>
+      <div class="ex__target">
+        <span class="ex__target-value">Свой вес, пора утяжеляться</span>
+        <span class="ex__target-label">3 подхода · в прошлый раз 14 повторов 23.07</span>
+      </div>
+      <div class="ladder ladder--light">
+    <div class="ladder__top">
+      <span class="ladder__label">Вес мал</span>
+      <span class="ladder__hint">Пора вешать пояс с весом</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:100%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>3 из 2 подходов по 9</span>
+    </div>
+  </div>
+      <div class="ex__note">Работаешь собственным весом</div>
+    </div><div class="ex">
+      <div class="ex__head">
+        <div style="min-width:0">
+          <span class="ex__role ex__role--acc">Добивка</span>
+          <h3 class="ex__name">Гиперэкстензия</h3>
+        </div>
+        <span class="delta delta--first">Впервые</span>
+      </div>
+      <div class="ex__target">
+        <span class="ex__target-value">Поднять вес выше 30 кг</span>
+        <span class="ex__target-label">3 подхода · в прошлый раз 9 повторов 23.07</span>
+      </div>
+      <div class="ladder ladder--ready">
+    <div class="ladder__top">
+      <span class="ladder__label">Пора добавлять вес</span>
+      <span class="ladder__hint">3 подхода по 9 — цель взята</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:100%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>3 из 2 подходов по 9</span>
+    </div>
+  </div>
+      <div class="ex__note">Дополнительный вес в руках</div>
+    </div><div class="ex">
+      <div class="ex__head">
+        <div style="min-width:0">
+          <span class="ex__role ex__role--acc">Добивка</span>
+          <h3 class="ex__name">Тяга вертикального блока</h3>
+        </div>
+        <span class="delta delta--first">Впервые</span>
+      </div>
+      <div class="ex__target">
+        <span class="ex__target-value">70 кг</span>
+        <span class="ex__target-label">3 подхода · в прошлый раз 6 повторов 23.07</span>
+      </div>
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 6</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:0%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      <div class="ex__note">Тяга сверху к себе</div>
+    </div><div class="ex">
+      <div class="ex__head">
+        <div style="min-width:0">
+          <span class="ex__role ex__role--acc">Добивка</span>
+          <h3 class="ex__name">Трицепс с канатом</h3>
+        </div>
+        <span class="delta delta--first">Впервые</span>
+      </div>
+      <div class="ex__target">
+        <span class="ex__target-value">50 кг</span>
+        <span class="ex__target-label">3 подхода · в прошлый раз 6 повторов 23.07</span>
+      </div>
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 6</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:0%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      <div class="ex__note">Следить за техникой: плечи не уводить вперёд</div>
+    </div><div class="ex">
+      <div class="ex__head">
+        <div style="min-width:0">
+          <span class="ex__role ex__role--acc">Добивка</span>
+          <h3 class="ex__name">Тяга нижнего блока</h3>
+        </div>
+        <span class="delta delta--first">Впервые</span>
+      </div>
+      <div class="ex__target">
+        <span class="ex__target-value">40 кг</span>
+        <span class="ex__target-label">3 подхода · в прошлый раз 6 повторов 23.07</span>
+      </div>
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 6</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:0%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      <div class="ex__note">Тяга снизу</div>
+    </div><div class="ex">
+      <div class="ex__head">
+        <div style="min-width:0">
+          <span class="ex__role ex__role--acc">Добивка</span>
+          <h3 class="ex__name">Жим гантелей вверх</h3>
+        </div>
+        <span class="delta delta--first">Впервые</span>
+      </div>
+      <div class="ex__target">
+        <span class="ex__target-value">15 кг</span>
+        <span class="ex__target-label">3 подхода · в прошлый раз 7 повторов 23.07</span>
+      </div>
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 7</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:23%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      <div class="ex__note">Вес одной гантели</div>
+    </div><div class="ex">
+      <div class="ex__head">
+        <div style="min-width:0">
+          <span class="ex__role ex__role--acc">Добивка</span>
+          <h3 class="ex__name">Разведение гантелей в стороны</h3>
+        </div>
+        <span class="delta delta--first">Впервые</span>
+      </div>
+      <div class="ex__target">
+        <span class="ex__target-value">15 кг</span>
+        <span class="ex__target-label">3 подхода · в прошлый раз 10 повторов 23.07</span>
+      </div>
+      <div class="ladder ladder--almost">
+    <div class="ladder__top">
+      <span class="ladder__label">Девятка есть, нужна вторая</span>
+      <span class="ladder__hint">Ещё один подход по 9 на 15 кг — и вес растёт</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:80%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>1 из 2 подходов по 9</span>
+    </div>
+  </div>
+      <div class="ex__note">Локти согнуты под 90°, работают плечи, спина не включается</div>
+    </div><div class="ex">
+      <div class="ex__head">
+        <div style="min-width:0">
+          <span class="ex__role ex__role--acc">Добивка</span>
+          <h3 class="ex__name">Обратная бабочка</h3>
+        </div>
+        <span class="delta delta--first">Впервые</span>
+      </div>
+      <div class="ex__target">
+        <span class="ex__target-value">52 кг</span>
+        <span class="ex__target-label">3 подхода · в прошлый раз 6 повторов 23.07</span>
+      </div>
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 6</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:0%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      <div class="ex__note">Разведение рук в стороны, задний пучок дельт</div>
+    </div><div class="ex">
+      <div class="ex__head">
+        <div style="min-width:0">
+          <span class="ex__role ex__role--acc">Добивка</span>
+          <h3 class="ex__name">Тяга горизонтального блока</h3>
+        </div>
+        <span class="delta delta--first">Впервые</span>
+      </div>
+      <div class="ex__target">
+        <span class="ex__target-value">60 кг</span>
+        <span class="ex__target-label">2 подхода · в прошлый раз 6 повторов 23.07</span>
+      </div>
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 6</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:0%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      <div class="ex__note">Сидя, тяга к себе по горизонтали</div>
+    </div>
+    </div>
+
+    <div class="card">
+      <div class="card__label">Записать тренировку</div>
+      <h3 class="card__title">Заполняй прямо между подходами</h3>
+      <p style="margin:4px 0 0;font-size:14px;color:var(--ink-2)">Всё сохраняется само, интернет не нужен. В конце нажми «Скопировать тренировку» и отправь текст мне — я занесу в файл и пересчитаю прогресс.</p>
+      <noscript><div class="noscript">Ввод работает только со включёнными скриптами. Программа выше, история и вся статистика доступны и без них.</div></noscript>
+      <div id="live-form"></div>
+    </div>
+  </section>
+<section class="section" id="exercises">
+    <div class="section__head">
+      <h2 class="section__title">Упражнения</h2>
+      <p class="section__note">Рабочий вес, положение в лесенке и вся история по каждому движению. Взаимозаменяемые упражнения отмечены общей группой — при ротации линия прогресса не рвётся.</p>
+    </div>
+    <div class="card">
+      <div class="card__label">День грудь</div>
+      <details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Жим гантелями лёжа</div>
+        <div class="sum__sub">28 кг · Лучший подход — 6 · жим на грудь</div>
+      </div>
+      <div class="sum__right">
+        <svg class="spark" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true">
+    <path class="spark__line" d="M3.0,29.0 L117.0,29.0"/>
+    <circle class="spark__dot" cx="117.0" cy="29.0" r="3"/>
+  </svg>
+        <span class="delta delta--first">Впервые</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 6</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:0%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      <div class="delta-note">В этой роли впервые: раньше делал в другой, цифры несопоставимы</div>
+      
+      <div class="ex__note">Вес одной гантели</div>
+      <div class="chart">
+    <svg viewBox="0 0 640 200" preserveAspectRatio="none" class="chart__svg" role="img"
+         aria-label="Изменение рабочего веса, Жим гантелями лёжа">
+      <defs>
+        <linearGradient id="cnu4qg2-fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/>
+          <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      
+    <line class="ch-grid" x1="46" y1="170.0" x2="622" y2="170.0"/>
+    <text class="ch-axis" x="36" y="174.0" text-anchor="end">26</text>
+    <line class="ch-grid" x1="46" y1="132.0" x2="622" y2="132.0"/>
+    <text class="ch-axis" x="36" y="136.0" text-anchor="end">27</text>
+    <line class="ch-grid" x1="46" y1="94.0" x2="622" y2="94.0"/>
+    <text class="ch-axis" x="36" y="98.0" text-anchor="end">28</text>
+    <line class="ch-grid" x1="46" y1="56.0" x2="622" y2="56.0"/>
+    <text class="ch-axis" x="36" y="60.0" text-anchor="end">29</text>
+    <line class="ch-grid" x1="46" y1="18.0" x2="622" y2="18.0"/>
+    <text class="ch-axis" x="36" y="22.0" text-anchor="end">30</text>
+      <path class="ch-area" d="M46.0,94.0 L622.0,94.0 L622.0,170.0 L46.0,170.0 Z" fill="url(#cnu4qg2-fill)"/>
+      <path class="ch-line" d="M46.0,94.0 L622.0,94.0"/>
+      <circle class="ch-dot ch-dot--calib" cx="46.0" cy="94.0" r="4.5"><title>19.07 — 28 кг (калибровка), 7 повторов</title></circle><circle class="ch-dot ch-dot--calib" cx="622.0" cy="94.0" r="4.5"><title>28.07 — 28 кг (калибровка), 6 повторов</title></circle>
+      <text class="ch-axis" x="46.0" y="192" text-anchor="start">19.07</text><text class="ch-axis" x="622.0" y="192" text-anchor="end">28.07</text>
+      <text class="ch-value" x="622.0" y="82.0" text-anchor="end">28 кг</text>
+    </svg>
+  </div><div class="chart-legend">
+        <span><i class="legend-dot"></i>рабочий подход</span>
+        <span><i class="legend-dot legend-dot--calib"></i>калибровка, поиск веса</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>28.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">28 кг</td>
+      <td class="num">6</td>
+      <td class="num">67</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr><tr>
+      <td>19.07 <span class="pill pill--calib">кал.</span></td>
+      <td>основное</td>
+      <td class="num">28 кг</td>
+      <td class="num">7</td>
+      <td class="num">69</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">28 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set set--best"><span class="set__w">28 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">28 кг</span><span class="set__x">×</span><span class="set__r">3</span></span><span class="set"><span class="set__w">26 кг</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+    </div><div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">19 июля · основное · калибровка</div>
+      <div class="sets"><span class="set set--best"><span class="set__w">28 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">28 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">28 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">28 кг</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
+    </div>
+    </div>
+  </details><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Жим лёжа</div>
+        <div class="sum__sub">77,5 кг · Лучший подход — 6 · жим на грудь</div>
+      </div>
+      <div class="sum__right">
+        
+        <span class="delta delta--first">Впервые</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 6</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:0%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      
+      
+      <div class="ex__note">Вес общий, вместе с грифом 20 кг</div>
+      
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>28.07 <span class="pill pill--calib">кал.</span></td>
+      <td>основное</td>
+      <td class="num">77,5 кг</td>
+      <td class="num">6</td>
+      <td class="num">93</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">28 июля · основное · калибровка</div>
+      <div class="sets"><span class="set"><span class="set__w">77,5 кг</span><span class="set__x">×</span><span class="set__r">5</span></span><span class="set"><span class="set__w">75 кг</span><span class="set__x">×</span><span class="set__r">8</span></span><span class="set set--best"><span class="set__w">77,5 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">77,5 кг</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+    </div>
+    </div>
+  </details><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Жим от груди сидя</div>
+        <div class="sum__sub">95 кг · Лучший подход — 8 · жим от груди в тренажёре</div>
+      </div>
+      <div class="sum__right">
+        <svg class="spark" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true">
+    <path class="spark__line" d="M3.0,29.0 L117.0,29.0"/>
+    <circle class="spark__dot" cx="117.0" cy="29.0" r="3"/>
+  </svg>
+        <span class="delta delta--up"><span class="delta__arrow" aria-hidden="true">▲</span>+1 повтор</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 8</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:47%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      <div class="delta-note">Было 7</div>
+      
+      <div class="ex__note">Вес общий: блины с двух сторон + рама 20 кг</div>
+      <div class="chart">
+    <svg viewBox="0 0 640 200" preserveAspectRatio="none" class="chart__svg" role="img"
+         aria-label="Изменение рабочего веса, Жим от груди сидя">
+      <defs>
+        <linearGradient id="cm2v8f5-fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/>
+          <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      
+    <line class="ch-grid" x1="46" y1="170.0" x2="622" y2="170.0"/>
+    <text class="ch-axis" x="36" y="174.0" text-anchor="end">90</text>
+    <line class="ch-grid" x1="46" y1="94.0" x2="622" y2="94.0"/>
+    <text class="ch-axis" x="36" y="98.0" text-anchor="end">95</text>
+    <line class="ch-grid" x1="46" y1="18.0" x2="622" y2="18.0"/>
+    <text class="ch-axis" x="36" y="22.0" text-anchor="end">100</text>
+      <path class="ch-area" d="M46.0,94.0 L622.0,94.0 L622.0,170.0 L46.0,170.0 Z" fill="url(#cm2v8f5-fill)"/>
+      <path class="ch-line" d="M46.0,94.0 L622.0,94.0"/>
+      <circle class="ch-dot ch-dot--calib" cx="46.0" cy="94.0" r="4.5"><title>19.07 — 95 кг (калибровка), 7 повторов</title></circle><circle class="ch-dot ch-dot--calib" cx="622.0" cy="94.0" r="4.5"><title>28.07 — 95 кг (калибровка), 8 повторов</title></circle>
+      <text class="ch-axis" x="46.0" y="192" text-anchor="start">19.07</text><text class="ch-axis" x="622.0" y="192" text-anchor="end">28.07</text>
+      <text class="ch-value" x="622.0" y="82.0" text-anchor="end">95 кг</text>
+    </svg>
+  </div><div class="chart-legend">
+        <span><i class="legend-dot"></i>рабочий подход</span>
+        <span><i class="legend-dot legend-dot--calib"></i>калибровка, поиск веса</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>28.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">95 кг</td>
+      <td class="num">8</td>
+      <td class="num">120</td>
+      <td><span class="delta delta--up"><span class="delta__arrow" aria-hidden="true">▲</span>+1 повтор</span></td>
+    </tr><tr>
+      <td>19.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">95 кг</td>
+      <td class="num">7</td>
+      <td class="num">117</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">28 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set set--best"><span class="set__w">95 кг</span><span class="set__x">×</span><span class="set__r">8</span></span><span class="set"><span class="set__w">95 кг</span><span class="set__x">×</span><span class="set__r">8</span></span><span class="set"><span class="set__w">95 кг</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+    </div><div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">19 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set set--best"><span class="set__w">95 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">95 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">95 кг</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
+    </div>
+    </div>
+  </details><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Подъём штанги на бицепс стоя</div>
+        <div class="sum__sub">37,5 кг · Лучший подход — 7 · бицепс</div>
+      </div>
+      <div class="sum__right">
+        <svg class="spark" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true">
+    <path class="spark__line" d="M3.0,29.0 L117.0,29.0"/>
+    <circle class="spark__dot" cx="117.0" cy="29.0" r="3"/>
+  </svg>
+        <span class="delta delta--up"><span class="delta__arrow" aria-hidden="true">▲</span>+1 повтор</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 7</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:23%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      <div class="delta-note">Было 6</div>
+      
+      <div class="ex__note">Вес общий, вместе с грифом 10 кг</div>
+      <div class="chart">
+    <svg viewBox="0 0 640 200" preserveAspectRatio="none" class="chart__svg" role="img"
+         aria-label="Изменение рабочего веса, Подъём штанги на бицепс стоя">
+      <defs>
+        <linearGradient id="cxe78v1-fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/>
+          <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      
+    <line class="ch-grid" x1="46" y1="170.0" x2="622" y2="170.0"/>
+    <text class="ch-axis" x="36" y="174.0" text-anchor="end">34</text>
+    <line class="ch-grid" x1="46" y1="119.3" x2="622" y2="119.3"/>
+    <text class="ch-axis" x="36" y="123.3" text-anchor="end">36</text>
+    <line class="ch-grid" x1="46" y1="68.7" x2="622" y2="68.7"/>
+    <text class="ch-axis" x="36" y="72.7" text-anchor="end">38</text>
+    <line class="ch-grid" x1="46" y1="18.0" x2="622" y2="18.0"/>
+    <text class="ch-axis" x="36" y="22.0" text-anchor="end">40</text>
+      <path class="ch-area" d="M46.0,81.3 L622.0,81.3 L622.0,170.0 L46.0,170.0 Z" fill="url(#cxe78v1-fill)"/>
+      <path class="ch-line" d="M46.0,81.3 L622.0,81.3"/>
+      <circle class="ch-dot ch-dot--calib" cx="46.0" cy="81.3" r="4.5"><title>19.07 — 37,5 кг (калибровка), 6 повторов</title></circle><circle class="ch-dot ch-dot--calib" cx="622.0" cy="81.3" r="4.5"><title>28.07 — 37,5 кг (калибровка), 7 повторов</title></circle>
+      <text class="ch-axis" x="46.0" y="192" text-anchor="start">19.07</text><text class="ch-axis" x="622.0" y="192" text-anchor="end">28.07</text>
+      <text class="ch-value" x="622.0" y="69.3" text-anchor="end">37,5 кг</text>
+    </svg>
+  </div><div class="chart-legend">
+        <span><i class="legend-dot"></i>рабочий подход</span>
+        <span><i class="legend-dot legend-dot--calib"></i>калибровка, поиск веса</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>28.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">37,5 кг</td>
+      <td class="num">7</td>
+      <td class="num">46</td>
+      <td><span class="delta delta--up"><span class="delta__arrow" aria-hidden="true">▲</span>+1 повтор</span></td>
+    </tr><tr>
+      <td>19.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">37,5 кг</td>
+      <td class="num">6</td>
+      <td class="num">45</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">28 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set set--best"><span class="set__w">37,5 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">37,5 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">37,5 кг</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
+    </div><div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">19 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set set--best"><span class="set__w">37,5 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">37,5 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">37,5 кг</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+    </div>
+    </div>
+  </details><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Разводка от груди в кроссовере</div>
+        <div class="sum__sub">35 кг · Лучший подход — 7 · сведение рук на грудь</div>
+      </div>
+      <div class="sum__right">
+        
+        <span class="delta delta--first">Впервые</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 7</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:23%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      
+      
+      <div class="ex__note">Стоя по центру, руки под 90°</div>
+      
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>28.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">35 кг</td>
+      <td class="num">7</td>
+      <td class="num">43</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">28 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set"><span class="set__w">30 кг</span><span class="set__x">×</span><span class="set__r">11</span></span><span class="set set--best"><span class="set__w">35 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">35 кг</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
+    </div>
+    </div>
+  </details><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Бабочка</div>
+        <div class="sum__sub">72 кг · Лучший подход — 7 · сведение рук на грудь</div>
+      </div>
+      <div class="sum__right">
+        
+        <span class="delta delta--first">Впервые</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 7</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:23%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      
+      
+      <div class="ex__note">Сведение рук в тренажёре</div>
+      
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>19.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">72 кг</td>
+      <td class="num">7</td>
+      <td class="num">89</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">19 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set set--best"><span class="set__w">72 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">72 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">72 кг</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
+    </div>
+    </div>
+  </details><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Жим лёжа на наклонной скамье</div>
+        <div class="sum__sub">62,5 кг · Лучший подход — 6 · жим на грудь</div>
+      </div>
+      <div class="sum__right">
+        
+        <span class="delta delta--first">Впервые</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 6</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:0%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      
+      
+      <div class="ex__note">Вес общий, вместе с грифом</div>
+      
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>19.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">62,5 кг</td>
+      <td class="num">6</td>
+      <td class="num">75</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">19 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set set--best"><span class="set__w">62,5 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">62,5 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">62,5 кг</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+    </div>
+    </div>
+  </details><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Подъём гантели на бицепс сидя</div>
+        <div class="sum__sub">12,5 кг · Лучший подход — 6 · бицепс</div>
+      </div>
+      <div class="sum__right">
+        
+        <span class="delta delta--first">Впервые</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 6</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:0%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      
+      
+      <div class="ex__note">Вес одной гантели</div>
+      
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>19.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">12,5 кг</td>
+      <td class="num">6</td>
+      <td class="num">30</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">19 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set set--best"><span class="set__w">12,5 кг</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+    </div>
+    </div>
+  </details>
+    </div><div class="card">
+      <div class="card__label">День спина</div>
+      <details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Гиперэкстензия</div>
+        <div class="sum__sub">30 кг · Пора добавлять вес · поясница и разгибатели</div>
+      </div>
+      <div class="sum__right">
+        
+        <span class="delta delta--first">Впервые</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--ready">
+    <div class="ladder__top">
+      <span class="ladder__label">Пора добавлять вес</span>
+      <span class="ladder__hint">3 подхода по 9 — цель взята</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:100%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>3 из 2 подходов по 9</span>
+    </div>
+  </div>
+      
+      
+      <div class="ex__note">Дополнительный вес в руках</div>
+      
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>23.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">30 кг</td>
+      <td class="num">9</td>
+      <td class="num">39</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">23 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set set--best"><span class="set__w">30 кг</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set"><span class="set__w">30 кг</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set"><span class="set__w">30 кг</span><span class="set__x">×</span><span class="set__r">9</span></span></div>
+    </div>
+    </div>
+  </details><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Жим гантелей вверх</div>
+        <div class="sum__sub">15 кг · Лучший подход — 7 · плечи, жим</div>
+      </div>
+      <div class="sum__right">
+        
+        <span class="delta delta--first">Впервые</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 7</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:23%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      
+      
+      <div class="ex__note">Вес одной гантели</div>
+      
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>23.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">15 кг</td>
+      <td class="num">7</td>
+      <td class="num">37</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">23 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set"><span class="set__w">14 кг</span><span class="set__x">×</span><span class="set__r">10</span></span><span class="set"><span class="set__w">15 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set set--best"><span class="set__w">15 кг</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
+    </div>
+    </div>
+  </details><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Обратная бабочка</div>
+        <div class="sum__sub">52 кг · Лучший подход — 6 · плечи, задний пучок</div>
+      </div>
+      <div class="sum__right">
+        
+        <span class="delta delta--first">Впервые</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 6</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:0%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      
+      
+      <div class="ex__note">Разведение рук в стороны, задний пучок дельт</div>
+      
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>23.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">52 кг</td>
+      <td class="num">6</td>
+      <td class="num">62</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">23 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set set--best"><span class="set__w">52 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">52 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">52 кг</span><span class="set__x">×</span><span class="set__r">5</span></span></div>
+    </div>
+    </div>
+  </details><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Подтягивания</div>
+        <div class="sum__sub">14 повторов · Вес мал · тяга сверху</div>
+      </div>
+      <div class="sum__right">
+        
+        <span class="delta delta--first">Впервые</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--light">
+    <div class="ladder__top">
+      <span class="ladder__label">Вес мал</span>
+      <span class="ladder__hint">Пора вешать пояс с весом</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:100%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>3 из 2 подходов по 9</span>
+    </div>
+  </div>
+      
+      
+      <div class="ex__note">Работаешь собственным весом</div>
+      
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>23.07 <span class="pill pill--calib">кал.</span></td>
+      <td>основное</td>
+      <td class="num">—</td>
+      <td class="num">14</td>
+      <td class="num">116</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">23 июля · основное · калибровка</div>
+      <div class="sets"><span class="set set--best"><span class="set__w">свой вес</span><span class="set__x">×</span><span class="set__r">14</span></span><span class="set"><span class="set__w">свой вес</span><span class="set__x">×</span><span class="set__r">12</span></span><span class="set"><span class="set__w">свой вес</span><span class="set__x">×</span><span class="set__r">11</span></span></div>
+    </div>
+    </div>
+  </details><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Разведение гантелей в стороны</div>
+        <div class="sum__sub">15 кг · Девятка есть, нужна вторая · плечи, средний пучок</div>
+      </div>
+      <div class="sum__right">
+        
+        <span class="delta delta--first">Впервые</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--almost">
+    <div class="ladder__top">
+      <span class="ladder__label">Девятка есть, нужна вторая</span>
+      <span class="ladder__hint">Ещё один подход по 9 на 15 кг — и вес растёт</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:80%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>1 из 2 подходов по 9</span>
+    </div>
+  </div>
+      
+      
+      <div class="ex__note">Локти согнуты под 90°, работают плечи, спина не включается</div>
+      
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>23.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">15 кг</td>
+      <td class="num">10</td>
+      <td class="num">40</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">23 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set"><span class="set__w">14 кг</span><span class="set__x">×</span><span class="set__r">11</span></span><span class="set"><span class="set__w">15 кг</span><span class="set__x">×</span><span class="set__r">8</span></span><span class="set set--best"><span class="set__w">15 кг</span><span class="set__x">×</span><span class="set__r">10</span></span></div>
+    </div>
+    </div>
+  </details><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Трицепс с канатом</div>
+        <div class="sum__sub">50 кг · Лучший подход — 6 · трицепс</div>
+      </div>
+      <div class="sum__right">
+        
+        <span class="delta delta--first">Впервые</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 6</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:0%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      
+      
+      <div class="ex__note">Следить за техникой: плечи не уводить вперёд</div>
+      
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>23.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">50 кг</td>
+      <td class="num">6</td>
+      <td class="num">60</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">23 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set"><span class="set__w">45 кг</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set set--best"><span class="set__w">50 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">45 кг</span><span class="set__x">×</span><span class="set__r">7</span></span></div><div class="set-note"><span aria-hidden="true">✱</span><span>Техника сбилась — плечи уходили вперёд</span></div><div class="set-note"><span aria-hidden="true">✱</span><span>С правильной техникой</span></div>
+    </div>
+    </div>
+  </details><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Тяга вертикального блока</div>
+        <div class="sum__sub">70 кг · Лучший подход — 6 · тяга сверху</div>
+      </div>
+      <div class="sum__right">
+        
+        <span class="delta delta--first">Впервые</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 6</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:0%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      
+      
+      <div class="ex__note">Тяга сверху к себе</div>
+      
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>23.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">70 кг</td>
+      <td class="num">6</td>
+      <td class="num">84</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">23 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set"><span class="set__w">60 кг</span><span class="set__x">×</span><span class="set__r">11</span></span><span class="set"><span class="set__w">65 кг</span><span class="set__x">×</span><span class="set__r">8</span></span><span class="set set--best"><span class="set__w">70 кг</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+    </div>
+    </div>
+  </details><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Тяга горизонтального блока</div>
+        <div class="sum__sub">60 кг · Лучший подход — 6 · тяга к себе</div>
+      </div>
+      <div class="sum__right">
+        
+        <span class="delta delta--first">Впервые</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 6</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:0%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      
+      
+      <div class="ex__note">Сидя, тяга к себе по горизонтали</div>
+      
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>23.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">60 кг</td>
+      <td class="num">6</td>
+      <td class="num">72</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">23 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set set--best"><span class="set__w">60 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">55 кг</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
+    </div>
+    </div>
+  </details><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Тяга нижнего блока</div>
+        <div class="sum__sub">40 кг · Лучший подход — 6 · тяга к себе</div>
+      </div>
+      <div class="sum__right">
+        
+        <span class="delta delta--first">Впервые</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 6</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:0%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      
+      
+      <div class="ex__note">Тяга снизу</div>
+      
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>23.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">40 кг</td>
+      <td class="num">6</td>
+      <td class="num">48</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">23 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set"><span class="set__w">27,5 кг</span><span class="set__x">×</span><span class="set__r">12</span></span><span class="set"><span class="set__w">35 кг</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set set--best"><span class="set__w">40 кг</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+    </div>
+    </div>
+  </details>
+    </div><div class="card">
+      <div class="card__label">День ноги</div>
+      <details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Жим ногами</div>
+        <div class="sum__sub">390 кг · Лучший подход — 7 · ноги, базовое</div>
+      </div>
+      <div class="sum__right">
+        
+        <span class="delta delta--first">Впервые</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 7</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:23%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      
+      
+      <div class="ex__note">Базовое упражнение дня ног</div>
+      
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>25.07 <span class="pill pill--calib">кал.</span></td>
+      <td>основное</td>
+      <td class="num">390 кг</td>
+      <td class="num">7</td>
+      <td class="num">481</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">25 июля · основное · калибровка</div>
+      <div class="sets"><span class="set"><span class="set__w">270 кг</span><span class="set__x">×</span><span class="set__r">12</span></span><span class="set"><span class="set__w">310 кг</span><span class="set__x">×</span><span class="set__r">11</span></span><span class="set"><span class="set__w">350 кг</span><span class="set__x">×</span><span class="set__r">11</span></span><span class="set set--best"><span class="set__w">390 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set set--probe"><span class="set__w">410 кг</span><span class="set__x">×</span><span class="set__r">1</span></span></div><div class="set-note"><span aria-hidden="true">✱</span><span>Проба потолка — дальше сводило мышцы</span></div>
+    </div>
+    </div>
+  </details><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Икры в тренажёре сидя</div>
+        <div class="sum__sub">45 кг · Лучший подход — 7 · икры</div>
+      </div>
+      <div class="sum__right">
+        
+        <span class="delta delta--first">Впервые</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 7</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:23%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      
+      <div class="ex__note">Общая нагрузка 123,8 кг: вес тела 78,8 + накинуто 45. Растёт вес тела — растёт и нагрузка, поэтому силу считаем по накинутому.</div>
+      <div class="ex__note">Поднимаешь собственный вес плюс блины. Нагрузка = вес тела + накинутое</div>
+      
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>25.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">45 кг</td>
+      <td class="num">7</td>
+      <td class="num">153</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">25 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set"><span class="set__w">+30 кг</span><span class="set__x">×</span><span class="set__r">15</span></span><span class="set set--best"><span class="set__w">+45 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">+40 кг</span><span class="set__x">×</span><span class="set__r">9</span></span></div>
+    </div>
+    </div>
+  </details><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Разгибание ног сидя</div>
+        <div class="sum__sub">68 кг · Лучший подход — 7 · передняя поверхность бедра</div>
+      </div>
+      <div class="sum__right">
+        
+        <span class="delta delta--first">Впервые</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 7</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:23%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      
+      
+      <div class="ex__note">Передняя поверхность бедра</div>
+      
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>25.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">68 кг</td>
+      <td class="num">7</td>
+      <td class="num">84</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">25 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set"><span class="set__w">59 кг</span><span class="set__x">×</span><span class="set__r">11</span></span><span class="set"><span class="set__w">64 кг</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set set--best"><span class="set__w">68 кг</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
+    </div>
+    </div>
+  </details><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Сгибание ног лёжа</div>
+        <div class="sum__sub">64 кг · Лучший подход — 6 · задняя поверхность бедра</div>
+      </div>
+      <div class="sum__right">
+        
+        <span class="delta delta--first">Впервые</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--grow">
+    <div class="ladder__top">
+      <span class="ladder__label">Лучший подход — 6</span>
+      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+    </div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:0%"></div></div>
+    <div class="ladder__scale">
+      <span>6 повторений</span>
+      <span>0 из 2 подходов по 9</span>
+    </div>
+  </div>
+      
+      
+      <div class="ex__note">Задняя поверхность бедра</div>
+      
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>25.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">64 кг</td>
+      <td class="num">6</td>
+      <td class="num">77</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">25 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set"><span class="set__w">59 кг</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set set--best"><span class="set__w">64 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">64 кг</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+    </div>
+    </div>
+  </details><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Скручивания, верхняя часть</div>
+        <div class="sum__sub">40 повторов · 40 повторений · пресс</div>
+      </div>
+      <div class="sum__right">
+        
+        <span class="delta delta--first">Впервые</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--reps">
+      <div class="ladder__top">
+        <span class="ladder__label">40 повторений</span>
+        <span class="ladder__hint">Без дополнительного веса</span>
+      </div>
+    </div>
+      
+      
+      <div class="ex__note">На наклонной скамье, без веса</div>
+      
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>25.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">—</td>
+      <td class="num">40</td>
+      <td class="num">—</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">25 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set set--best"><span class="set__r">40</span><span class="set__x">повт.</span></span><span class="set"><span class="set__r">40</span><span class="set__x">повт.</span></span><span class="set"><span class="set__r">40</span><span class="set__x">повт.</span></span></div>
+    </div>
+    </div>
+  </details><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Скручивания, нижняя часть</div>
+        <div class="sum__sub">40 повторов · 40 повторений · пресс</div>
+      </div>
+      <div class="sum__right">
+        
+        <span class="delta delta--first">Впервые</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body">
+      <div class="ladder ladder--reps">
+      <div class="ladder__top">
+        <span class="ladder__label">40 повторений</span>
+        <span class="ladder__hint">Без дополнительного веса</span>
+      </div>
+    </div>
+      
+      
+      <div class="ex__note">На наклонной скамье, без веса</div>
+      
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
+          <tbody><tr>
+      <td>25.07 <span class="pill pill--calib">кал.</span></td>
+      <td>добивка</td>
+      <td class="num">—</td>
+      <td class="num">40</td>
+      <td class="num">—</td>
+      <td><span class="delta delta--first">Впервые</span></td>
+    </tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
+      <div class="card__label">Все подходы</div>
+      <div style="margin-bottom:12px">
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">25 июля · добивка · калибровка</div>
+      <div class="sets"><span class="set set--best"><span class="set__r">40</span><span class="set__x">повт.</span></span><span class="set"><span class="set__r">40</span><span class="set__x">повт.</span></span><span class="set"><span class="set__r">30</span><span class="set__x">повт.</span></span></div>
+    </div>
+    </div>
+  </details>
+    </div>
+  </section>
+<section class="section" id="history">
+    <div class="section__head">
+      <h2 class="section__title">История</h2>
+      <p class="section__note">Свёрнуто по месяцам и неделям — открывается только то, что нужно. Свежая неделя раскрыта сразу.</p>
+    </div>
+    <details open>
+      <summary>
+        <div class="sum__main">
+          <div class="sum__title">Июль 2026</div>
+          <div class="sum__sub">4 тренировки · поднято 44 т</div>
+        </div>
+        <div class="sum__right"><span class="sum__chev" aria-hidden="true">⌄</span></div>
+      </summary>
+      <div class="details__body"><details open>
+        <summary>
+          <div class="sum__main">
+            <div class="sum__title">Неделя 27.07 — 02.08</div>
+            <div class="sum__sub">1 тренировка</div>
+          </div>
+          <div class="sum__right"><span class="sum__chev" aria-hidden="true">⌄</span></div>
+        </summary>
+        <div class="details__body"><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Грудь · 28 июля</div>
+        <div class="sum__sub">16 подходов · 6,4 т · 79,8 кг</div>
+      </div>
+      <div class="sum__right">
+        <span class="pill pill--calib">калибровка</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body"><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Жим лёжа</span>
+        <span class="pill pill--day">основное</span>
+      </div>
+      <div class="sets"><span class="set"><span class="set__w">77,5 кг</span><span class="set__x">×</span><span class="set__r">5</span></span><span class="set"><span class="set__w">75 кг</span><span class="set__x">×</span><span class="set__r">8</span></span><span class="set set--best"><span class="set__w">77,5 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">77,5 кг</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Жим гантелями лёжа</span>
+        
+      </div>
+      <div class="sets"><span class="set set--best"><span class="set__w">28 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">28 кг</span><span class="set__x">×</span><span class="set__r">3</span></span><span class="set"><span class="set__w">26 кг</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Разводка от груди в кроссовере</span>
+        
+      </div>
+      <div class="sets"><span class="set"><span class="set__w">30 кг</span><span class="set__x">×</span><span class="set__r">11</span></span><span class="set set--best"><span class="set__w">35 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">35 кг</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Жим от груди сидя</span>
+        
+      </div>
+      <div class="sets"><span class="set set--best"><span class="set__w">95 кг</span><span class="set__x">×</span><span class="set__r">8</span></span><span class="set"><span class="set__w">95 кг</span><span class="set__x">×</span><span class="set__r">8</span></span><span class="set"><span class="set__w">95 кг</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Подъём штанги на бицепс стоя</span>
+        
+      </div>
+      <div class="sets"><span class="set set--best"><span class="set__w">37,5 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">37,5 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">37,5 кг</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
+    </div></div>
+  </details></div>
+      </details><details>
+        <summary>
+          <div class="sum__main">
+            <div class="sum__title">Неделя 20.07 — 26.07</div>
+            <div class="sum__sub">2 тренировки</div>
+          </div>
+          <div class="sum__right"><span class="sum__chev" aria-hidden="true">⌄</span></div>
+        </summary>
+        <div class="details__body"><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Ноги · 25 июля</div>
+        <div class="sum__sub">19 подходов · 20,2 т</div>
+      </div>
+      <div class="sum__right">
+        <span class="pill pill--calib">калибровка</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body"><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Жим ногами</span>
+        <span class="pill pill--day">основное</span>
+      </div>
+      <div class="sets"><span class="set"><span class="set__w">270 кг</span><span class="set__x">×</span><span class="set__r">12</span></span><span class="set"><span class="set__w">310 кг</span><span class="set__x">×</span><span class="set__r">11</span></span><span class="set"><span class="set__w">350 кг</span><span class="set__x">×</span><span class="set__r">11</span></span><span class="set set--best"><span class="set__w">390 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set set--probe"><span class="set__w">410 кг</span><span class="set__x">×</span><span class="set__r">1</span></span></div><div class="set-note"><span aria-hidden="true">✱</span><span>Проба потолка — дальше сводило мышцы</span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Разгибание ног сидя</span>
+        
+      </div>
+      <div class="sets"><span class="set"><span class="set__w">59 кг</span><span class="set__x">×</span><span class="set__r">11</span></span><span class="set"><span class="set__w">64 кг</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set set--best"><span class="set__w">68 кг</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Сгибание ног лёжа</span>
+        
+      </div>
+      <div class="sets"><span class="set"><span class="set__w">59 кг</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set set--best"><span class="set__w">64 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">64 кг</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Икры в тренажёре сидя</span>
+        
+      </div>
+      <div class="sets"><span class="set"><span class="set__w">+30 кг</span><span class="set__x">×</span><span class="set__r">15</span></span><span class="set set--best"><span class="set__w">+45 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">+40 кг</span><span class="set__x">×</span><span class="set__r">9</span></span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Скручивания, верхняя часть</span>
+        
+      </div>
+      <div class="sets"><span class="set set--best"><span class="set__r">40</span><span class="set__x">повт.</span></span><span class="set"><span class="set__r">40</span><span class="set__x">повт.</span></span><span class="set"><span class="set__r">40</span><span class="set__x">повт.</span></span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Скручивания, нижняя часть</span>
+        
+      </div>
+      <div class="sets"><span class="set set--best"><span class="set__r">40</span><span class="set__x">повт.</span></span><span class="set"><span class="set__r">40</span><span class="set__x">повт.</span></span><span class="set"><span class="set__r">30</span><span class="set__x">повт.</span></span></div>
+    </div></div>
+  </details><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Спина · 23 июля</div>
+        <div class="sum__sub">26 подходов · 10,4 т · 78,8 кг</div>
+      </div>
+      <div class="sum__right">
+        <span class="pill pill--calib">калибровка</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body"><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Подтягивания</span>
+        <span class="pill pill--day">основное</span>
+      </div>
+      <div class="sets"><span class="set set--best"><span class="set__w">свой вес</span><span class="set__x">×</span><span class="set__r">14</span></span><span class="set"><span class="set__w">свой вес</span><span class="set__x">×</span><span class="set__r">12</span></span><span class="set"><span class="set__w">свой вес</span><span class="set__x">×</span><span class="set__r">11</span></span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Гиперэкстензия</span>
+        
+      </div>
+      <div class="sets"><span class="set set--best"><span class="set__w">30 кг</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set"><span class="set__w">30 кг</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set"><span class="set__w">30 кг</span><span class="set__x">×</span><span class="set__r">9</span></span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Тяга вертикального блока</span>
+        
+      </div>
+      <div class="sets"><span class="set"><span class="set__w">60 кг</span><span class="set__x">×</span><span class="set__r">11</span></span><span class="set"><span class="set__w">65 кг</span><span class="set__x">×</span><span class="set__r">8</span></span><span class="set set--best"><span class="set__w">70 кг</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Трицепс с канатом</span>
+        
+      </div>
+      <div class="sets"><span class="set"><span class="set__w">45 кг</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set set--best"><span class="set__w">50 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">45 кг</span><span class="set__x">×</span><span class="set__r">7</span></span></div><div class="set-note"><span aria-hidden="true">✱</span><span>Техника сбилась — плечи уходили вперёд</span></div><div class="set-note"><span aria-hidden="true">✱</span><span>С правильной техникой</span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Тяга нижнего блока</span>
+        
+      </div>
+      <div class="sets"><span class="set"><span class="set__w">27,5 кг</span><span class="set__x">×</span><span class="set__r">12</span></span><span class="set"><span class="set__w">35 кг</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set set--best"><span class="set__w">40 кг</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Жим гантелей вверх</span>
+        
+      </div>
+      <div class="sets"><span class="set"><span class="set__w">14 кг</span><span class="set__x">×</span><span class="set__r">10</span></span><span class="set"><span class="set__w">15 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set set--best"><span class="set__w">15 кг</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Разведение гантелей в стороны</span>
+        
+      </div>
+      <div class="sets"><span class="set"><span class="set__w">14 кг</span><span class="set__x">×</span><span class="set__r">11</span></span><span class="set"><span class="set__w">15 кг</span><span class="set__x">×</span><span class="set__r">8</span></span><span class="set set--best"><span class="set__w">15 кг</span><span class="set__x">×</span><span class="set__r">10</span></span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Обратная бабочка</span>
+        
+      </div>
+      <div class="sets"><span class="set set--best"><span class="set__w">52 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">52 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">52 кг</span><span class="set__x">×</span><span class="set__r">5</span></span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Тяга горизонтального блока</span>
+        
+      </div>
+      <div class="sets"><span class="set set--best"><span class="set__w">60 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">55 кг</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
+    </div></div>
+  </details></div>
+      </details><details>
+        <summary>
+          <div class="sum__main">
+            <div class="sum__title">Неделя 13.07 — 19.07</div>
+            <div class="sum__sub">1 тренировка</div>
+          </div>
+          <div class="sum__right"><span class="sum__chev" aria-hidden="true">⌄</span></div>
+        </summary>
+        <div class="details__body"><details>
+    <summary>
+      <div class="sum__main">
+        <div class="sum__title">Грудь · 19 июля</div>
+        <div class="sum__sub">17 подходов · 7 т</div>
+      </div>
+      <div class="sum__right">
+        <span class="pill pill--calib">калибровка</span>
+        <span class="sum__chev" aria-hidden="true">⌄</span>
+      </div>
+    </summary>
+    <div class="details__body"><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Жим гантелями лёжа</span>
+        <span class="pill pill--day">основное</span>
+      </div>
+      <div class="sets"><span class="set set--best"><span class="set__w">28 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">28 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">28 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">28 кг</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Жим лёжа на наклонной скамье</span>
+        
+      </div>
+      <div class="sets"><span class="set set--best"><span class="set__w">62,5 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">62,5 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">62,5 кг</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Бабочка</span>
+        
+      </div>
+      <div class="sets"><span class="set set--best"><span class="set__w">72 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">72 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">72 кг</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Жим от груди сидя</span>
+        
+      </div>
+      <div class="sets"><span class="set set--best"><span class="set__w">95 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">95 кг</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">95 кг</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Подъём штанги на бицепс стоя</span>
+        
+      </div>
+      <div class="sets"><span class="set set--best"><span class="set__w">37,5 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">37,5 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">37,5 кг</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+    </div><div style="margin-bottom:13px">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <span style="font-size:14.5px;font-weight:700">Подъём гантели на бицепс сидя</span>
+        
+      </div>
+      <div class="sets"><span class="set set--best"><span class="set__w">12,5 кг</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+    </div></div>
+  </details></div>
+      </details></div>
+    </details>
+  </section>
+<section class="section" id="progress">
+    <div class="section__head">
+      <h2 class="section__title">Итоги</h2>
+      <p class="section__note">Общая картина: сколько сделано, что выросло, где лесенка уже требует прибавки. Чем дольше ведётся журнал, тем ценнее этот раздел.</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat stat--accent"><span class="stat__value">4</span><div class="stat__label">тренировки всего</div></div>
+      <div class="stat"><span class="stat__value">44<span class="stat__unit">т</span></span><div class="stat__label">поднято за всё время</div></div>
+      <div class="stat"><span class="stat__value">78</span><div class="stat__label">рабочих подходов</div></div>
+    </div>
+
+    <div class="hint hint--warm">
+      <strong>Лесенка сработала.</strong> Упражнения, где ты дошёл до девяти повторений и пора добавлять вес:
+      Подтягивания, Гиперэкстензия.
+    </div>
+
+    <div class="card">
+      <div class="card__label">Объём работы по тренировкам</div>
+      <h3 class="card__title">Сколько поднято за занятие</h3>
+      <p style="margin:4px 0 0;font-size:13.5px;color:var(--ink-2)">Суммарно вес × повторы по всем подходам. Приглушённые столбики — калибровочные тренировки, там объём случайный, потому что шёл поиск весов.</p>
+      <div class="chart">
+    <svg viewBox="0 0 640 170" preserveAspectRatio="none" class="chart__svg" role="img"
+         aria-label="Объём работы по тренировкам в тоннах">
+      
+    <line class="ch-grid" x1="46" y1="140.0" x2="622" y2="140.0"/>
+    <text class="ch-axis" x="36" y="144.0" text-anchor="end">0</text>
+    <line class="ch-grid" x1="46" y1="99.3" x2="622" y2="99.3"/>
+    <text class="ch-axis" x="36" y="103.3" text-anchor="end">10</text>
+    <line class="ch-grid" x1="46" y1="58.7" x2="622" y2="58.7"/>
+    <text class="ch-axis" x="36" y="62.7" text-anchor="end">20</text>
+    <line class="ch-grid" x1="46" y1="18.0" x2="622" y2="18.0"/>
+    <text class="ch-axis" x="36" y="22.0" text-anchor="end">30</text><rect class="ch-bar ch-bar--muted" x="95.0" y="111.5" width="46.0" height="28.5" rx="4">
+      <title>19.07 — 7 т</title></rect><rect class="ch-bar ch-bar--muted" x="239.0" y="97.7" width="46.0" height="42.3" rx="4">
+      <title>23.07 — 10,4 т</title></rect><rect class="ch-bar ch-bar--muted" x="383.0" y="57.9" width="46.0" height="82.1" rx="4">
+      <title>25.07 — 20,2 т</title></rect><rect class="ch-bar ch-bar--muted" x="527.0" y="114.0" width="46.0" height="26.0" rx="4">
+      <title>28.07 — 6,4 т</title></rect><text class="ch-axis" x="118.0" y="162" text-anchor="middle">19.07</text><text class="ch-axis" x="262.0" y="162" text-anchor="middle">23.07</text><text class="ch-axis" x="406.0" y="162" text-anchor="middle">25.07</text><text class="ch-axis" x="550.0" y="162" text-anchor="middle">28.07</text>
+    </svg>
+  </div>
+    </div>
+
+    <div class="card">
+      <div class="card__label">Июль 2026</div>
+      <div class="stats stats--4" style="margin-top:10px">
+        <div class="stat"><span class="stat__value">4</span><div class="stat__label">тренировки</div></div>
+        <div class="stat"><span class="stat__value">44<span class="stat__unit">т</span></span><div class="stat__label">поднято суммарно</div></div>
+        <div class="stat"><span class="stat__value">78</span><div class="stat__label">рабочих подходов</div></div>
+        <div class="stat stat--accent"><span class="stat__value">+1<span class="stat__unit">кг</span></span><div class="stat__label">вес тела</div></div>
+      </div>
+      <p style="font-size:13.5px;color:var(--ink-3);margin:10px 0 0">Внутри месяца рабочие веса не менялись — это нормально для месяца, начатого с калибровки.</p>
+    </div>
+
+    <div class="hint">
+      Пока весь журнал — это первые четыре тренировки, на которых ты искал рабочие веса. Настоящая картина прогресса начнётся со следующего месяца, когда появятся повторные подходы с одинаковыми весами и лесенка заработает в полную силу.
+    </div>
+  </section>
+<section class="section" id="body">
+    <div class="section__head">
+      <h2 class="section__title">Тело</h2>
+      <p class="section__note">Вес и обхваты рядом с силовыми. Без этого не отличить рост силы от роста массы.</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat stat--accent"><span class="stat__value">79,8<span class="stat__unit">кг</span></span><div class="stat__label">текущий вес, 28.07</div></div>
+      <div class="stat"><span class="stat__value">+1<span class="stat__unit">кг</span></span><div class="stat__label">с начала журнала</div></div>
+      <div class="stat"><span class="stat__value">183<span class="stat__unit">см</span></span><div class="stat__label">рост</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card__label">Вес тела</div>
+      <div class="chart">
+    <svg viewBox="0 0 640 190" preserveAspectRatio="none" class="chart__svg" role="img"
+         aria-label="Изменение веса тела">
+      <defs>
+        <linearGradient id="c5h1np1-fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/>
+          <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      
+    <line class="ch-grid" x1="46" y1="160.0" x2="622" y2="160.0"/>
+    <text class="ch-axis" x="36" y="164.0" text-anchor="end">78,5</text>
+    <line class="ch-grid" x1="46" y1="112.7" x2="622" y2="112.7"/>
+    <text class="ch-axis" x="36" y="116.7" text-anchor="end">79</text>
+    <line class="ch-grid" x1="46" y1="65.3" x2="622" y2="65.3"/>
+    <text class="ch-axis" x="36" y="69.3" text-anchor="end">79,5</text>
+    <line class="ch-grid" x1="46" y1="18.0" x2="622" y2="18.0"/>
+    <text class="ch-axis" x="36" y="22.0" text-anchor="end">80</text>
+      <path class="ch-area" d="M46.0,131.6 L622.0,36.9 L622.0,160.0 L46.0,160.0 Z" fill="url(#c5h1np1-fill)"/>
+      <path class="ch-line" d="M46.0,131.6 L622.0,36.9"/>
+      <circle class="ch-dot" cx="46.0" cy="131.6" r="4.5"><title>23.07 — 78,8 кг</title></circle><circle class="ch-dot" cx="622.0" cy="36.9" r="4.5"><title>28.07 — 79,8 кг</title></circle>
+      <text class="ch-axis" x="46.0" y="182" text-anchor="start">23.07</text><text class="ch-axis" x="622.0" y="182" text-anchor="end">28.07</text>
+      <text class="ch-value" x="622.0" y="24.9" text-anchor="end">79,8 кг</text>
+    </svg>
+  </div>
+    </div>
+
+    <div class="card">
+      <div class="card__label">Обхваты</div>
+      <h3 class="card__title">Замеры раз в месяц</h3>
+      <div class="empty">Замеров пока нет. Сними сантиметром грудь, руку в напряжении, талию и бедро — и пришли мне. Дальше раз в месяц: это единственный способ увидеть, куда именно идёт набор.</div>
+    </div>
+  </section>
+
+<footer class="foot">
+  <p><strong>Как это обновляется.</strong> Записал тренировку в разделе «Сегодня», нажал «Скопировать тренировку», отправил текст мне в чат — я вношу её в файл и пересчитываю всю статистику. Страница обновится сама, когда телефон в следующий раз поймает сеть.</p>
+  <p>Регресс считается только по главному упражнению дня и только против такой же роли: результат добивки после базового с результатом свежего подхода не сравнивается. Пробы максимума и калибровочные тренировки помечены отдельно и статистику не занижают.</p>
+  <p>Сборка 29 июля · версия afdab969</p>
+</footer>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>window.__PROGRAM__={"day":"back","dayTitle":"спина","planDate":"2026-07-23","bodyweight":79.8,"items":[{"id":"pull-ups","name":"Подтягивания","role":"main","kind":"bodyweight","weight":"","sets":3,"stepWeight":2.5,"targetText":"Свой вес, пора утяжеляться"},{"id":"hyperextension","name":"Гиперэкстензия","role":"accessory","kind":"machine","weight":30,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 30 кг"},{"id":"lat-pulldown","name":"Тяга вертикального блока","role":"accessory","kind":"machine","weight":70,"sets":3,"stepWeight":2.5,"targetText":"70 кг"},{"id":"triceps-rope","name":"Трицепс с канатом","role":"accessory","kind":"machine","weight":50,"sets":3,"stepWeight":2.5,"targetText":"50 кг"},{"id":"low-row","name":"Тяга нижнего блока","role":"accessory","kind":"machine","weight":40,"sets":3,"stepWeight":2.5,"targetText":"40 кг"},{"id":"db-shoulder-press","name":"Жим гантелей вверх","role":"accessory","kind":"dumbbell","weight":15,"sets":3,"stepWeight":1,"targetText":"15 кг"},{"id":"db-lateral-raise","name":"Разведение гантелей в стороны","role":"accessory","kind":"dumbbell","weight":15,"sets":3,"stepWeight":1,"targetText":"15 кг"},{"id":"reverse-pec-deck","name":"Обратная бабочка","role":"accessory","kind":"machine","weight":52,"sets":3,"stepWeight":2.5,"targetText":"52 кг"},{"id":"seated-row","name":"Тяга горизонтального блока","role":"accessory","kind":"machine","weight":60,"sets":2,"stepWeight":2.5,"targetText":"60 кг"}]};</script>
+<script>
+(function () {
+  'use strict';
+  document.body.classList.add('js');
+
+  var PROGRAM = window.__PROGRAM__ || null;
+  var STORE = 'nk-training-draft-v1';
+
+  /* ───────────────────────── разделы ───────────────────────── */
+
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('[data-tab]'));
+  var sections = Array.prototype.slice.call(document.querySelectorAll('.section'));
+
+  function show(id, push) {
+    var found = false;
+    sections.forEach(function (s) {
+      var on = s.id === id;
+      s.classList.toggle('is-active', on);
+      if (on) found = true;
+    });
+    if (!found) return false;
+    tabs.forEach(function (t) {
+      var on = t.getAttribute('data-tab') === id;
+      t.classList.toggle('is-active', on);
+      if (on && t.scrollIntoView) {
+        try { t.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' }); } catch (e) {}
+      }
+    });
+    if (push) history.replaceState(null, '', '#' + id);
+    window.scrollTo(0, 0);
+    return true;
+  }
+
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function (e) {
+      e.preventDefault();
+      show(t.getAttribute('data-tab'), true);
+    });
+  });
+
+  var start = (location.hash || '').replace('#', '');
+  if (!start || !show(start, false)) show(sections[0].id, false);
+
+  /* ───────────────────────── ввод тренировки ───────────────────────── */
+
+  var live = document.getElementById('live-form');
+  if (live && PROGRAM) {
+    var draft = load();
+
+    function load() {
+      try {
+        var raw = localStorage.getItem(STORE);
+        if (!raw) return blank();
+        var d = JSON.parse(raw);
+        if (d && d.day === PROGRAM.day && d.planDate === PROGRAM.planDate) return d;
+        return blank();
+      } catch (e) { return blank(); }
+    }
+
+    function blank() {
+      return {
+        day: PROGRAM.day,
+        planDate: PROGRAM.planDate,
+        date: today(),
+        bodyweight: PROGRAM.bodyweight || '',
+        notFirst: false,
+        items: PROGRAM.items.map(function (it) {
+          return {
+            id: it.id,
+            sets: Array.apply(null, Array(it.sets)).map(function () {
+              return { w: it.weight, r: '', done: false };
+            })
+          };
+        })
+      };
+    }
+
+    function today() {
+      var d = new Date();
+      return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+    }
+    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+    function save() {
+      try { localStorage.setItem(STORE, JSON.stringify(draft)); } catch (e) {}
+    }
+
+    function itemState(id) {
+      for (var i = 0; i < draft.items.length; i++) if (draft.items[i].id === id) return draft.items[i];
+      return null;
+    }
+
+    function render() {
+      var html = '';
+
+      html += '<div class="card card--flat">';
+      html += '<div class="card__label">Дата и вес</div>';
+      html += '<div class="live-field"><span class="live-field__cap">Дата тренировки</span>';
+      html += '<input class="stepper__field live-date" type="date" id="live-date" value="' + esc(draft.date) + '"></div>';
+      html += '<div class="live-field"><span class="live-field__cap">Вес тела, кг</span>';
+      html += stepper('bw', null, null, draft.bodyweight, 0.1) + '</div>';
+      if (PROGRAM.day === 'legs') {
+        html += '<label class="live-check">';
+        html += '<input type="checkbox" id="live-notfirst"' + (draft.notFirst ? ' checked' : '') + '>';
+        html += '<span>Жим ногами делал не первым — тренажёр был занят</span>';
+        html += '</label>';
+      }
+      html += '</div>';
+
+      PROGRAM.items.forEach(function (it) {
+        var st = itemState(it.id);
+        if (!st) return;
+        var doneCount = st.sets.filter(function (s) { return s.done; }).length;
+
+        html += '<div class="live-ex">';
+        html += '<div class="live-ex__head">';
+        html += '<div style="min-width:0">';
+        html += '<span class="ex__role' + (it.role === 'main' ? '' : ' ex__role--acc') + '">' + (it.role === 'main' ? 'Основное' : 'Добивка') + '</span>';
+        html += '<h3 class="ex__name">' + esc(it.name) + '</h3>';
+        html += '<div class="live-target">Цель: ' + esc(it.targetText) + '</div>';
+        html += '</div>';
+        html += '<span class="pill">' + doneCount + ' / ' + st.sets.length + '</span>';
+        html += '</div>';
+        html += '<div class="live-ex__body">';
+
+        var noWeight = (it.kind === 'bodyweight' || it.kind === 'reps');
+        var wide = noWeight ? ' live-set--wide' : '';
+        var weightCap = it.kind === 'bodyweight-plus' ? 'сверху, кг' : 'вес, кг';
+
+        html += '<div class="live-head' + (noWeight ? ' live-head--wide' : '') + '">';
+        html += '<span></span>';
+        if (!noWeight) html += '<span>' + weightCap + '</span>';
+        html += '<span>повторов</span><span></span></div>';
+
+        st.sets.forEach(function (s, i) {
+          html += '<div class="live-set' + wide + '">';
+          html += '<span class="live-set__n">' + (i + 1) + '</span>';
+          if (!noWeight) html += stepper('w', it.id, i, s.w, it.stepWeight);
+          html += stepper('r', it.id, i, s.r, 1);
+          html += '<button type="button" class="live-done' + (s.done ? ' is-done' : '') + '" data-done="' + it.id + '|' + i + '" aria-label="Отметить подход выполненным">✓</button>';
+          html += '</div>';
+        });
+
+        html += '<div class="btn-row" style="margin-top:8px">';
+        html += '<button type="button" class="btn btn--ghost" data-addset="' + it.id + '" style="padding:8px 14px;font-size:13.5px">+ подход</button>';
+        html += '</div>';
+        html += '</div></div>';
+      });
+
+      html += '<div class="btn-row">';
+      html += '<button type="button" class="btn btn--wide" id="live-copy">Скопировать тренировку</button>';
+      html += '<button type="button" class="btn btn--ghost btn--wide" id="live-reset">Очистить и начать заново</button>';
+      html += '</div>';
+      html += '<textarea class="copybox" id="live-out" readonly aria-label="Текст тренировки для отправки"></textarea>';
+
+      live.innerHTML = html;
+      bind();
+    }
+
+    function stepper(kind, id, idx, value, step) {
+      var key = id === null ? kind : kind + '|' + id + '|' + idx;
+      var v = (value === null || value === undefined) ? '' : value;
+      return '<div class="stepper">' +
+        '<button type="button" class="stepper__btn stepper__btn--minus" data-step="' + key + '|-1" aria-label="Меньше">−</button>' +
+        '<input class="stepper__field" type="number" inputmode="decimal" step="' + step + '" data-field="' + key + '" value="' + esc(String(v)) + '">' +
+        '<button type="button" class="stepper__btn stepper__btn--plus" data-step="' + key + '|1" aria-label="Больше">+</button>' +
+        '</div>';
+    }
+
+    function setValue(key, value) {
+      var p = key.split('|');
+      if (p[0] === 'bw') { draft.bodyweight = value; return; }
+      var st = itemState(p[1]);
+      if (!st) return;
+      var s = st.sets[+p[2]];
+      if (!s) return;
+      if (p[0] === 'w') s.w = value; else s.r = value;
+    }
+
+    function getValue(key) {
+      var p = key.split('|');
+      if (p[0] === 'bw') return draft.bodyweight;
+      var st = itemState(p[1]);
+      if (!st) return '';
+      var s = st.sets[+p[2]];
+      if (!s) return '';
+      return p[0] === 'w' ? s.w : s.r;
+    }
+
+    function stepOf(key) {
+      var p = key.split('|');
+      if (p[0] === 'r') return 1;
+      if (p[0] === 'bw') return 0.1;
+      for (var i = 0; i < PROGRAM.items.length; i++) if (PROGRAM.items[i].id === p[1]) return PROGRAM.items[i].stepWeight;
+      return 2.5;
+    }
+
+    function bind() {
+      live.querySelectorAll('[data-field]').forEach(function (el) {
+        el.addEventListener('input', function () {
+          setValue(el.getAttribute('data-field'), el.value === '' ? '' : +el.value);
+          save();
+        });
+      });
+
+      live.querySelectorAll('[data-step]').forEach(function (el) {
+        el.addEventListener('click', function () {
+          var raw = el.getAttribute('data-step');
+          var dir = +raw.slice(raw.lastIndexOf('|') + 1);
+          var key = raw.slice(0, raw.lastIndexOf('|'));
+          var step = stepOf(key);
+          var cur = getValue(key);
+          var next = Math.round(((cur === '' ? 0 : +cur) + dir * step) * 100) / 100;
+          if (next < 0) next = 0;
+          setValue(key, next);
+          var field = live.querySelector('[data-field="' + key + '"]');
+          if (field) field.value = next;
+          save();
+        });
+      });
+
+      live.querySelectorAll('[data-done]').forEach(function (el) {
+        el.addEventListener('click', function () {
+          var p = el.getAttribute('data-done').split('|');
+          var st = itemState(p[0]);
+          if (!st) return;
+          var s = st.sets[+p[1]];
+          s.done = !s.done;
+          save();
+          render();
+        });
+      });
+
+      live.querySelectorAll('[data-addset]').forEach(function (el) {
+        el.addEventListener('click', function () {
+          var st = itemState(el.getAttribute('data-addset'));
+          if (!st) return;
+          var last = st.sets[st.sets.length - 1];
+          st.sets.push({ w: last ? last.w : '', r: '', done: false });
+          save();
+          render();
+        });
+      });
+
+      var dateEl = document.getElementById('live-date');
+      if (dateEl) dateEl.addEventListener('change', function () { draft.date = dateEl.value; save(); });
+
+      var nf = document.getElementById('live-notfirst');
+      if (nf) nf.addEventListener('change', function () { draft.notFirst = nf.checked; save(); });
+
+      var copy = document.getElementById('live-copy');
+      if (copy) copy.addEventListener('click', function () {
+        var text = buildText();
+        var out = document.getElementById('live-out');
+        out.value = text;
+        out.style.color = 'var(--ink)';
+        try {
+          out.removeAttribute('readonly');
+          out.select();
+          out.setSelectionRange(0, 99999);
+          var ok = document.execCommand && document.execCommand('copy');
+          out.setAttribute('readonly', 'readonly');
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function () { toast('Скопировано — отправляй в чат'); }, function () {
+              toast(ok ? 'Скопировано — отправляй в чат' : 'Текст ниже — выдели и скопируй');
+            });
+          } else {
+            toast(ok ? 'Скопировано — отправляй в чат' : 'Текст ниже — выдели и скопируй');
+          }
+        } catch (e) {
+          toast('Текст ниже — выдели и скопируй');
+        }
+      });
+
+      var reset = document.getElementById('live-reset');
+      if (reset) reset.addEventListener('click', function () {
+        if (!confirm('Очистить введённое и начать тренировку заново?')) return;
+        draft = blank();
+        save();
+        render();
+      });
+    }
+
+    function buildText() {
+      var lines = [];
+      lines.push('Тренировка: ' + PROGRAM.dayTitle + ', ' + ruDate(draft.date));
+      if (draft.bodyweight) lines.push('Вес тела: ' + fmt(draft.bodyweight) + ' кг');
+      if (draft.notFirst) lines.push('Пометка: жим ногами делал не первым');
+      lines.push('');
+
+      PROGRAM.items.forEach(function (it) {
+        var st = itemState(it.id);
+        if (!st) return;
+        var parts = [];
+        st.sets.forEach(function (s) {
+          if (s.r === '' || s.r === null) return;
+          if (it.kind === 'bodyweight' || it.kind === 'reps') parts.push(String(s.r));
+          else if (it.kind === 'bodyweight-plus') parts.push('+' + fmt(s.w) + ' x ' + s.r);
+          else parts.push(fmt(s.w) + ' x ' + s.r);
+        });
+        if (!parts.length) return;
+        lines.push('— ' + it.name + (it.role === 'main' ? ' [основное]' : '') + ': ' + parts.join(', '));
+      });
+
+      // Названия приходят с неразрывными пробелами — в тексте для чата
+      // они не нужны, там перенос строки не важен.
+      return lines.join('\n').replace(/\u00A0/g, ' ');
+    }
+
+    function fmt(n) {
+      if (n === '' || n === null || n === undefined) return '';
+      return String(Math.round(+n * 100) / 100);
+    }
+
+    function ruDate(iso) {
+      var p = String(iso).split('-');
+      return p.length === 3 ? p[2] + '.' + p[1] + '.' + p[0] : iso;
+    }
+
+    function esc(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    render();
+  }
+
+  /* ───────────────────────── всплывашка ───────────────────────── */
+
+  var toastEl = document.getElementById('toast');
+  var toastTimer = null;
+  function toast(msg) {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add('is-on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('is-on'); }, 2600);
+  }
+
+  /* ───────────────────────── офлайн ───────────────────────── */
+
+  if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function () {});
+    });
+  }
+})();
+</script>
+</body>
+</html>
