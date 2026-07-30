@@ -38,7 +38,7 @@
   --ink-3:       #5F5F5F;
 
   --accent:      #F8B815;
-  --accent-ink:  #313131;
+  --accent-ink:  #0E0E0E;
   --accent-soft: rgba(248, 184, 21, 0.12);
   --accent-line: rgba(248, 184, 21, 0.34);
 
@@ -47,7 +47,10 @@
 
   --font-display: 'Manrope', system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-body:    'Onest', system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-num:     Helvetica, Arial, system-ui, sans-serif;
+  /* Служебные цифры тоже на Manrope. В бренд-буке для этой роли значится
+     Helvetica (§3.1 Numeric), но в живых макетах агентства её нет, и Никите
+     она не нравится — в дневнике роль ведёт фирменный шрифт. */
+  --font-num:     var(--font-display);
 
   --r-s:  10px;
   --r-m:  14px;
@@ -80,6 +83,13 @@ html {
    прилипание шапки — она уезжает вместе со страницей */
 html, body { overflow-x: clip; }
 
+/* Двойной тап больше не приближает страницу. В зале галочки сыпятся подряд,
+   и айфон принимал два быстрых тапа за жест зума — приходилось каждый раз
+   отдалять обратно. Щипок двумя пальцами при этом работает как обычно:
+   manipulation отключает только двойной тап, не масштабирование. */
+html, body { touch-action: manipulation; }
+button, a, summary, label, input, .live-set { touch-action: manipulation; }
+
 body {
   margin: 0;
   padding: 0 0 calc(96px + var(--safe-bottom));
@@ -96,6 +106,10 @@ body {
 }
 
 ::selection { background: var(--accent); color: var(--accent-ink); }
+
+/* Полужирный внутри текста — Onest 500. Браузерный «bolder» просит 700,
+   которого во вшитом наборе нет, и подделывает его сам: буквы плывут. */
+strong, b { font-weight: 500; }
 
 .wrap {
   max-width: 720px;
@@ -161,7 +175,7 @@ body {
 }
 
 .updated {
-  font-family: var(--font-num);
+  font-family: var(--font-body);
   font-size: 12px; color: var(--ink-3);
   white-space: nowrap; text-align: right; line-height: 1.3;
 }
@@ -193,6 +207,7 @@ body {
 
 .tab {
   flex: none;
+  font-family: var(--font-display);
   min-height: var(--tap);
   padding: 8px 14px;
   border-radius: 999px;
@@ -273,13 +288,14 @@ body.js .section.is-active { display: block; }
   min-width: 0;
 }
 .stat__value {
+  font-family: var(--font-display);
   font-size: 22px;
   font-weight: 600;
   letter-spacing: -0.03em;
   line-height: 1.1;
   display: block;
 }
-.stat__unit { font-size: 13px; font-weight: 600; color: var(--ink-2); margin-left: 3px; letter-spacing: 0; }
+.stat__unit { font-family: var(--font-display); font-size: 13px; font-weight: 600; color: var(--ink-2); margin-left: 3px; letter-spacing: 0; }
 .stat__label { font-size: 12px; color: var(--ink-2); margin-top: 4px; line-height: 1.3; }
 .stat--accent .stat__value { color: var(--accent); }
 
@@ -430,9 +446,9 @@ body.js .section.is-active { display: block; }
   font-size: 13.5px;
   font-variant-numeric: tabular-nums;
 }
-.set__w { font-weight: 500; }
-.set__x { color: var(--ink-3); font-size: 12px; }
-.set__r { font-weight: 600; color: var(--ink); }
+.set__w { font-family: var(--font-display); font-weight: 600; color: var(--ink-2); }
+.set__x { color: var(--ink-2); font-size: 12px; }
+.set__r { font-family: var(--font-display); font-weight: 600; color: var(--ink); }
 .set--probe { border-style: dashed; opacity: .72; }
 .set--probe .set__r { color: var(--ink-2); }
 /* Подход с нарушенной техникой виден, но в зачёт цели не идёт — как и проба
@@ -502,11 +518,11 @@ details[open] > summary .sum__chev { transform: rotate(180deg); }
 .chart__solo-note { display: block; font-size: 12.5px; color: var(--ink-2); margin-top: 4px; }
 
 .ch-grid { stroke: var(--grid); stroke-width: 1; vector-effect: non-scaling-stroke; }
-.ch-axis { fill: var(--ink-3); font-size: 11px; font-family: Helvetica, Arial, sans-serif; font-variant-numeric: tabular-nums; }
+.ch-axis { fill: var(--ink-2); font-size: 11px; font-family: var(--font-body); font-variant-numeric: tabular-nums; }
 .ch-line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
 .ch-dot { fill: var(--surface-1); stroke: var(--accent); stroke-width: 2; vector-effect: non-scaling-stroke; }
 .ch-dot--calib { stroke: var(--ink-3); stroke-dasharray: 2 2; }
-.ch-value { fill: var(--ink); font-size: 13px; font-weight: 600; font-family: Helvetica, Arial, sans-serif; }
+.ch-value { fill: var(--ink); font-size: 13px; font-weight: 600; font-family: var(--font-display); }
 .ch-bar { fill: var(--accent); }
 .ch-bar--muted { fill: var(--surface-3); }
 
@@ -554,7 +570,7 @@ details[open] > summary .sum__chev { transform: rotate(180deg); }
 table { border-collapse: collapse; width: 100%; min-width: 420px; font-size: 13.5px; }
 th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line-soft); font-variant-numeric: tabular-nums; }
 th { font-family: var(--font-display); font-size: 11.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2); font-weight: 600; }
-td.num { font-family: var(--font-num); }
+td.num { font-family: var(--font-body); font-variant-numeric: tabular-nums; }
 td.num, th.num { text-align: right; }
 tr:last-child td { border-bottom: 0; }
 
@@ -631,7 +647,7 @@ tr:last-child td { border-bottom: 0; }
 .live-set--wide { grid-template-columns: 16px 1fr 40px; }
 .live-set--single { grid-template-columns: 1fr; }
 
-.live-set__n { font-family: var(--font-num); font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.live-set__n { font-family: var(--font-body); font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
 
 .live-head {
   display: grid;
@@ -642,7 +658,7 @@ tr:last-child td { border-bottom: 0; }
   font-weight: 600;
   letter-spacing: .06em;
   text-transform: uppercase;
-  color: var(--ink-3);
+  color: var(--ink-2);
   padding-bottom: 5px;
 }
 .live-head--wide { grid-template-columns: 16px 1fr 40px; }
@@ -688,7 +704,7 @@ tr:last-child td { border-bottom: 0; }
   border-left: 0; border-right: 0;
   background: var(--surface-1);
   color: var(--ink);
-  font-family: var(--font-body);
+  font-family: var(--font-display);
   font-size: 16px;
   font-weight: 600;
   text-align: center;
@@ -852,7 +868,7 @@ tr:last-child td { border-bottom: 0; }
 <header class="topbar">
   <div class="topbar__head">
     <div class="brand">
-      <span class="brand__mark"><img class="brand__ava" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAQCAwMDAgQDAwMEBAQEBQkGBQUFBQsICAYJDQsNDQ0LDAwOEBQRDg8TDwwMEhgSExUWFxcXDhEZGxkWGhQWFxb/2wBDAQQEBAUFBQoGBgoWDwwPFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhb/wAARCAB4AHgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD7L+IfibTvBXh5Iz+8up/3dtDnl2P9K+ev2r/BSeLPA8OpypnWtOjMyP6qeWX6V6B8UL+08SfEa1XKtBZSfK3XO05z+dXPiVb2dxZ2cEoEgvmETKD2PXOKCjyf/gn744utXmbwNqc8YstPjaeGORvmb5sbfoCa9m+Oq6BHbR6kIVZo8xL5I+9+VfEf7TWk3fwg+KceueHri4srK7OY3icjy2PUcdjXtWn/ABTgv/gvpuqQzpdGSEKyyH5vMxyT+NAFrw5qkcd1c291EkdkGAkdslkTOSAa2/jp8dNFsvDtnoPgNkaZAPNuo12pEoGNo9TXz7rniS/uFle5udkcpyUQ4Brg/FHiDZGRBIEx/EelAG94k13deTXl7O01xMxZiTliTXMahfS3TZckKegFcnda9IZv3jq7H+IGn2OtI8mx26+nQ/4UCubrSELimBuDVOG8Wdwmee/4Vc255oEM5LVJj/8AXSFQORT15XmgCzos5gv43U45xXoWh3MVzF+7kUsvDAHpXmqghgemK2NPufsiJqCSSLsJEzKfuDryPTrQNHqOnTsFC0Vyml+JQJv38YMZ6SxHP5j/AAooGfTem2B1O7up0YoI12q2ep6nFHibXfskNnHBO0ktuOS3IFanxLl8OeB/DVtbPcyQXKL++w3zP65z1Jr5z8WeL73UrqdoZmt7VnJTn5se9AFj9oi7h8VQtpWpyJdK5DMQfuY7CuAvdXtNH0mK081Vht1wkeeBWR448XwaeGjh3SzPnnP6k1wtlqK6nqyXWqS/uQ+VVgdn1wOTQB6Da3lzrGlXF9bWu63jyPMZC3Pt2FeWeONZuVmaFXZQDxucDP4CvV/E2tNf+E1tLO/8mNAE2+WFVMYPCAfqf/r14V4yi0+O4fMs08m45kYgk/4D2oEzNmvLpmLpKM55XdkGrFrqTsy7iwOcEdwfSsPcFbKHj0NXIVZ8OBkjrQI7nw7fvIyu3zENzjuO/wClddp8rP5iseI22g468VxfgF47I/abu2Z0A4BHFd9A8U8fmxFGVjkbO1AAB6U6MDOKdtwcCkYY5oAGHerWj3X2W7BYZik+VwemKrZyOKaVIzigDqltYWWR4CsDynLHaGGeOR6dBRR4dLzabHImG42sD2I4ooKOq+L3j++8VeJLjW9ZnXzJG/c28Z+SFeyqP615l4t8QyRWLzytsT+BCcZqCe4d5t8rlmPc9q89+LWoSSawtijsUiUbgD3/AKUCuMnvW1K7a6uXLK3RB6ds+1LoO291De9z8itzsT9Aa5+GVpolt4vkU/6xj/nv6e1egeC/D0t1Zwx26BN/y7vT1/L+ZoEV9Z1mJI/syBtig5AJx+OOtcLeWV1qN6zJExBPyj0r33wz8JzefNIzICeWK13Xhf4W6PYXStNF5jDrlOD7+1A7HzX4d8AahqCo8dpKGwMoU/zmvTPC/wAEpGsxNqINvn+ECvozSfD9jAirb2kS7RgELjFbWm+HTeyNExC4GfrQFjwTT/h5p1lCbQlU3LgORw3sw9K5DW/C114W1CTygzWh5eIHds/2kPce1fSniPwysKORGcIeuKw00zS76H+ydTh/dzAhZQMlG7MD2xQM8FUq6bgwPoR0NBGVrX8ZeHbjwzr0ljIMws7eWw6ZB5A+vBrMYYbHagRCvBwacw+XI6GmyLzmnITtxQI6b4e7msrlcZVJAcemR/8AWoq58LY82t4wHPmKB+A/+vRQUcBdcHgVxXjqzgXVvPYf60BiP9rH6n9BXcbdw+auT+KFnI8MFxGfu/KSPzoJMXwnYpe65FEynbvG/B4H+Jr6b+Hnhu3gt4y0SjagVAB0HXFfPHw4tZIbqCU5BZs7u/Wvqb4YyJNYojHbkDAJ5oGjptHs1SELlce9bNrYOXGD8ufSi2sikYcDcoOea17C3lcAuwUDoFoGJDZmMZAHqcCtjwuAL4HjgHntUSxYjwfQYrS8K2rTXzHYOP0oAy/H0Ims5jCeg7d68zWE+eJEPKNuw3U+1ex+K7VjC+48dNoHTIrzbW9ONowJ3LzwfegDlPjVoK6lpElzbW7FxCLpMDoy8OP++T+leI/ebbmvoDxV8RdH0LQwZBFc31u2DAWG1lIwQfrXz19qnufEWoP5Cw2bSbrVe4U9R9PegCSRSODTVxuwKdM3NeffE7xibdpNI0qT97jbPOp+5/sqfX1NAj2n4I6nb6npuoSW4zHDfNAr9pCqrkj2ycfhRXJfsf3qS+D9Rsdw8y3vxIRnna6DB/NDRQMrxrlcVDq1mt5pskDDJxnHvVphli6dGOacpIbpQSRfDnTYZ7Xdtw8cmAMZ45r3z4VaTIIVnYBVDAAY5Pr+FeF+CWktPEVzbk4V3Dx89j/hX0N8Lb2O5szGjY8mTOP9nAoKPQ7eONLcDHDdq0bRLeOEMcZb2rJ84bQob5SMVj+IvGOnaVC1vvM12B8sKAs34gUAdgJYGbCn221UvfEmn6FC3n39vbSM3yq0gUsf614xqGq/EnU1nmihj0mzILNcXkggEa+pPbA9a4+1/sK3mTXdSv7vxLvbD6lGpa1jIO07JCQCAeOKAPoqTxL/AGrDmCbzFJ5+tef/ABw8USWfh/ZC3lXEp2biOnXmuj8EG2isIbyLZJbSoDHtA+ZfUVm/HbwRFrvhqO5tdzeYMkLwfpkdD70AfL/gXWotY8UXGn2sCWbSLK39o3gWabeiluYycIDjA6kZGetT6faawl1O+qSmWULuUlcHB7GvTfBfhC1tZ5RHHHBJuPnK0Y8zd3yx5J+taPiDQbaKGQLHyy/Mx5oA8A+JHiW00rS57OK4Iv54iIlQZKZ43H04zXjxJJya7D44aV/Zfj24KghLpRMM+vIP8v1rj6CTsPgr4ybwZ4xS8m3NY3S+TeIoydueGA7lTz9MjvRXH0UAfQStt47UrH8aaRkURr70AW4NH1WWS31S1068liXKebDEW+hGPfIr1DwVPf8AhbWrWG/t5VjulTlgRnd0OPY8Vp/AfWB/wj9natNhRMLV0AGFOSQT9QwP4Gu38X/ZNckuNGVC1zpzI0d0qAKznkADrxjn1oKNTTWeZQc+4HtU8ml2llZzaitsrTkFyQvzE+xrK0q6NusZbKqow2exHauv05vtNou0ZUjI96APC/Hvg3xH8Ro7i21q4jtbYODbWzh/KQYIy6AjeeeM9CM1Z8O/De5sfCdr4Ya9a8s7adpnLRBY95AycdScAdSfWveINJTy87FVsenNUdT011bC5wB1oA53TdOi0/S0gUbtigADoAB2rQ0692yRWsgPlsRgHvUl0iafaPPNlmVTx2rnNDXWbvVF1eeWL7JgNbwx/eA7ls9Mf1oA3/ip8Or1ruPxR4dtvOSSIfbYIvv8D76j+IjuOuK841CESwsmPmA+ZSMY/wDr17DeeO3ttFfDKGiQktn5fpXjkmv3F9LNfajtkkmclpVHUZwM+vGOaAPlj9rK3WDxRp+BgtFIPwDD/GvJ69r/AGv7cPeadfr90PJH+YB/oa8UoJYUUUUAfQK+9PAHWmkEDIFAOPpQBteD9am0XVFuULNCSPOjH8QByCP9oHkf/Xr2WyvbqXVLbWtCura4j1LY0lrMzLvccbo3wRj1U4I6V4IpI5roPBPi/VPDFwzWXlzW7n97azgmNj6jHKn3FBR7/KNQaKG+1bTU02eQslxbpcCVFPZwR2PvyK3vDOpNbt9nm4P8EmOK8PuvjDLcKsL6FBDFIwEzLcM7be+0HjNeo+CdZs9WhjQSKX2B1IPEi4yGFAHqlpPHJ8xJO4YA9KkmeLaRs4+lYelyMFQB/wAK0GlOzBzyKAMHxURNIkQHylucVhXukGWP7OLmSFM79iNhTn19q6PV1jjm82T7qDPJrzfxF8VdMUz22lWU95PE5RiIykYIyOp6/hQBb8SadpEVuIZrwqjYygf72OOgrzvxNrml6JL/AGYsq/aGkCJbg5bBI59hz3rO13xD401mVgsMdjC3RmwNo9sc/mawYfB4j1hb5riS6aP5nmf+NuwH0NAHHftUeW/hm2KnOy7G3/vlq8Ir2n9qCXZotjBn79yTj6Kf8a8WoJYUUUUAfS17YlGOFrPkiIyCKKKCiPkcUb+1FFBIik55rvPgx4jNnq0VhO2CCfsr57nkx/Q9R7/WiigEfRHhXWYb+xSWOTa3Rh3B966JJAy71POOfSiigoz/ABEqzWZjI5YYOK5a+0jTvs/72xgkA9Yxx+NFFAGPe+HrG6bbFZwooPboBVPVvD0dpaEJtbuDiiigD5l/ay+yxW9rEHVpvOwq9wMZJ/l+deH0UUEsKKKKAP/Z" width="40" height="40" alt="Никита"></span>
+      <span class="brand__mark"><img class="brand__ava" src="data:image/jpeg;base64,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" width="40" height="40" alt="Никита"></span>
       <span class="brand__text">
         <span class="brand__title">Дневник тренировок</span>
         <span class="brand__sub">Грудь · спина · ноги</span>
@@ -1084,7 +1100,7 @@ tr:last-child td { border-bottom: 0; }
     <svg viewBox="0 0 640 200" preserveAspectRatio="none" class="chart__svg" role="img"
          aria-label="Изменение рабочего веса, Жим гантелями лёжа">
       <defs>
-        <linearGradient id="chs79s0-fill" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id="cwxo2n6-fill" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/>
           <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
         </linearGradient>
@@ -1100,7 +1116,7 @@ tr:last-child td { border-bottom: 0; }
     <text class="ch-axis" x="36" y="60.0" text-anchor="end">29</text>
     <line class="ch-grid" x1="46" y1="18.0" x2="622" y2="18.0"/>
     <text class="ch-axis" x="36" y="22.0" text-anchor="end">30</text>
-      <path class="ch-area" d="M46.0,94.0 L622.0,94.0 L622.0,170.0 L46.0,170.0 Z" fill="url(#chs79s0-fill)"/>
+      <path class="ch-area" d="M46.0,94.0 L622.0,94.0 L622.0,170.0 L46.0,170.0 Z" fill="url(#cwxo2n6-fill)"/>
       <path class="ch-line" d="M46.0,94.0 L622.0,94.0"/>
       <circle class="ch-dot ch-dot--calib" cx="46.0" cy="94.0" r="4.5"><title>19.07 — 28 кг (калибровка), 7 повторов</title></circle><circle class="ch-dot ch-dot--calib" cx="622.0" cy="94.0" r="4.5"><title>28.07 — 28 кг (калибровка), 6 повторов</title></circle>
       <text class="ch-axis" x="46.0" y="192" text-anchor="start">19.07</text><text class="ch-axis" x="622.0" y="192" text-anchor="end">28.07</text>
@@ -1222,7 +1238,7 @@ tr:last-child td { border-bottom: 0; }
     <svg viewBox="0 0 640 200" preserveAspectRatio="none" class="chart__svg" role="img"
          aria-label="Изменение рабочего веса, Жим от груди сидя">
       <defs>
-        <linearGradient id="c7tes7t-fill" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id="cpssro7-fill" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/>
           <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
         </linearGradient>
@@ -1234,7 +1250,7 @@ tr:last-child td { border-bottom: 0; }
     <text class="ch-axis" x="36" y="98.0" text-anchor="end">95</text>
     <line class="ch-grid" x1="46" y1="18.0" x2="622" y2="18.0"/>
     <text class="ch-axis" x="36" y="22.0" text-anchor="end">100</text>
-      <path class="ch-area" d="M46.0,94.0 L622.0,94.0 L622.0,170.0 L46.0,170.0 Z" fill="url(#c7tes7t-fill)"/>
+      <path class="ch-area" d="M46.0,94.0 L622.0,94.0 L622.0,170.0 L46.0,170.0 Z" fill="url(#cpssro7-fill)"/>
       <path class="ch-line" d="M46.0,94.0 L622.0,94.0"/>
       <circle class="ch-dot ch-dot--calib" cx="46.0" cy="94.0" r="4.5"><title>19.07 — 95 кг (калибровка), 7 повторов</title></circle><circle class="ch-dot ch-dot--calib" cx="622.0" cy="94.0" r="4.5"><title>28.07 — 95 кг (калибровка), 8 повторов</title></circle>
       <text class="ch-axis" x="46.0" y="192" text-anchor="start">19.07</text><text class="ch-axis" x="622.0" y="192" text-anchor="end">28.07</text>
@@ -1308,7 +1324,7 @@ tr:last-child td { border-bottom: 0; }
     <svg viewBox="0 0 640 200" preserveAspectRatio="none" class="chart__svg" role="img"
          aria-label="Изменение рабочего веса, Подъём штанги на бицепс стоя">
       <defs>
-        <linearGradient id="cniby3d-fill" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id="cc5ubm5-fill" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/>
           <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
         </linearGradient>
@@ -1322,7 +1338,7 @@ tr:last-child td { border-bottom: 0; }
     <text class="ch-axis" x="36" y="72.7" text-anchor="end">38</text>
     <line class="ch-grid" x1="46" y1="18.0" x2="622" y2="18.0"/>
     <text class="ch-axis" x="36" y="22.0" text-anchor="end">40</text>
-      <path class="ch-area" d="M46.0,81.3 L622.0,81.3 L622.0,170.0 L46.0,170.0 Z" fill="url(#cniby3d-fill)"/>
+      <path class="ch-area" d="M46.0,81.3 L622.0,81.3 L622.0,170.0 L46.0,170.0 Z" fill="url(#cc5ubm5-fill)"/>
       <path class="ch-line" d="M46.0,81.3 L622.0,81.3"/>
       <circle class="ch-dot ch-dot--calib" cx="46.0" cy="81.3" r="4.5"><title>19.07 — 37,5 кг (калибровка), 6 повторов</title></circle><circle class="ch-dot ch-dot--calib" cx="622.0" cy="81.3" r="4.5"><title>28.07 — 37,5 кг (калибровка), 7 повторов</title></circle>
       <text class="ch-axis" x="46.0" y="192" text-anchor="start">19.07</text><text class="ch-axis" x="622.0" y="192" text-anchor="end">28.07</text>
@@ -2589,7 +2605,7 @@ tr:last-child td { border-bottom: 0; }
     <svg viewBox="0 0 640 190" preserveAspectRatio="none" class="chart__svg" role="img"
          aria-label="Изменение веса тела">
       <defs>
-        <linearGradient id="cn3c2ts-fill" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id="cnvwvte-fill" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/>
           <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
         </linearGradient>
@@ -2603,7 +2619,7 @@ tr:last-child td { border-bottom: 0; }
     <text class="ch-axis" x="36" y="69.3" text-anchor="end">79,5</text>
     <line class="ch-grid" x1="46" y1="18.0" x2="622" y2="18.0"/>
     <text class="ch-axis" x="36" y="22.0" text-anchor="end">80</text>
-      <path class="ch-area" d="M46.0,131.6 L622.0,36.9 L622.0,160.0 L46.0,160.0 Z" fill="url(#cn3c2ts-fill)"/>
+      <path class="ch-area" d="M46.0,131.6 L622.0,36.9 L622.0,160.0 L46.0,160.0 Z" fill="url(#cnvwvte-fill)"/>
       <path class="ch-line" d="M46.0,131.6 L622.0,36.9"/>
       <circle class="ch-dot" cx="46.0" cy="131.6" r="4.5"><title>23.07 — 78,8 кг</title></circle><circle class="ch-dot" cx="622.0" cy="36.9" r="4.5"><title>28.07 — 79,8 кг</title></circle>
       <text class="ch-axis" x="46.0" y="182" text-anchor="start">23.07</text><text class="ch-axis" x="622.0" y="182" text-anchor="end">28.07</text>
@@ -2622,7 +2638,7 @@ tr:last-child td { border-bottom: 0; }
 <footer class="foot">
   <p><strong>Как это обновляется.</strong> Записал тренировку в разделе «Сегодня», нажал «Скопировать тренировку», отправил текст мне в чат — я вношу её в файл и пересчитываю всю статистику. Страница обновится сама, когда телефон в следующий раз поймает сеть.</p>
   <p>Регресс считается только по главному упражнению дня и только против такой же роли: результат добивки после базового с результатом свежего подхода не сравнивается. Пробы максимума и калибровочные тренировки помечены отдельно и статистику не занижают.</p>
-  <p>Сборка 30 июля · версия 62c4abc2</p>
+  <p>Сборка 30 июля · версия 5b5f1023</p>
 </footer>
 </main>
 
