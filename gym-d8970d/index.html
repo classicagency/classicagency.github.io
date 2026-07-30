@@ -58,7 +58,19 @@
   --tap:  44px;
 
   --pad:  16px;
-  --ease: cubic-bezier(.2, .8, .3, 1);
+
+  /* Тайминги и кривые движения. Никита о первой версии: «слишком резкие,
+     дёрганые». Резкость даёт не длительность сама по себе, а высокая скорость
+     на старте и большая амплитуда — поэтому кривая начинается мягко, время
+     увеличено, а масштабы уменьшены. Всё движение живёт в этих значениях:
+     темп интерфейса правится целиком, а не по месту. */
+  --t-tap:   180ms;   /* отклик на нажатие — должен успевать за пальцем */
+  --t-quick: 320ms;   /* отметка, счётчик, подскок цифры */
+  --t-move:  480ms;   /* появление раздела, раскрытие, уход строки */
+  --t-draw:  900ms;   /* заливка лесенки, прочерк графика, докрутка чисел */
+
+  --ease:        cubic-bezier(.4, .15, .2, 1);   /* мягкий старт, плавное торможение */
+  --ease-spring: cubic-bezier(.34, 1.2, .64, 1); /* лёгкая пружина для подскоков */
 
   /* Безопасные поля айфона. Вынесены в переменные по двум причинам:
      вёрстка читается, и проверка может подставить своё значение —
@@ -190,28 +202,34 @@ strong, b { font-weight: 500; }
 .tabs::after {
   content: '';
   position: absolute;
-  right: 0; top: 0; bottom: 10px;
+  right: 0; top: 0; bottom: 0;
   width: 34px;
   pointer-events: none;
   background: linear-gradient(90deg, rgba(14,14,14,0), rgba(14,14,14,.92));
 }
+/* Вкладки стоят закладками на нижней кромке панели, поэтому отступа снизу нет:
+   активная должна касаться линии, а не висеть над ней. */
 .tabs__scroll {
   display: flex;
   gap: 6px;
-  padding: 0 max(var(--pad), var(--safe-right)) 10px max(var(--pad), var(--safe-left));
+  padding: 0 max(var(--pad), var(--safe-right)) 0 max(var(--pad), var(--safe-left));
   overflow-x: auto;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
 }
 .tabs__scroll::-webkit-scrollbar { display: none; }
 
+/* Активная вкладка — тёмная плашка со жёлтой линией снизу, а не жёлтая заливка:
+   на заливке любой текст, кроме чистого чёрного, читается грязно, а закладка
+   с подчёркиванием оставляет акцент точным указателем. */
 .tab {
   flex: none;
   font-family: var(--font-display);
   min-height: var(--tap);
-  padding: 8px 14px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
+  padding: 8px 14px 7px;
+  border-radius: 12px 12px 0 0;
+  border: 1px solid transparent;
+  border-bottom: 2px solid transparent;
   background: var(--surface-1);
   color: var(--ink-2);
   font-size: 14px;
@@ -221,13 +239,15 @@ strong, b { font-weight: 500; }
   align-items: center;
   gap: 7px;
   white-space: nowrap;
-  transition: transform .12s var(--ease), background .16s var(--ease), color .16s var(--ease), border-color .16s var(--ease);
+  transition: transform var(--t-tap) var(--ease), background var(--t-quick) var(--ease),
+              color var(--t-quick) var(--ease), border-color var(--t-quick) var(--ease);
 }
 .tab:active { transform: scale(.96); }
 .tab.is-active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--accent-ink);
+  background: var(--surface-3);
+  border-color: var(--line);
+  border-bottom-color: var(--accent);
+  color: var(--ink);
 }
 
 /* ───────────────────────────── разделы ───────────────────────────── */
@@ -479,7 +499,7 @@ summary {
   border-radius: var(--r-m);
   border: 1px solid var(--line);
   background: var(--surface-1);
-  transition: background .16s var(--ease), transform .12s var(--ease);
+  transition: background var(--t-quick) var(--ease), transform var(--t-tap) var(--ease);
 }
 summary::-webkit-details-marker { display: none; }
 summary:active { transform: scale(.99); }
@@ -492,7 +512,7 @@ details[open] > summary { border-radius: var(--r-m) var(--r-m) 0 0; background: 
 .sum__chev {
   width: 20px; height: 20px; flex: none;
   color: var(--ink-3);
-  transition: transform .2s var(--ease);
+  transition: transform var(--t-move) var(--ease);
 }
 details[open] > summary .sum__chev { transform: rotate(180deg); }
 
@@ -553,7 +573,7 @@ details[open] > summary .sum__chev { transform: rotate(180deg); }
   font-weight: 500;
   text-decoration: none;
   cursor: pointer;
-  transition: transform .12s var(--ease), filter .16s var(--ease);
+  transition: transform var(--t-tap) var(--ease), filter var(--t-quick) var(--ease);
 }
 .btn:active { transform: scale(.97); filter: brightness(.94); }
 .btn--ghost {
@@ -679,7 +699,7 @@ tr:last-child td { border-bottom: 0; }
   cursor: pointer;
   display: grid; place-items: center;
   -webkit-appearance: none; appearance: none;
-  transition: transform .1s var(--ease), background .16s var(--ease);
+  transition: transform var(--t-tap) var(--ease), background var(--t-quick) var(--ease);
 }
 .stepper__btn:active { transform: scale(.92); background: var(--surface-3); }
 .stepper__btn--minus { border-radius: var(--r-s) 0 0 var(--r-s); }
@@ -755,16 +775,16 @@ tr:last-child td { border-bottom: 0; }
   padding: 0;
   display: grid; place-items: center;
   -webkit-appearance: none; appearance: none;
-  transition: transform .12s var(--ease), background .18s var(--ease),
-              color .18s var(--ease), border-color .18s var(--ease);
+  transition: transform var(--t-tap) var(--ease), background var(--t-quick) var(--ease),
+              color var(--t-quick) var(--ease), border-color var(--t-quick) var(--ease);
 }
 .live-done .ico { width: 23px; height: 23px; }
-.live-done__ring { stroke-width: 1.5; opacity: .5; transition: opacity .18s var(--ease); }
+.live-done__ring { stroke-width: 1.5; opacity: .5; transition: opacity var(--t-quick) var(--ease); }
 .live-done__tick {
   stroke-width: 2.4;
   stroke-dasharray: 15;
   stroke-dashoffset: 15;
-  transition: stroke-dashoffset .32s var(--ease);
+  transition: stroke-dashoffset var(--t-quick) var(--ease);
 }
 .live-done:active { transform: scale(.9); }
 .live-done.is-done {
@@ -805,7 +825,7 @@ tr:last-child td { border-bottom: 0; }
   border-radius: 999px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity .2s var(--ease), transform .2s var(--ease);
+  transition: opacity var(--t-quick) var(--ease), transform var(--t-move) var(--ease);
   z-index: 70;
 }
 .toast.is-on { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -819,6 +839,97 @@ tr:last-child td { border-bottom: 0; }
   color: var(--ink-2);
   margin: 12px 0;
 }
+
+/* ───────────────────────────── движение ─────────────────────────────
+
+   Все анимации — на токенах --t-* и --ease, поэтому темп интерфейса
+   правится в одном месте. Ни одна не длиннее --t-draw, ни одна не начинается
+   рывком, амплитуды малые: движение должно подтверждать действие, а не
+   развлекать. При включённом «уменьшении движения» гаснет всё сразу —
+   правило в конце файла.
+
+   Обязательное свойство: ни один эффект не нужен для понимания цифр.
+   Без скриптов и без анимаций страница читается полностью. */
+
+/* 1. Смена раздела — контент въезжает снизу. */
+body.js .section.is-active { animation: sectionIn var(--t-move) var(--ease) both; }
+@keyframes sectionIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* 2. Подскок цифры при нажатии на «плюс» и «минус». Класс ставит скрипт
+   и снимает по окончании, иначе эффект не повторится на второй тап. */
+.stepper__field.is-bumped { animation: bump var(--t-quick) var(--ease-spring); }
+@keyframes bump {
+  0%   { transform: scale(1); }
+  45%  { transform: scale(1.07); color: var(--accent); }
+  100% { transform: scale(1); }
+}
+
+/* 3. Упражнение закрыто целиком — карточка коротко обводится акцентом,
+   счётчик пружинит. Оба класса транзитные: на пересборке формы не мигают. */
+.live-ex.is-complete { animation: exDone 1100ms var(--ease); }
+@keyframes exDone {
+  0%   { border-color: var(--line); box-shadow: none; }
+  30%  { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  100% { border-color: var(--line); box-shadow: none; }
+}
+.pill.is-pop { animation: pillPop var(--t-quick) var(--ease-spring); }
+@keyframes pillPop {
+  0%   { transform: scale(1); }
+  45%  { transform: scale(1.09); }
+  100% { transform: scale(1); }
+}
+
+/* 4. Заливка лесенки едет от нуля при открытии раздела. */
+.ladder__fill { transform-origin: left center; }
+body.js .section.is-active .ladder__fill { animation: ladderFill var(--t-draw) var(--ease) both; }
+@keyframes ladderFill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* 5. График: линия прочерчивается, столбики вырастают снизу.
+   Штрих считается в единицах pathLength="100" — одна пара кадров подходит
+   любой линии, длину пути измерять не нужно. Без скриптов линия видна
+   целиком: dashoffset по умолчанию ноль. */
+.ch-line { stroke-dasharray: 100; }
+body.js .section.is-active .ch-line { animation: chDraw var(--t-draw) var(--ease) both; }
+@keyframes chDraw { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+
+.ch-bar { transform-box: fill-box; transform-origin: bottom; }
+body.js .section.is-active .ch-bar { animation: chGrow var(--t-move) var(--ease) both; }
+@keyframes chGrow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+/* 6. Аккордеон раскрывается с подъездом, а не щелчком. */
+details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) both; }
+@keyframes accOpen {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* 7. Кнопка «Скопировать тренировку» на миг заезжает галочкой. */
+.btn--copy { position: relative; overflow: hidden; }
+.btn__tick {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  background: var(--accent); color: var(--accent-ink);
+  transform: translateY(105%);
+  transition: transform var(--t-move) var(--ease);
+}
+.btn--copy.is-ok .btn__tick { transform: none; }
+
+/* 8. Шапка уплотняется при прокрутке: отступы сжимаются, размытие крепчает. */
+.topbar { transition: background var(--t-move) var(--ease); }
+.topbar__head { transition: padding var(--t-move) var(--ease); }
+.brand__mark { transition: width var(--t-move) var(--ease), height var(--t-move) var(--ease); }
+.topbar.is-scrolled { background: rgba(14, 14, 14, 0.94); }
+.topbar.is-scrolled .topbar__head { padding-top: 7px; padding-bottom: 6px; }
+.topbar.is-scrolled .brand__mark { width: 32px; height: 32px; }
+
+/* 10. Уходящая строка подхода уезжает вправо и растворяется. */
+.live-set {
+  transition: transform var(--t-quick) var(--ease), opacity var(--t-quick) var(--ease);
+}
+.live-set.is-leaving { transform: translateX(36px); opacity: 0; }
 
 /* ───────────────────────────── адаптив ───────────────────────────── */
 
@@ -868,7 +979,7 @@ tr:last-child td { border-bottom: 0; }
 <header class="topbar">
   <div class="topbar__head">
     <div class="brand">
-      <span class="brand__mark"><img class="brand__ava" src="data:image/jpeg;base64,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" width="40" height="40" alt="Никита"></span>
+      <span class="brand__mark"><img class="brand__ava" src="data:image/jpeg;base64,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" width="40" height="40" alt="Никита"></span>
       <span class="brand__text">
         <span class="brand__title">Дневник тренировок</span>
         <span class="brand__sub">Грудь · спина · ноги</span>
@@ -1117,7 +1228,9 @@ tr:last-child td { border-bottom: 0; }
     <line class="ch-grid" x1="46" y1="18.0" x2="622" y2="18.0"/>
     <text class="ch-axis" x="36" y="22.0" text-anchor="end">30</text>
       <path class="ch-area" d="M46.0,94.0 L622.0,94.0 L622.0,170.0 L46.0,170.0 Z" fill="url(#c1ee7kht-fill)"/>
-      <path class="ch-line" d="M46.0,94.0 L622.0,94.0"/>
+      <!-- pathLength="100" переводит штрих в проценты пути: одна пара кадров
+           прочерчивает любую линию, измерять длину не нужно. -->
+      <path class="ch-line" d="M46.0,94.0 L622.0,94.0" pathLength="100"/>
       <circle class="ch-dot ch-dot--calib" cx="46.0" cy="94.0" r="4.5"><title>19.07 — 28 кг (калибровка), 7 повторов</title></circle><circle class="ch-dot ch-dot--calib" cx="622.0" cy="94.0" r="4.5"><title>28.07 — 28 кг (калибровка), 6 повторов</title></circle>
       <text class="ch-axis" x="46.0" y="192" text-anchor="start">19.07</text><text class="ch-axis" x="622.0" y="192" text-anchor="end">28.07</text>
       <text class="ch-value" x="622.0" y="82.0" text-anchor="end">28 кг</text>
@@ -1251,7 +1364,9 @@ tr:last-child td { border-bottom: 0; }
     <line class="ch-grid" x1="46" y1="18.0" x2="622" y2="18.0"/>
     <text class="ch-axis" x="36" y="22.0" text-anchor="end">100</text>
       <path class="ch-area" d="M46.0,94.0 L622.0,94.0 L622.0,170.0 L46.0,170.0 Z" fill="url(#c1lldh3o-fill)"/>
-      <path class="ch-line" d="M46.0,94.0 L622.0,94.0"/>
+      <!-- pathLength="100" переводит штрих в проценты пути: одна пара кадров
+           прочерчивает любую линию, измерять длину не нужно. -->
+      <path class="ch-line" d="M46.0,94.0 L622.0,94.0" pathLength="100"/>
       <circle class="ch-dot ch-dot--calib" cx="46.0" cy="94.0" r="4.5"><title>19.07 — 95 кг (калибровка), 7 повторов</title></circle><circle class="ch-dot ch-dot--calib" cx="622.0" cy="94.0" r="4.5"><title>28.07 — 95 кг (калибровка), 8 повторов</title></circle>
       <text class="ch-axis" x="46.0" y="192" text-anchor="start">19.07</text><text class="ch-axis" x="622.0" y="192" text-anchor="end">28.07</text>
       <text class="ch-value" x="622.0" y="82.0" text-anchor="end">95 кг</text>
@@ -1339,7 +1454,9 @@ tr:last-child td { border-bottom: 0; }
     <line class="ch-grid" x1="46" y1="18.0" x2="622" y2="18.0"/>
     <text class="ch-axis" x="36" y="22.0" text-anchor="end">40</text>
       <path class="ch-area" d="M46.0,81.3 L622.0,81.3 L622.0,170.0 L46.0,170.0 Z" fill="url(#c1xr6ni1-fill)"/>
-      <path class="ch-line" d="M46.0,81.3 L622.0,81.3"/>
+      <!-- pathLength="100" переводит штрих в проценты пути: одна пара кадров
+           прочерчивает любую линию, измерять длину не нужно. -->
+      <path class="ch-line" d="M46.0,81.3 L622.0,81.3" pathLength="100"/>
       <circle class="ch-dot ch-dot--calib" cx="46.0" cy="81.3" r="4.5"><title>19.07 — 37,5 кг (калибровка), 6 повторов</title></circle><circle class="ch-dot ch-dot--calib" cx="622.0" cy="81.3" r="4.5"><title>28.07 — 37,5 кг (калибровка), 7 повторов</title></circle>
       <text class="ch-axis" x="46.0" y="192" text-anchor="start">19.07</text><text class="ch-axis" x="622.0" y="192" text-anchor="end">28.07</text>
       <text class="ch-value" x="622.0" y="69.3" text-anchor="end">37,5 кг</text>
@@ -2538,9 +2655,9 @@ tr:last-child td { border-bottom: 0; }
     </div>
 
     <div class="stats">
-      <div class="stat stat--accent"><span class="stat__value">4</span><div class="stat__label">тренировки всего</div></div>
-      <div class="stat"><span class="stat__value">44<span class="stat__unit">т</span></span><div class="stat__label">поднято за всё время</div></div>
-      <div class="stat"><span class="stat__value">78</span><div class="stat__label">рабочих подходов</div></div>
+      <div class="stat stat--accent"><span class="stat__value" data-count="4" data-text="4">4</span><div class="stat__label">тренировки всего</div></div>
+      <div class="stat"><span class="stat__value" data-count="44" data-text="44">44<span class="stat__unit">т</span></span><div class="stat__label">поднято за всё время</div></div>
+      <div class="stat"><span class="stat__value" data-count="78" data-text="78">78</span><div class="stat__label">рабочих подходов</div></div>
     </div>
 
     <div class="hint hint--warm">
@@ -2563,10 +2680,10 @@ tr:last-child td { border-bottom: 0; }
     <line class="ch-grid" x1="46" y1="58.7" x2="622" y2="58.7"/>
     <text class="ch-axis" x="36" y="62.7" text-anchor="end">20</text>
     <line class="ch-grid" x1="46" y1="18.0" x2="622" y2="18.0"/>
-    <text class="ch-axis" x="36" y="22.0" text-anchor="end">30</text><rect class="ch-bar ch-bar--muted" x="95.0" y="111.5" width="46.0" height="28.5" rx="4">
-      <title>19.07 — 7 т</title></rect><rect class="ch-bar ch-bar--muted" x="239.0" y="97.7" width="46.0" height="42.3" rx="4">
-      <title>23.07 — 10,4 т</title></rect><rect class="ch-bar ch-bar--muted" x="383.0" y="57.9" width="46.0" height="82.1" rx="4">
-      <title>25.07 — 20,2 т</title></rect><rect class="ch-bar ch-bar--muted" x="527.0" y="114.0" width="46.0" height="26.0" rx="4">
+    <text class="ch-axis" x="36" y="22.0" text-anchor="end">30</text><rect class="ch-bar ch-bar--muted" style="animation-delay:0ms" x="95.0" y="111.5" width="46.0" height="28.5" rx="4">
+      <title>19.07 — 7 т</title></rect><rect class="ch-bar ch-bar--muted" style="animation-delay:60ms" x="239.0" y="97.7" width="46.0" height="42.3" rx="4">
+      <title>23.07 — 10,4 т</title></rect><rect class="ch-bar ch-bar--muted" style="animation-delay:120ms" x="383.0" y="57.9" width="46.0" height="82.1" rx="4">
+      <title>25.07 — 20,2 т</title></rect><rect class="ch-bar ch-bar--muted" style="animation-delay:180ms" x="527.0" y="114.0" width="46.0" height="26.0" rx="4">
       <title>28.07 — 6,4 т</title></rect><text class="ch-axis" x="118.0" y="162" text-anchor="middle">19.07</text><text class="ch-axis" x="262.0" y="162" text-anchor="middle">23.07</text><text class="ch-axis" x="406.0" y="162" text-anchor="middle">25.07</text><text class="ch-axis" x="550.0" y="162" text-anchor="middle">28.07</text>
     </svg>
   </div>
@@ -2620,7 +2737,9 @@ tr:last-child td { border-bottom: 0; }
     <line class="ch-grid" x1="46" y1="18.0" x2="622" y2="18.0"/>
     <text class="ch-axis" x="36" y="22.0" text-anchor="end">80</text>
       <path class="ch-area" d="M46.0,131.6 L622.0,36.9 L622.0,160.0 L46.0,160.0 Z" fill="url(#c1uevafa-fill)"/>
-      <path class="ch-line" d="M46.0,131.6 L622.0,36.9"/>
+      <!-- pathLength="100" переводит штрих в проценты пути: одна пара кадров
+           прочерчивает любую линию, измерять длину не нужно. -->
+      <path class="ch-line" d="M46.0,131.6 L622.0,36.9" pathLength="100"/>
       <circle class="ch-dot" cx="46.0" cy="131.6" r="4.5"><title>23.07 — 78,8 кг</title></circle><circle class="ch-dot" cx="622.0" cy="36.9" r="4.5"><title>28.07 — 79,8 кг</title></circle>
       <text class="ch-axis" x="46.0" y="182" text-anchor="start">23.07</text><text class="ch-axis" x="622.0" y="182" text-anchor="end">28.07</text>
       <text class="ch-value" x="622.0" y="24.9" text-anchor="end">79,8 кг</text>
@@ -2638,7 +2757,7 @@ tr:last-child td { border-bottom: 0; }
 <footer class="foot">
   <p><strong>Как это обновляется.</strong> Записал тренировку в разделе «Сегодня», нажал «Скопировать тренировку», отправил текст мне в чат — я вношу её в файл и пересчитываю всю статистику. Страница обновится сама, когда телефон в следующий раз поймает сеть.</p>
   <p>Регресс считается только по главному упражнению дня и только против такой же роли: результат добивки после базового с результатом свежего подхода не сравнивается. Пробы максимума и калибровочные тренировки помечены отдельно и статистику не занижают.</p>
-  <p>Сборка 30 июля · версия 62fe478f</p>
+  <p>Сборка 30 июля · версия 7054cccb</p>
 </footer>
 </main>
 
@@ -2663,6 +2782,24 @@ tr:last-child td { border-bottom: 0; }
   var ICO_CHECK = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">' +
     '<circle class="live-done__ring" cx="12" cy="12" r="9.2"/>' +
     '<path class="live-done__tick" d="M7.2 12.6l3.2 3.2 6.4-6.9"/></svg>';
+  var ICO_CHECK_FLAT = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">' +
+    '<path d="M7.2 12.6l3.2 3.2 6.4-6.9"/></svg>';
+
+  /* ───────────────────────── движение ─────────────────────────
+
+     Помощники для анимаций. Классы ставятся транзитно и снимаются: иначе
+     эффект не повторится на второй тап, а при пересборке формы мигнёт
+     там, где ничего не происходило. */
+
+  var SOFT = !window.matchMedia || !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function flash(el, cls, ms) {
+    if (!el || !SOFT) return;
+    el.classList.remove(cls);
+    void el.offsetWidth;               // перезапуск анимации, иначе не проиграет
+    el.classList.add(cls);
+    setTimeout(function () { el.classList.remove(cls); }, ms);
+  }
 
   /* ───────────────────────── разделы ───────────────────────── */
 
@@ -2686,7 +2823,37 @@ tr:last-child td { border-bottom: 0; }
     });
     if (push) history.replaceState(null, '', '#' + id);
     window.scrollTo(0, 0);
+    countUp(document.getElementById(id));
     return true;
+  }
+
+  /**
+   * Докрутка крупных чисел от нуля. Значение уже стоит в разметке, здесь
+   * только показ: заканчиваем строго на data-text, чтобы округление
+   * анимации не разошлось с посчитанным.
+   */
+  function countUp(root) {
+    if (!root || !SOFT) return;
+    root.querySelectorAll('[data-count]').forEach(function (el) {
+      var to = parseFloat(el.getAttribute('data-count'));
+      var text = el.getAttribute('data-text');
+      var node = el.firstChild;
+      if (!isFinite(to) || !node || node.nodeType !== 3) return;
+      var whole = String(to).indexOf('.') < 0;
+      var t0 = null;
+      function frame(now) {
+        if (t0 === null) t0 = now;
+        var k = Math.min(1, (now - t0) / 900);
+        var eased = 1 - Math.pow(1 - k, 3);
+        var v = to * eased;
+        node.nodeValue = whole
+          ? String(Math.round(v))
+          : String(Math.round(v * 10) / 10).replace('.', ',');
+        if (k < 1) requestAnimationFrame(frame);
+        else node.nodeValue = text;
+      }
+      requestAnimationFrame(frame);
+    });
   }
 
   tabs.forEach(function (t) {
@@ -2833,7 +3000,8 @@ tr:last-child td { border-bottom: 0; }
       });
 
       html += '<div class="btn-row">';
-      html += '<button type="button" class="btn btn--wide" id="live-copy">Скопировать тренировку</button>';
+      html += '<button type="button" class="btn btn--wide btn--copy" id="live-copy">Скопировать тренировку' +
+        '<span class="btn__tick" aria-hidden="true">' + ICO_CHECK_FLAT + '</span></button>';
       html += '<button type="button" class="btn btn--ghost btn--wide" id="live-reset">Очистить и начать заново</button>';
       html += '</div>';
       html += '<textarea class="copybox" id="live-out" readonly aria-label="Текст тренировки для отправки"></textarea>';
@@ -2906,7 +3074,10 @@ tr:last-child td { border-bottom: 0; }
           if (next < 0) next = 0;
           setValue(key, next);
           var field = live.querySelector('[data-field="' + key + '"]');
-          if (field) field.value = next;
+          if (field) {
+            field.value = next;
+            flash(field, 'is-bumped', 340);   // цифра подскакивает: тап поймался
+          }
           save();
         });
       });
@@ -2928,9 +3099,14 @@ tr:last-child td { border-bottom: 0; }
           var pill = live.querySelector('[data-count="' + p[0] + '"]');
           if (pill) {
             var done = st.sets.filter(function (x) { return x.done; }).length;
+            var all = st.sets.length > 0 && done === st.sets.length;
             pill.textContent = done + ' / ' + st.sets.length;
             // Упражнение закрыто целиком — счётчик загорается акцентом.
-            pill.classList.toggle('is-done', st.sets.length > 0 && done === st.sets.length);
+            pill.classList.toggle('is-done', all);
+            if (all) {
+              flash(pill, 'is-pop', 360);
+              flash(el.closest('.live-ex'), 'is-complete', 1150);
+            }
           }
         });
       });
@@ -2957,9 +3133,18 @@ tr:last-child td { border-bottom: 0; }
           var last = st.sets[st.sets.length - 1];
           var filled = last && (last.r !== '' && last.r !== null && last.r !== undefined);
           if (filled && !confirm('В последнем подходе уже записаны повторы. Удалить его?')) return;
-          st.sets.pop();
-          save();
-          render();
+
+          // Строка уезжает вправо и растворяется, и только потом пересборка:
+          // рывком исчезающая строка не даёт понять, что именно ушло.
+          var rows = el.closest('.live-ex').querySelectorAll('.live-set');
+          var row = rows[rows.length - 1];
+          var finish = function () { st.sets.pop(); save(); render(); };
+          if (row && SOFT) {
+            row.classList.add('is-leaving');
+            setTimeout(finish, 300);
+          } else {
+            finish();
+          }
         });
       });
 
@@ -2971,6 +3156,7 @@ tr:last-child td { border-bottom: 0; }
 
       var copy = document.getElementById('live-copy');
       if (copy) copy.addEventListener('click', function () {
+        flash(copy, 'is-ok', 1200);   // подтверждение прямо в кнопке
         var text = buildText();
         var out = document.getElementById('live-out');
         out.value = text;
@@ -3055,6 +3241,25 @@ tr:last-child td { border-bottom: 0; }
     toastEl.classList.add('is-on');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { toastEl.classList.remove('is-on'); }, 2600);
+  }
+
+  /* ───────────────────────── шапка при прокрутке ───────────────────────── */
+
+  // Уехал вниз — панель уплотняется: отступы сжимаются, размытие крепчает.
+  // Замер через requestAnimationFrame, чтобы не считать на каждом пикселе.
+  var topbar = document.querySelector('.topbar');
+  if (topbar) {
+    var ticking = false;
+    var onScroll = function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        topbar.classList.toggle('is-scrolled', (window.pageYOffset || 0) > 24);
+        ticking = false;
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
   }
 
   /* ───────────────────────── офлайн ───────────────────────── */
