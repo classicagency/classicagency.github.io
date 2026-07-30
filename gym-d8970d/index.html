@@ -44,6 +44,14 @@
   --pad:  16px;
   --ease: cubic-bezier(.2, .8, .3, 1);
 
+  /* Безопасные поля айфона. Вынесены в переменные по двум причинам:
+     вёрстка читается, и проверка может подставить своё значение —
+     иначе плумбинг под статус-бар нечем стеречь, env() в браузере ноль. */
+  --safe-top:    env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left:   env(safe-area-inset-left, 0px);
+  --safe-right:  env(safe-area-inset-right, 0px);
+
   color-scheme: dark;
 }
 
@@ -61,7 +69,7 @@ html, body { overflow-x: clip; }
 
 body {
   margin: 0;
-  padding: 0 0 96px;
+  padding: 0 0 calc(96px + var(--safe-bottom));
   background:
     radial-gradient(1200px 600px at 50% -10%, rgba(199,242,78,0.05), transparent 60%),
     var(--bg);
@@ -75,14 +83,24 @@ body {
 
 ::selection { background: var(--accent); color: var(--accent-ink); }
 
-.wrap { max-width: 720px; margin: 0 auto; padding: 0 var(--pad); }
+.wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding-left: max(var(--pad), var(--safe-left));
+  padding-right: max(var(--pad), var(--safe-right));
+}
 
 /* ───────────────────────────── шапка ───────────────────────────── */
 
+/* Страница живёт с viewport-fit=cover и прозрачным статус-баром: без этого
+   отступа часы, значки связи и вырез камеры лежат прямо на шапке. Отступ
+   держит панель ниже системного интерфейса и остаётся нулевым в браузере,
+   где статус-бар не наш. */
 .topbar {
   position: sticky;
   top: 0;
   z-index: 50;
+  padding-top: var(--safe-top);
   background: rgba(10, 11, 13, 0.86);
   backdrop-filter: saturate(160%) blur(14px);
   -webkit-backdrop-filter: saturate(160%) blur(14px);
@@ -94,7 +112,7 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 12px var(--pad) 10px;
+  padding: 12px max(var(--pad), var(--safe-right)) 10px max(var(--pad), var(--safe-left));
   max-width: 720px;
   margin: 0 auto;
 }
@@ -102,14 +120,17 @@ body {
 .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
 
 .brand__mark {
-  width: 30px; height: 30px; flex: none;
-  border-radius: 9px;
+  width: 34px; height: 34px; flex: none;
+  border-radius: 50%;
+  overflow: hidden;
   background: var(--accent);
   color: var(--accent-ink);
   display: grid; place-items: center;
   font-weight: 800; font-size: 15px;
   letter-spacing: -0.02em;
+  box-shadow: 0 0 0 1.5px rgba(199, 242, 78, 0.5);
 }
+.brand__ava { width: 100%; height: 100%; display: block; object-fit: cover; border-radius: 50%; }
 
 .brand__text { min-width: 0; }
 .brand__title { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; }
@@ -140,7 +161,7 @@ body {
 .tabs__scroll {
   display: flex;
   gap: 6px;
-  padding: 0 var(--pad) 10px;
+  padding: 0 max(var(--pad), var(--safe-right)) 10px max(var(--pad), var(--safe-left));
   overflow-x: auto;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
@@ -211,6 +232,8 @@ body.js .section.is-active { display: block; }
 }
 
 .card__title { font-size: 19px; font-weight: 750; letter-spacing: -0.01em; margin: 0 0 4px; }
+/* заголовок программы не липнет к первому упражнению */
+.plan-title { margin-bottom: 12px; }
 
 /* ───────────────────────────── плитки чисел ───────────────────────────── */
 
@@ -325,17 +348,27 @@ body.js .section.is-active { display: block; }
 .ex__role--acc { color: var(--ink-3); }
 .ex__note { font-size: 12.5px; color: var(--ink-3); margin-top: 5px; line-height: 1.4; }
 
-.ex__target {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-top: 10px;
+/* Программа на тренировку: две строки — что было в прошлый раз и цель.
+   Ничего больше здесь не показывается: раздел читают между подходами,
+   и любая лишняя цифра заставляет искать нужную. */
+.plan {
+  margin-top: 11px;
   padding-top: 10px;
   border-top: 1px solid var(--line-soft);
-  flex-wrap: wrap;
 }
-.ex__target-value { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
-.ex__target-label { font-size: 13px; color: var(--ink-3); }
+.plan__row { display: flex; align-items: baseline; gap: 10px; }
+.plan__row + .plan__row { margin-top: 9px; }
+.plan__cap {
+  flex: none;
+  width: 44px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.plan__sets { margin-top: 0; }
+.plan__goal { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; min-width: 0; }
 
 /* ───────────────────────────── подходы ───────────────────────────── */
 
@@ -387,8 +420,7 @@ details[open] > summary { border-radius: var(--r-m) var(--r-m) 0 0; background: 
 .sum__sub { font-size: 12.5px; color: var(--ink-3); margin-top: 2px; }
 .sum__right { display: flex; align-items: center; gap: 10px; flex: none; }
 .sum__chev {
-  width: 22px; height: 22px; flex: none;
-  display: grid; place-items: center;
+  width: 20px; height: 20px; flex: none;
   color: var(--ink-3);
   transition: transform .2s var(--ease);
 }
@@ -515,8 +547,12 @@ tr:last-child td { border-bottom: 0; }
 .live-bar__inner { max-width: 720px; margin: 0 auto; display: flex; gap: 8px; align-items: center; }
 
 .live-ex { border: 1px solid var(--line); border-radius: var(--r-m); background: var(--surface-1); margin-bottom: 10px; overflow: hidden; }
-.live-ex__head { padding: 13px 14px; display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.live-ex__head { padding: 13px 14px 11px; display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
 .live-ex__body { padding: 0 14px 13px; }
+
+/* Форма отделяется от заголовка карточки: иначе подзаголовок слипается
+   с первым полем и читается как одна мешанина. */
+#live-form { margin-top: 14px; }
 
 /* Строка подхода — сетка, а не гибкая лента: при двух регуляторах
    в ряд поля ввода схлопывались в ноль и цифр не было видно.
@@ -542,26 +578,44 @@ tr:last-child td { border-bottom: 0; }
   letter-spacing: .06em;
   text-transform: uppercase;
   color: var(--ink-3);
-  padding-bottom: 4px;
+  padding-bottom: 5px;
 }
 .live-head--wide { grid-template-columns: 16px 1fr 40px; }
 .live-head span { text-align: center; }
 .live-head span:first-child, .live-head span:last-child { text-align: left; }
 
 .stepper { display: flex; align-items: center; min-width: 0; }
+
+/* Кнопки сжимаются раньше, чем поле: при жёсткой ширине они выдавливались
+   за свою колонку и налезали на галочку — отсюда и кривизна строки. */
 .stepper__btn {
-  width: 40px; height: 44px; flex: none;
+  flex: 0 1 40px;
+  width: 40px; min-width: 32px; height: 44px;
+  padding: 0;
   border: 1px solid var(--line);
   background: var(--surface-2);
   color: var(--ink);
-  font-size: 20px; font-weight: 700;
   cursor: pointer;
   display: grid; place-items: center;
+  -webkit-appearance: none; appearance: none;
   transition: transform .1s var(--ease), background .16s var(--ease);
 }
 .stepper__btn:active { transform: scale(.92); background: var(--surface-3); }
 .stepper__btn--minus { border-radius: var(--r-s) 0 0 var(--r-s); }
 .stepper__btn--plus { border-radius: 0 var(--r-s) var(--r-s) 0; }
+
+/* Знаки нарисованы, а не набраны шрифтом: у глифов «−», «+» и «✓» разные
+   боковые припуски и своя базовая линия, из-за чего они стоят в кнопке
+   вкось. У фигуры центр геометрический — она садится ровно. */
+.ico { width: 20px; height: 20px; display: block; pointer-events: none; }
+.ico path, .ico circle {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .stepper__field {
   flex: 1; min-width: 34px;
   height: 44px;
@@ -576,6 +630,11 @@ tr:last-child td { border-bottom: 0; }
   font-variant-numeric: tabular-nums;
   -moz-appearance: textfield;
 }
+
+/* Сафари сам скругляет числовое поле, и посреди прямоугольных кнопок
+   получались круглые углы с зазорами. Поле должно уходить в кнопки
+   единым бруском. */
+.stepper .stepper__field { -webkit-appearance: none; appearance: none; border-radius: 0; }
 .stepper__field::-webkit-outer-spin-button,
 .stepper__field::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .stepper__field:focus { outline: 2px solid var(--accent-line); outline-offset: -2px; }
@@ -601,19 +660,40 @@ tr:last-child td { border-bottom: 0; }
 }
 .live-check input { width: 22px; height: 22px; flex: none; accent-color: var(--accent); }
 
+/* Отметка подхода. Пустая — тонкое кольцо, отмеченная — лаймовая кнопка,
+   в которой галочка ПРОРИСОВЫВАЕТСЯ: движение подтверждает нажатие лучше
+   любой подписи, а перерисовки формы анимацию не дёргают, потому что
+   состояние переключается на месте, без пересборки разметки. */
 .live-done {
   width: 40px; height: 44px; flex: none;
   border-radius: var(--r-s);
   border: 1px solid var(--line);
   background: var(--surface-2);
   color: var(--ink-3);
-  font-size: 18px;
   cursor: pointer;
+  padding: 0;
   display: grid; place-items: center;
-  transition: transform .1s var(--ease), background .16s var(--ease), color .16s var(--ease);
+  -webkit-appearance: none; appearance: none;
+  transition: transform .12s var(--ease), background .18s var(--ease),
+              color .18s var(--ease), border-color .18s var(--ease);
 }
-.live-done:active { transform: scale(.92); }
-.live-done.is-done { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.live-done .ico { width: 23px; height: 23px; }
+.live-done__ring { stroke-width: 1.5; opacity: .5; transition: opacity .18s var(--ease); }
+.live-done__tick {
+  stroke-width: 2.4;
+  stroke-dasharray: 15;
+  stroke-dashoffset: 15;
+  transition: stroke-dashoffset .32s var(--ease);
+}
+.live-done:active { transform: scale(.9); }
+.live-done.is-done {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.live-done.is-done .live-done__ring { opacity: 0; }
+.live-done.is-done .live-done__tick { stroke-dashoffset: 0; }
 
 .live-target { font-size: 12.5px; color: var(--ink-3); margin-top: 2px; }
 
@@ -678,6 +758,11 @@ tr:last-child td { border-bottom: 0; }
 
 @media (max-width: 380px) {
   :root { --pad: 13px; }
+  /* На узкой ширине четыре кнопки регуляторов в строке уже не помещаются
+     в полный размер — сжимаем колонки, поле повторов остаётся читаемым. */
+  .live-set, .live-head { grid-template-columns: 14px 1fr 1fr 38px; gap: 5px; }
+  .live-set--wide, .live-head--wide { grid-template-columns: 14px 1fr 38px; }
+  .live-done { width: 38px; }
   .stats--4 { grid-template-columns: 1fr 1fr; }
   .stat { padding: 10px 9px; }
   .stat__value { font-size: 17px; }
@@ -697,13 +782,13 @@ tr:last-child td { border-bottom: 0; }
 <header class="topbar">
   <div class="topbar__head">
     <div class="brand">
-      <span class="brand__mark" aria-hidden="true">Н</span>
+      <span class="brand__mark"><img class="brand__ava" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAQDAwQDAwQEAwQFBAQFBgoHBgYGBg0JCggKDw0QEA8NDw4RExgUERIXEg4PFRwVFxkZGxsbEBQdHx0aHxgaGxr/2wBDAQQFBQYFBgwHBwwaEQ8RGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhr/wAARCABgAGADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD7Z0+SO5SXUDMo00qSrkgDA/iHtXzP+0JZ3GqppvjvwbJ9lvtGkYLOiYklhB4ceoByfoTXuHxN1uwsvDn9i2ckeZwIyqHhE/D1rkNTs9NvfDWm6crCaGUC2dVb+DHzZoKND4Y+J4/jJ8Prae8keH7HtS7bj97cAZJ+nOfxrz3WpI9G1iOwmuFmjUtG6xRglST/AIV4fpXiPUvgp8YP+EbgvLr/AIRvUbnzEjQ7kI7Z917+1bvjv4gSX2sTvp7xRRRs371By59RQB7X4k8U+F/BHhWxurw2ura1c5MdqiqfLGOv+yBxz3r5S8SeJW1C7kub91aZidiKB8oJ6Cub8R+KWjDukhVySS7ckmuDfxP5krMzhm9c9aAOwur57hjvxt9B0qoZN3XHFZEGsx3CrtPXg+xrTUblBoJBSTmrFnL9nuYpRj5WBqEDB46U/bQB6fpdxviV4/8A9VdVY3QIAHpXkWk30triaEyOQdsqjnjscdxXV6Z4ph2KbxTGp6OuWUj+YoKPp2KOfXL+SSO0lNtD+9nbHBA/z+lcl4u8Y2Wjn7HGxh8ti6qv3zn+VbHxL+NWhWug/wBm+BmDX0nyT3CDbFGgHY/xE+3FfKmv+LvLWe5eZppOrzOckn2oA1/GXie2kvW1C8whTIhDHLKD7+9c5ol3ca8815dXC2OnwgkLgmR/wHQfUivK9T1aXVJ5Lu4Y7SfkUtjj39K3tJ1q403Ty89xtVwQse7I/KgVzm/GWoyTXUjWyTNb7jhyu3P9TXHJcZfcjMr9wT1ra8Q3dxql84jZpFz1Aqzo/gLU9UnjFvDJJv8AukLmgRHoNxLNcpEp5Y4r022tpYNwlZWbA4Bzzjml0X4N31nKJL9lTOAMN0/HtVm40jUPDtybXUV3wE/upSMEegP9DQA3bT+op2P1pmMH60AT2Vy1pcpIpI5w30rpjaxXIUuCrdco20iuTZeK7nSUW4sLaSQAM6DJx17f0oGjkdS1ea8Pz5jj7IP6151481CRmtbSFjsI3uB6noK7Fm3rjvXJeMMQR20rLk8qTigRz+jWsmq31vAIyygjEfXJ9TXsWifC6TWfKacssfYYwAK5n4TWcM2peZcL95eOOgr6m0qwWKOPanAXgjigZwehfB7SNPuEkmh+0sO7KMV6Tp/hi1tk/wBDto4f91cVs2lpGzKSMt6DtWx9mCDK0DMHUvBifZFmGWEi5J6CuIuPD1hq0cmmX8QYSgrHKOTG3b8PavcrmJn0qNXA27a8sntDa3u5gV2yZVvTnrQB89alpU2j301lc8tH9xv7y9j/AEqk65FeufGPRILWzXWjcQx7HyyE4Plv3A7gMD+deUEAoGoAhX7uK9I8P22/RLIcZ2Z/WvJNe1230GxeedgZCCIY+7t/h616v4EunuvCWizTtvkls43ZumSRk0CR5mYZIJGSZSjDqGGDWfrenDUdPeNvvJ8wrYnu5791a6fzJVAUNjnA7UwDHXn1oEXPAOjeV9luIOdwAAHqK+pPDdiy2aC6+8BzmvmrwFfjTZnimcFoZPl+hOR+lfTulXiPZpJG2Q4DA+1BRu2dnHGm7cAtWGSMjIYHBHSuT1TX7q332ek2M15dkZB6IuemWNeS+Jde1KG/ttG8SeJfJvLyRUTTtMBaRtxwN8nCxj3NAH0VdeKbQobSMxM6KRhW5xXl3xI8UW+h6M1zGEW5wQN/Cg45J9u9ZPw8Fukt3bR2JspbGTY4L+aJD7P3Priuj8f+CYvGWjwSWKn7Sr8xBsZ9s0AfM97r9z4q0ptQk8/V9knkOZT5QUEbsrH1K8dSe3SoL69h020M1/KsMaKMljjJxwB9a9d0Xwhp9jp728cKwiNirwiMJhh1BwK8a+O+grDYW95ECvkygEDphhj+goEeLazrFxrd891dtyeEUdEXsBX0B8EPGEGp6Euh3EgW/sARGpPMkJOQR9M4P4V831Ysb65027hu7CZ7e5hbdHIhwVNAj3gdOKXcT+FNWpVHpQB6x4Q+FtnqS2+oDVJP3kIMieTwGK8MG9Bn9K7rwtb3OlLPp+pSeYbWUqj9ih6Yrzj4feJ3aCfRZphC1xbPBA7dCDztP0/kfavS9Nu5byzUNptxBNChDSjbJAVXAKhwevcUFHaSWX2rTpY7eTypJAQJFHI+lcnF8KNJiEU1xZx3VzE5dJpcuwY8luuM10nh7UI0Ihm55ypJ+8PrXar5ckfJG30HpQB59pmi2+mho7OEhm5LEfrUmm6tDFr8Nmk4d4yGmwPlUZ45rpNXSG3t5Gh+8RXIiyureLyrNolDMXLyLlueuPxoA1PiNo+gWzNq9jdC1vLllEkOMpKxHX/ZP6GvmH9oC1H/AAh87R4Yh42OPTeK9i8ULOQpur+Jo7c7mQY59zXjfxLvbbVfB2stayiWFYnCkHIyvPFAHyvRRRQSfQht3j4YGm8jrXaatpSxs3FczcW2wnFA7FZJCjBkYhgQQQcEGu2sfivrljZrblLS5ZRhZZIzv/HBAJ9yK4RxtppPqaAufRXgDxdBrtvBHMoSbB4HZx1H9R7V65ZzHZ97jHevjPwt4hbQNTScuywOQs2Ow7MPcdfzr6U0XxlCkUI1FvLJUFZv+Wcg7EN/Q0DO11ACWEswyO/0rzDxF4u1sNcW+jaGxjU7UuZeVb6KOfzr0I6nBdRfuJAwcdQwrJntjs+RgvPUUAeB6ppWta40kev3UhVukMKFFY+jH09q4/x/pf8AYPgfULaNTgQlenqef619L3lta2cTzX2w8dTXzn8d/FFjH4flh08rMLtvKRx0J/ix64H5ZFAHzBRRRQSf/9k=" width="34" height="34" alt="Никита"></span>
       <span class="brand__text">
         <span class="brand__title">Дневник тренировок</span>
         <span class="brand__sub">Грудь · спина · ноги</span>
       </span>
     </div>
-    <span class="updated">обновлён<br>29 июля</span>
+    <span class="updated">обновлён<br>30 июля</span>
   </div>
   <nav class="tabs" aria-label="Разделы">
     <div class="tabs__scroll">
@@ -720,248 +805,170 @@ tr:last-child td { border-bottom: 0; }
 <section class="section" id="today">
     <div class="section__head">
       <h2 class="section__title">Сегодня — спина</h2>
-      <p class="section__note">Спина + плечи + трицепс. Очередь считается по журналу, а не по календарю: пропустил неделю — порядок не сбился.</p>
+      <p class="section__note">Спина + плечи + трицепс</p>
     </div>
-    <div class="stats">
-    <div class="stat stat--accent">
-      <span class="stat__value">4</span>
-      <div class="stat__label">тренировки в журнале</div>
-    </div>
-    <div class="stat">
-      <span class="stat__value">1</span>
-      <div class="stat__label">день с прошлой</div>
-    </div>
-    <div class="stat">
-      <span class="stat__value">79,8<span class="stat__unit">кг</span></span>
-      <div class="stat__label">вес тела, 28.07</div>
-    </div>
-  </div>
     <div class="card card--accent">
       <div class="card__label">Программа на эту тренировку</div>
-      <p style="margin:0 0 12px;font-size:14px;color:var(--ink-2)">Веса взяты с последней такой тренировки 23 июля. Где написано «поднять вес» — ты дошёл до девяти повторений, лесенка сработала.</p>
+      <h3 class="card__title plan-title">Прошлый раз — 23 июля</h3>
       <div class="ex ex--main">
       <div class="ex__head">
         <div style="min-width:0">
           <span class="ex__role">Основное</span>
           <h3 class="ex__name">Подтягивания</h3>
         </div>
-        <span class="delta delta--first">Впервые</span>
       </div>
-      <div class="ex__target">
-        <span class="ex__target-value">Свой вес, пора утяжеляться</span>
-        <span class="ex__target-label">3 подхода · в прошлый раз 14 повторов 23.07</span>
+      <div class="plan">
+        <div class="plan__row">
+          <span class="plan__cap">Было</span>
+          <div class="sets plan__sets"><span class="set set--best"><span class="set__r">14</span></span><span class="set"><span class="set__r">12</span></span><span class="set"><span class="set__r">11</span></span></div>
+        </div>
+        <div class="plan__row">
+          <span class="plan__cap">Цель</span>
+          <span class="plan__goal">Свой вес, пора утяжеляться</span>
+        </div>
       </div>
-      <div class="ladder ladder--light">
-    <div class="ladder__top">
-      <span class="ladder__label">Вес мал</span>
-      <span class="ladder__hint">Пора вешать пояс с весом</span>
-    </div>
-    <div class="ladder__track"><div class="ladder__fill" style="width:100%"></div></div>
-    <div class="ladder__scale">
-      <span>6 повторений</span>
-      <span>3 из 2 подходов по 9</span>
-    </div>
-  </div>
-      <div class="ex__note">Работаешь собственным весом</div>
     </div><div class="ex">
       <div class="ex__head">
         <div style="min-width:0">
           <span class="ex__role ex__role--acc">Добивка</span>
           <h3 class="ex__name">Гиперэкстензия</h3>
         </div>
-        <span class="delta delta--first">Впервые</span>
       </div>
-      <div class="ex__target">
-        <span class="ex__target-value">Поднять вес выше 30 кг</span>
-        <span class="ex__target-label">3 подхода · в прошлый раз 9 повторов 23.07</span>
+      <div class="plan">
+        <div class="plan__row">
+          <span class="plan__cap">Было</span>
+          <div class="sets plan__sets"><span class="set set--best"><span class="set__w">30 кг</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set"><span class="set__w">30 кг</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set"><span class="set__w">30 кг</span><span class="set__x">×</span><span class="set__r">9</span></span></div>
+        </div>
+        <div class="plan__row">
+          <span class="plan__cap">Цель</span>
+          <span class="plan__goal">Поднять вес выше 30 кг</span>
+        </div>
       </div>
-      <div class="ladder ladder--ready">
-    <div class="ladder__top">
-      <span class="ladder__label">Пора добавлять вес</span>
-      <span class="ladder__hint">3 подхода по 9 — цель взята</span>
-    </div>
-    <div class="ladder__track"><div class="ladder__fill" style="width:100%"></div></div>
-    <div class="ladder__scale">
-      <span>6 повторений</span>
-      <span>3 из 2 подходов по 9</span>
-    </div>
-  </div>
-      <div class="ex__note">Дополнительный вес в руках</div>
     </div><div class="ex">
       <div class="ex__head">
         <div style="min-width:0">
           <span class="ex__role ex__role--acc">Добивка</span>
           <h3 class="ex__name">Тяга вертикального блока</h3>
         </div>
-        <span class="delta delta--first">Впервые</span>
       </div>
-      <div class="ex__target">
-        <span class="ex__target-value">70 кг</span>
-        <span class="ex__target-label">3 подхода · в прошлый раз 6 повторов 23.07</span>
+      <div class="plan">
+        <div class="plan__row">
+          <span class="plan__cap">Было</span>
+          <div class="sets plan__sets"><span class="set"><span class="set__w">60 кг</span><span class="set__x">×</span><span class="set__r">11</span></span><span class="set"><span class="set__w">65 кг</span><span class="set__x">×</span><span class="set__r">8</span></span><span class="set set--best"><span class="set__w">70 кг</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+        </div>
+        <div class="plan__row">
+          <span class="plan__cap">Цель</span>
+          <span class="plan__goal">70 кг</span>
+        </div>
       </div>
-      <div class="ladder ladder--grow">
-    <div class="ladder__top">
-      <span class="ladder__label">Лучший подход — 6</span>
-      <span class="ladder__hint">Нужно 2 подхода по 9</span>
-    </div>
-    <div class="ladder__track"><div class="ladder__fill" style="width:0%"></div></div>
-    <div class="ladder__scale">
-      <span>6 повторений</span>
-      <span>0 из 2 подходов по 9</span>
-    </div>
-  </div>
-      <div class="ex__note">Тяга сверху к себе</div>
     </div><div class="ex">
       <div class="ex__head">
         <div style="min-width:0">
           <span class="ex__role ex__role--acc">Добивка</span>
           <h3 class="ex__name">Трицепс с канатом</h3>
         </div>
-        <span class="delta delta--first">Впервые</span>
       </div>
-      <div class="ex__target">
-        <span class="ex__target-value">50 кг</span>
-        <span class="ex__target-label">3 подхода · в прошлый раз 6 повторов 23.07</span>
+      <div class="plan">
+        <div class="plan__row">
+          <span class="plan__cap">Было</span>
+          <div class="sets plan__sets"><span class="set"><span class="set__w">45 кг</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set set--best"><span class="set__w">50 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">45 кг</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
+        </div>
+        <div class="plan__row">
+          <span class="plan__cap">Цель</span>
+          <span class="plan__goal">50 кг</span>
+        </div>
       </div>
-      <div class="ladder ladder--grow">
-    <div class="ladder__top">
-      <span class="ladder__label">Лучший подход — 6</span>
-      <span class="ladder__hint">Нужно 2 подхода по 9</span>
-    </div>
-    <div class="ladder__track"><div class="ladder__fill" style="width:0%"></div></div>
-    <div class="ladder__scale">
-      <span>6 повторений</span>
-      <span>0 из 2 подходов по 9</span>
-    </div>
-  </div>
-      <div class="ex__note">Следить за техникой: плечи не уводить вперёд</div>
     </div><div class="ex">
       <div class="ex__head">
         <div style="min-width:0">
           <span class="ex__role ex__role--acc">Добивка</span>
           <h3 class="ex__name">Тяга нижнего блока</h3>
         </div>
-        <span class="delta delta--first">Впервые</span>
       </div>
-      <div class="ex__target">
-        <span class="ex__target-value">40 кг</span>
-        <span class="ex__target-label">3 подхода · в прошлый раз 6 повторов 23.07</span>
+      <div class="plan">
+        <div class="plan__row">
+          <span class="plan__cap">Было</span>
+          <div class="sets plan__sets"><span class="set"><span class="set__w">27,5 кг</span><span class="set__x">×</span><span class="set__r">12</span></span><span class="set"><span class="set__w">35 кг</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set set--best"><span class="set__w">40 кг</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+        </div>
+        <div class="plan__row">
+          <span class="plan__cap">Цель</span>
+          <span class="plan__goal">40 кг</span>
+        </div>
       </div>
-      <div class="ladder ladder--grow">
-    <div class="ladder__top">
-      <span class="ladder__label">Лучший подход — 6</span>
-      <span class="ladder__hint">Нужно 2 подхода по 9</span>
-    </div>
-    <div class="ladder__track"><div class="ladder__fill" style="width:0%"></div></div>
-    <div class="ladder__scale">
-      <span>6 повторений</span>
-      <span>0 из 2 подходов по 9</span>
-    </div>
-  </div>
-      <div class="ex__note">Тяга снизу</div>
     </div><div class="ex">
       <div class="ex__head">
         <div style="min-width:0">
           <span class="ex__role ex__role--acc">Добивка</span>
           <h3 class="ex__name">Жим гантелей вверх</h3>
         </div>
-        <span class="delta delta--first">Впервые</span>
       </div>
-      <div class="ex__target">
-        <span class="ex__target-value">15 кг</span>
-        <span class="ex__target-label">3 подхода · в прошлый раз 7 повторов 23.07</span>
+      <div class="plan">
+        <div class="plan__row">
+          <span class="plan__cap">Было</span>
+          <div class="sets plan__sets"><span class="set"><span class="set__w">14 кг</span><span class="set__x">×</span><span class="set__r">10</span></span><span class="set"><span class="set__w">15 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set set--best"><span class="set__w">15 кг</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
+        </div>
+        <div class="plan__row">
+          <span class="plan__cap">Цель</span>
+          <span class="plan__goal">15 кг</span>
+        </div>
       </div>
-      <div class="ladder ladder--grow">
-    <div class="ladder__top">
-      <span class="ladder__label">Лучший подход — 7</span>
-      <span class="ladder__hint">Нужно 2 подхода по 9</span>
-    </div>
-    <div class="ladder__track"><div class="ladder__fill" style="width:23%"></div></div>
-    <div class="ladder__scale">
-      <span>6 повторений</span>
-      <span>0 из 2 подходов по 9</span>
-    </div>
-  </div>
-      <div class="ex__note">Вес одной гантели</div>
     </div><div class="ex">
       <div class="ex__head">
         <div style="min-width:0">
           <span class="ex__role ex__role--acc">Добивка</span>
           <h3 class="ex__name">Разведение гантелей в стороны</h3>
         </div>
-        <span class="delta delta--first">Впервые</span>
       </div>
-      <div class="ex__target">
-        <span class="ex__target-value">15 кг</span>
-        <span class="ex__target-label">3 подхода · в прошлый раз 10 повторов 23.07</span>
+      <div class="plan">
+        <div class="plan__row">
+          <span class="plan__cap">Было</span>
+          <div class="sets plan__sets"><span class="set"><span class="set__w">14 кг</span><span class="set__x">×</span><span class="set__r">11</span></span><span class="set"><span class="set__w">15 кг</span><span class="set__x">×</span><span class="set__r">8</span></span><span class="set set--best"><span class="set__w">15 кг</span><span class="set__x">×</span><span class="set__r">10</span></span></div>
+        </div>
+        <div class="plan__row">
+          <span class="plan__cap">Цель</span>
+          <span class="plan__goal">15 кг</span>
+        </div>
       </div>
-      <div class="ladder ladder--almost">
-    <div class="ladder__top">
-      <span class="ladder__label">Девятка есть, нужна вторая</span>
-      <span class="ladder__hint">Ещё один подход по 9 на 15 кг — и вес растёт</span>
-    </div>
-    <div class="ladder__track"><div class="ladder__fill" style="width:80%"></div></div>
-    <div class="ladder__scale">
-      <span>6 повторений</span>
-      <span>1 из 2 подходов по 9</span>
-    </div>
-  </div>
-      <div class="ex__note">Локти согнуты под 90°, работают плечи, спина не включается</div>
     </div><div class="ex">
       <div class="ex__head">
         <div style="min-width:0">
           <span class="ex__role ex__role--acc">Добивка</span>
           <h3 class="ex__name">Обратная бабочка</h3>
         </div>
-        <span class="delta delta--first">Впервые</span>
       </div>
-      <div class="ex__target">
-        <span class="ex__target-value">52 кг</span>
-        <span class="ex__target-label">3 подхода · в прошлый раз 6 повторов 23.07</span>
+      <div class="plan">
+        <div class="plan__row">
+          <span class="plan__cap">Было</span>
+          <div class="sets plan__sets"><span class="set set--best"><span class="set__w">52 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">52 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">52 кг</span><span class="set__x">×</span><span class="set__r">5</span></span></div>
+        </div>
+        <div class="plan__row">
+          <span class="plan__cap">Цель</span>
+          <span class="plan__goal">52 кг</span>
+        </div>
       </div>
-      <div class="ladder ladder--grow">
-    <div class="ladder__top">
-      <span class="ladder__label">Лучший подход — 6</span>
-      <span class="ladder__hint">Нужно 2 подхода по 9</span>
-    </div>
-    <div class="ladder__track"><div class="ladder__fill" style="width:0%"></div></div>
-    <div class="ladder__scale">
-      <span>6 повторений</span>
-      <span>0 из 2 подходов по 9</span>
-    </div>
-  </div>
-      <div class="ex__note">Разведение рук в стороны, задний пучок дельт</div>
     </div><div class="ex">
       <div class="ex__head">
         <div style="min-width:0">
           <span class="ex__role ex__role--acc">Добивка</span>
           <h3 class="ex__name">Тяга горизонтального блока</h3>
         </div>
-        <span class="delta delta--first">Впервые</span>
       </div>
-      <div class="ex__target">
-        <span class="ex__target-value">60 кг</span>
-        <span class="ex__target-label">2 подхода · в прошлый раз 6 повторов 23.07</span>
+      <div class="plan">
+        <div class="plan__row">
+          <span class="plan__cap">Было</span>
+          <div class="sets plan__sets"><span class="set set--best"><span class="set__w">60 кг</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">55 кг</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
+        </div>
+        <div class="plan__row">
+          <span class="plan__cap">Цель</span>
+          <span class="plan__goal">60 кг</span>
+        </div>
       </div>
-      <div class="ladder ladder--grow">
-    <div class="ladder__top">
-      <span class="ladder__label">Лучший подход — 6</span>
-      <span class="ladder__hint">Нужно 2 подхода по 9</span>
-    </div>
-    <div class="ladder__track"><div class="ladder__fill" style="width:0%"></div></div>
-    <div class="ladder__scale">
-      <span>6 повторений</span>
-      <span>0 из 2 подходов по 9</span>
-    </div>
-  </div>
-      <div class="ex__note">Сидя, тяга к себе по горизонтали</div>
     </div>
     </div>
 
     <div class="card">
       <div class="card__label">Записать тренировку</div>
       <h3 class="card__title">Заполняй прямо между подходами</h3>
-      <p style="margin:4px 0 0;font-size:14px;color:var(--ink-2)">Всё сохраняется само, интернет не нужен. В конце нажми «Скопировать тренировку» и отправь текст мне — я занесу в файл и пересчитаю прогресс.</p>
       <noscript><div class="noscript">Ввод работает только со включёнными скриптами. Программа выше, история и вся статистика доступны и без них.</div></noscript>
       <div id="live-form"></div>
     </div>
@@ -985,7 +992,7 @@ tr:last-child td { border-bottom: 0; }
     <circle class="spark__dot" cx="117.0" cy="29.0" r="3"/>
   </svg>
         <span class="delta delta--first">Впервые</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -1007,7 +1014,7 @@ tr:last-child td { border-bottom: 0; }
     <svg viewBox="0 0 640 200" preserveAspectRatio="none" class="chart__svg" role="img"
          aria-label="Изменение рабочего веса, Жим гантелями лёжа">
       <defs>
-        <linearGradient id="cnqgqm1-fill" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id="c8494ar-fill" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/>
           <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
         </linearGradient>
@@ -1023,7 +1030,7 @@ tr:last-child td { border-bottom: 0; }
     <text class="ch-axis" x="36" y="60.0" text-anchor="end">29</text>
     <line class="ch-grid" x1="46" y1="18.0" x2="622" y2="18.0"/>
     <text class="ch-axis" x="36" y="22.0" text-anchor="end">30</text>
-      <path class="ch-area" d="M46.0,94.0 L622.0,94.0 L622.0,170.0 L46.0,170.0 Z" fill="url(#cnqgqm1-fill)"/>
+      <path class="ch-area" d="M46.0,94.0 L622.0,94.0 L622.0,170.0 L46.0,170.0 Z" fill="url(#c8494ar-fill)"/>
       <path class="ch-line" d="M46.0,94.0 L622.0,94.0"/>
       <circle class="ch-dot ch-dot--calib" cx="46.0" cy="94.0" r="4.5"><title>19.07 — 28 кг (калибровка), 7 повторов</title></circle><circle class="ch-dot ch-dot--calib" cx="622.0" cy="94.0" r="4.5"><title>28.07 — 28 кг (калибровка), 6 повторов</title></circle>
       <text class="ch-axis" x="46.0" y="192" text-anchor="start">19.07</text><text class="ch-axis" x="622.0" y="192" text-anchor="end">28.07</text>
@@ -1072,7 +1079,7 @@ tr:last-child td { border-bottom: 0; }
       <div class="sum__right">
         
         <span class="delta delta--first">Впервые</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -1123,7 +1130,7 @@ tr:last-child td { border-bottom: 0; }
     <circle class="spark__dot" cx="117.0" cy="29.0" r="3"/>
   </svg>
         <span class="delta delta--up"><span class="delta__arrow" aria-hidden="true">▲</span>+1 повтор</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -1145,7 +1152,7 @@ tr:last-child td { border-bottom: 0; }
     <svg viewBox="0 0 640 200" preserveAspectRatio="none" class="chart__svg" role="img"
          aria-label="Изменение рабочего веса, Жим от груди сидя">
       <defs>
-        <linearGradient id="coycsqk-fill" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id="cw0kyws-fill" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/>
           <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
         </linearGradient>
@@ -1157,7 +1164,7 @@ tr:last-child td { border-bottom: 0; }
     <text class="ch-axis" x="36" y="98.0" text-anchor="end">95</text>
     <line class="ch-grid" x1="46" y1="18.0" x2="622" y2="18.0"/>
     <text class="ch-axis" x="36" y="22.0" text-anchor="end">100</text>
-      <path class="ch-area" d="M46.0,94.0 L622.0,94.0 L622.0,170.0 L46.0,170.0 Z" fill="url(#coycsqk-fill)"/>
+      <path class="ch-area" d="M46.0,94.0 L622.0,94.0 L622.0,170.0 L46.0,170.0 Z" fill="url(#cw0kyws-fill)"/>
       <path class="ch-line" d="M46.0,94.0 L622.0,94.0"/>
       <circle class="ch-dot ch-dot--calib" cx="46.0" cy="94.0" r="4.5"><title>19.07 — 95 кг (калибровка), 7 повторов</title></circle><circle class="ch-dot ch-dot--calib" cx="622.0" cy="94.0" r="4.5"><title>28.07 — 95 кг (калибровка), 8 повторов</title></circle>
       <text class="ch-axis" x="46.0" y="192" text-anchor="start">19.07</text><text class="ch-axis" x="622.0" y="192" text-anchor="end">28.07</text>
@@ -1209,7 +1216,7 @@ tr:last-child td { border-bottom: 0; }
     <circle class="spark__dot" cx="117.0" cy="29.0" r="3"/>
   </svg>
         <span class="delta delta--up"><span class="delta__arrow" aria-hidden="true">▲</span>+1 повтор</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -1231,7 +1238,7 @@ tr:last-child td { border-bottom: 0; }
     <svg viewBox="0 0 640 200" preserveAspectRatio="none" class="chart__svg" role="img"
          aria-label="Изменение рабочего веса, Подъём штанги на бицепс стоя">
       <defs>
-        <linearGradient id="c5yc7cg-fill" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id="cb5hnl4-fill" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/>
           <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
         </linearGradient>
@@ -1245,7 +1252,7 @@ tr:last-child td { border-bottom: 0; }
     <text class="ch-axis" x="36" y="72.7" text-anchor="end">38</text>
     <line class="ch-grid" x1="46" y1="18.0" x2="622" y2="18.0"/>
     <text class="ch-axis" x="36" y="22.0" text-anchor="end">40</text>
-      <path class="ch-area" d="M46.0,81.3 L622.0,81.3 L622.0,170.0 L46.0,170.0 Z" fill="url(#c5yc7cg-fill)"/>
+      <path class="ch-area" d="M46.0,81.3 L622.0,81.3 L622.0,170.0 L46.0,170.0 Z" fill="url(#cb5hnl4-fill)"/>
       <path class="ch-line" d="M46.0,81.3 L622.0,81.3"/>
       <circle class="ch-dot ch-dot--calib" cx="46.0" cy="81.3" r="4.5"><title>19.07 — 37,5 кг (калибровка), 6 повторов</title></circle><circle class="ch-dot ch-dot--calib" cx="622.0" cy="81.3" r="4.5"><title>28.07 — 37,5 кг (калибровка), 7 повторов</title></circle>
       <text class="ch-axis" x="46.0" y="192" text-anchor="start">19.07</text><text class="ch-axis" x="622.0" y="192" text-anchor="end">28.07</text>
@@ -1294,7 +1301,7 @@ tr:last-child td { border-bottom: 0; }
       <div class="sum__right">
         
         <span class="delta delta--first">Впервые</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -1342,7 +1349,7 @@ tr:last-child td { border-bottom: 0; }
       <div class="sum__right">
         
         <span class="delta delta--first">Впервые</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -1390,7 +1397,7 @@ tr:last-child td { border-bottom: 0; }
       <div class="sum__right">
         
         <span class="delta delta--first">Впервые</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -1438,7 +1445,7 @@ tr:last-child td { border-bottom: 0; }
       <div class="sum__right">
         
         <span class="delta delta--first">Впервые</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -1489,7 +1496,7 @@ tr:last-child td { border-bottom: 0; }
       <div class="sum__right">
         
         <span class="delta delta--first">Впервые</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -1537,7 +1544,7 @@ tr:last-child td { border-bottom: 0; }
       <div class="sum__right">
         
         <span class="delta delta--first">Впервые</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -1585,7 +1592,7 @@ tr:last-child td { border-bottom: 0; }
       <div class="sum__right">
         
         <span class="delta delta--first">Впервые</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -1633,7 +1640,7 @@ tr:last-child td { border-bottom: 0; }
       <div class="sum__right">
         
         <span class="delta delta--first">Впервые</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -1681,7 +1688,7 @@ tr:last-child td { border-bottom: 0; }
       <div class="sum__right">
         
         <span class="delta delta--first">Впервые</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -1729,7 +1736,7 @@ tr:last-child td { border-bottom: 0; }
       <div class="sum__right">
         
         <span class="delta delta--first">Впервые</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -1777,7 +1784,7 @@ tr:last-child td { border-bottom: 0; }
       <div class="sum__right">
         
         <span class="delta delta--first">Впервые</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -1825,7 +1832,7 @@ tr:last-child td { border-bottom: 0; }
       <div class="sum__right">
         
         <span class="delta delta--first">Впервые</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -1873,7 +1880,7 @@ tr:last-child td { border-bottom: 0; }
       <div class="sum__right">
         
         <span class="delta delta--first">Впервые</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -1924,7 +1931,7 @@ tr:last-child td { border-bottom: 0; }
       <div class="sum__right">
         
         <span class="delta delta--first">Впервые</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -1972,7 +1979,7 @@ tr:last-child td { border-bottom: 0; }
       <div class="sum__right">
         
         <span class="delta delta--first">Впервые</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -2020,7 +2027,7 @@ tr:last-child td { border-bottom: 0; }
       <div class="sum__right">
         
         <span class="delta delta--first">Впервые</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -2068,7 +2075,7 @@ tr:last-child td { border-bottom: 0; }
       <div class="sum__right">
         
         <span class="delta delta--first">Впервые</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -2116,7 +2123,7 @@ tr:last-child td { border-bottom: 0; }
       <div class="sum__right">
         
         <span class="delta delta--first">Впервые</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -2159,7 +2166,7 @@ tr:last-child td { border-bottom: 0; }
       <div class="sum__right">
         
         <span class="delta delta--first">Впервые</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body">
@@ -2207,7 +2214,7 @@ tr:last-child td { border-bottom: 0; }
           <div class="sum__title">Июль 2026</div>
           <div class="sum__sub">4 тренировки · поднято 44 т</div>
         </div>
-        <div class="sum__right"><span class="sum__chev" aria-hidden="true">⌄</span></div>
+        <div class="sum__right"><svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg></div>
       </summary>
       <div class="details__body"><details open>
         <summary>
@@ -2215,7 +2222,7 @@ tr:last-child td { border-bottom: 0; }
             <div class="sum__title">Неделя 27.07 — 02.08</div>
             <div class="sum__sub">1 тренировка</div>
           </div>
-          <div class="sum__right"><span class="sum__chev" aria-hidden="true">⌄</span></div>
+          <div class="sum__right"><svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg></div>
         </summary>
         <div class="details__body"><details>
     <summary>
@@ -2225,7 +2232,7 @@ tr:last-child td { border-bottom: 0; }
       </div>
       <div class="sum__right">
         <span class="pill pill--calib">калибровка</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body"><div style="margin-bottom:13px">
@@ -2266,7 +2273,7 @@ tr:last-child td { border-bottom: 0; }
             <div class="sum__title">Неделя 20.07 — 26.07</div>
             <div class="sum__sub">2 тренировки</div>
           </div>
-          <div class="sum__right"><span class="sum__chev" aria-hidden="true">⌄</span></div>
+          <div class="sum__right"><svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg></div>
         </summary>
         <div class="details__body"><details>
     <summary>
@@ -2276,7 +2283,7 @@ tr:last-child td { border-bottom: 0; }
       </div>
       <div class="sum__right">
         <span class="pill pill--calib">калибровка</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body"><div style="margin-bottom:13px">
@@ -2324,7 +2331,7 @@ tr:last-child td { border-bottom: 0; }
       </div>
       <div class="sum__right">
         <span class="pill pill--calib">калибровка</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body"><div style="margin-bottom:13px">
@@ -2389,7 +2396,7 @@ tr:last-child td { border-bottom: 0; }
             <div class="sum__title">Неделя 13.07 — 19.07</div>
             <div class="sum__sub">1 тренировка</div>
           </div>
-          <div class="sum__right"><span class="sum__chev" aria-hidden="true">⌄</span></div>
+          <div class="sum__right"><svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg></div>
         </summary>
         <div class="details__body"><details>
     <summary>
@@ -2399,7 +2406,7 @@ tr:last-child td { border-bottom: 0; }
       </div>
       <div class="sum__right">
         <span class="pill pill--calib">калибровка</span>
-        <span class="sum__chev" aria-hidden="true">⌄</span>
+        <svg class="ico sum__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
       </div>
     </summary>
     <div class="details__body"><div style="margin-bottom:13px">
@@ -2517,7 +2524,7 @@ tr:last-child td { border-bottom: 0; }
     <svg viewBox="0 0 640 190" preserveAspectRatio="none" class="chart__svg" role="img"
          aria-label="Изменение веса тела">
       <defs>
-        <linearGradient id="c0cbi4l-fill" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id="cde2mum-fill" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/>
           <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
         </linearGradient>
@@ -2531,7 +2538,7 @@ tr:last-child td { border-bottom: 0; }
     <text class="ch-axis" x="36" y="69.3" text-anchor="end">79,5</text>
     <line class="ch-grid" x1="46" y1="18.0" x2="622" y2="18.0"/>
     <text class="ch-axis" x="36" y="22.0" text-anchor="end">80</text>
-      <path class="ch-area" d="M46.0,131.6 L622.0,36.9 L622.0,160.0 L46.0,160.0 Z" fill="url(#c0cbi4l-fill)"/>
+      <path class="ch-area" d="M46.0,131.6 L622.0,36.9 L622.0,160.0 L46.0,160.0 Z" fill="url(#cde2mum-fill)"/>
       <path class="ch-line" d="M46.0,131.6 L622.0,36.9"/>
       <circle class="ch-dot" cx="46.0" cy="131.6" r="4.5"><title>23.07 — 78,8 кг</title></circle><circle class="ch-dot" cx="622.0" cy="36.9" r="4.5"><title>28.07 — 79,8 кг</title></circle>
       <text class="ch-axis" x="46.0" y="182" text-anchor="start">23.07</text><text class="ch-axis" x="622.0" y="182" text-anchor="end">28.07</text>
@@ -2550,7 +2557,7 @@ tr:last-child td { border-bottom: 0; }
 <footer class="foot">
   <p><strong>Как это обновляется.</strong> Записал тренировку в разделе «Сегодня», нажал «Скопировать тренировку», отправил текст мне в чат — я вношу её в файл и пересчитываю всю статистику. Страница обновится сама, когда телефон в следующий раз поймает сеть.</p>
   <p>Регресс считается только по главному упражнению дня и только против такой же роли: результат добивки после базового с результатом свежего подхода не сравнивается. Пробы максимума и калибровочные тренировки помечены отдельно и статистику не занижают.</p>
-  <p>Сборка 29 июля · версия be492e5b</p>
+  <p>Сборка 30 июля · версия 47807f5d</p>
 </footer>
 </main>
 
@@ -2564,6 +2571,17 @@ tr:last-child td { border-bottom: 0; }
 
   var PROGRAM = window.__PROGRAM__ || null;
   var STORE = 'nk-training-draft-v1';
+
+  // Меньше трёх подходов на упражнение не бывает — удалять можно только то,
+  // что добавлено сверху. Иначе одно случайное нажатие сносит программу.
+  var MIN_SETS = 3;
+
+  // Знаки нарисованы фигурами: глифы шрифта стоят в кнопке вкось.
+  var ICO_MINUS = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12"/></svg>';
+  var ICO_PLUS = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6v12M6 12h12"/></svg>';
+  var ICO_CHECK = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">' +
+    '<circle class="live-done__ring" cx="12" cy="12" r="9.2"/>' +
+    '<path class="live-done__tick" d="M7.2 12.6l3.2 3.2 6.4-6.9"/></svg>';
 
   /* ───────────────────────── разделы ───────────────────────── */
 
@@ -2649,6 +2667,11 @@ tr:last-child td { border-bottom: 0; }
       return null;
     }
 
+    function programItem(id) {
+      for (var i = 0; i < PROGRAM.items.length; i++) if (PROGRAM.items[i].id === id) return PROGRAM.items[i];
+      return null;
+    }
+
     function render() {
       var html = '';
 
@@ -2678,7 +2701,7 @@ tr:last-child td { border-bottom: 0; }
         html += '<h3 class="ex__name">' + esc(it.name) + '</h3>';
         html += '<div class="live-target">Цель: ' + esc(it.targetText) + '</div>';
         html += '</div>';
-        html += '<span class="pill">' + doneCount + ' / ' + st.sets.length + '</span>';
+        html += '<span class="pill" data-count="' + it.id + '">' + doneCount + ' / ' + st.sets.length + '</span>';
         html += '</div>';
         html += '<div class="live-ex__body">';
 
@@ -2696,12 +2719,16 @@ tr:last-child td { border-bottom: 0; }
           html += '<span class="live-set__n">' + (i + 1) + '</span>';
           if (!noWeight) html += stepper('w', it.id, i, s.w, it.stepWeight);
           html += stepper('r', it.id, i, s.r, 1);
-          html += '<button type="button" class="live-done' + (s.done ? ' is-done' : '') + '" data-done="' + it.id + '|' + i + '" aria-label="Отметить подход выполненным">✓</button>';
+          html += '<button type="button" class="live-done' + (s.done ? ' is-done' : '') + '" data-done="' + it.id + '|' + i +
+            '" aria-pressed="' + (s.done ? 'true' : 'false') + '" aria-label="Отметить подход выполненным">' + ICO_CHECK + '</button>';
           html += '</div>';
         });
 
         html += '<div class="btn-row" style="margin-top:8px">';
         html += '<button type="button" class="btn btn--ghost" data-addset="' + it.id + '" style="padding:8px 14px;font-size:13.5px">+ подход</button>';
+        if (st.sets.length > minSets(it)) {
+          html += '<button type="button" class="btn btn--ghost" data-delset="' + it.id + '" style="padding:8px 14px;font-size:13.5px">− подход</button>';
+        }
         html += '</div>';
         html += '</div></div>';
       });
@@ -2720,10 +2747,17 @@ tr:last-child td { border-bottom: 0; }
       var key = id === null ? kind : kind + '|' + id + '|' + idx;
       var v = (value === null || value === undefined) ? '' : value;
       return '<div class="stepper">' +
-        '<button type="button" class="stepper__btn stepper__btn--minus" data-step="' + key + '|-1" aria-label="Меньше">−</button>' +
+        '<button type="button" class="stepper__btn stepper__btn--minus" data-step="' + key + '|-1" aria-label="Меньше">' + ICO_MINUS + '</button>' +
         '<input class="stepper__field" type="number" inputmode="decimal" step="' + step + '" data-field="' + key + '" value="' + esc(String(v)) + '">' +
-        '<button type="button" class="stepper__btn stepper__btn--plus" data-step="' + key + '|1" aria-label="Больше">+</button>' +
+        '<button type="button" class="stepper__btn stepper__btn--plus" data-step="' + key + '|1" aria-label="Больше">' + ICO_PLUS + '</button>' +
         '</div>';
+    }
+
+    // Сколько подходов нельзя удалить. Обычно три; если в программе их
+    // меньше, планка опускается до программы, а не наоборот.
+    function minSets(it) {
+      var planned = it && it.sets ? it.sets : MIN_SETS;
+      return Math.min(MIN_SETS, planned);
     }
 
     function setValue(key, value) {
@@ -2778,15 +2812,25 @@ tr:last-child td { border-bottom: 0; }
         });
       });
 
+      // Отметка переключается НА МЕСТЕ, без пересборки формы: иначе
+      // галочка не прорисовывается, а поле, в котором стоит курсор,
+      // теряет фокус посреди набора цифр.
       live.querySelectorAll('[data-done]').forEach(function (el) {
         el.addEventListener('click', function () {
           var p = el.getAttribute('data-done').split('|');
           var st = itemState(p[0]);
           if (!st) return;
           var s = st.sets[+p[1]];
+          if (!s) return;
           s.done = !s.done;
           save();
-          render();
+          el.classList.toggle('is-done', s.done);
+          el.setAttribute('aria-pressed', s.done ? 'true' : 'false');
+          var pill = live.querySelector('[data-count="' + p[0] + '"]');
+          if (pill) {
+            var done = st.sets.filter(function (x) { return x.done; }).length;
+            pill.textContent = done + ' / ' + st.sets.length;
+          }
         });
       });
 
@@ -2796,6 +2840,23 @@ tr:last-child td { border-bottom: 0; }
           if (!st) return;
           var last = st.sets[st.sets.length - 1];
           st.sets.push({ w: last ? last.w : '', r: '', done: false });
+          save();
+          render();
+        });
+      });
+
+      // Удаляется только последний подход и только выше минимума:
+      // случайное нажатие «+ подход» откатывается, программа — нет.
+      live.querySelectorAll('[data-delset]').forEach(function (el) {
+        el.addEventListener('click', function () {
+          var id = el.getAttribute('data-delset');
+          var st = itemState(id);
+          var it = programItem(id);
+          if (!st || !it || st.sets.length <= minSets(it)) return;
+          var last = st.sets[st.sets.length - 1];
+          var filled = last && (last.r !== '' && last.r !== null && last.r !== undefined);
+          if (filled && !confirm('В последнем подходе уже записаны повторы. Удалить его?')) return;
+          st.sets.pop();
           save();
           render();
         });
