@@ -1,6 +1,6 @@
-/* Офлайн-кэш дневника. Версия 7500eee1 — меняется при каждой пересборке,
+/* Офлайн-кэш дневника. Версия bb17c507 — меняется при каждой пересборке,
    поэтому старая копия не залипает после обновления. */
-var CACHE = 'nk-training-7500eee1';
+var CACHE = 'nk-training-bb17c507';
 var ASSETS = ['./', './index.html', './manifest.webmanifest', './apple-touch-icon.png', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', function (e) {
