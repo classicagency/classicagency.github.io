@@ -1,6 +1,6 @@
-/* Офлайн-кэш приложения «Деньги». Версия eaecf8aa меняется при каждой
+/* Офлайн-кэш приложения «Деньги». Версия 4284e402 меняется при каждой
    пересборке, поэтому старая копия не залипает после обновления. */
-var CACHE = 'nk-money-eaecf8aa';
+var CACHE = 'nk-money-4284e402';
 var ASSETS = ['./', './index.html', './manifest.webmanifest', './apple-touch-icon.png', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', function (e) {
