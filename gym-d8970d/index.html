@@ -662,9 +662,12 @@ tr:last-child td { border-bottom: 0; }
 /* Строка подхода — сетка, а не гибкая лента: при двух регуляторах
    в ряд поля ввода схлопывались в ноль и цифр не было видно.
    Подписи «кг» и «раз» вынесены в шапку колонок, чтобы не съедать ширину. */
+/* Колонки неравные: под весом стоит трёхзначное число с половиной,
+   под повторами — двузначное. Делить ширину поровну значит зажимать вес
+   и дарить лишнее повторам. */
 .live-set {
   display: grid;
-  grid-template-columns: 16px 1fr 1fr 40px;
+  grid-template-columns: 16px 1.5fr 1fr 40px;
   align-items: center;
   gap: 7px;
   padding: 7px 0;
@@ -677,7 +680,7 @@ tr:last-child td { border-bottom: 0; }
 
 .live-head {
   display: grid;
-  grid-template-columns: 16px 1fr 1fr 40px;
+  grid-template-columns: 16px 1.5fr 1fr 40px;
   gap: 7px;
   font-family: var(--font-display);
   font-size: 11px;
@@ -692,18 +695,23 @@ tr:last-child td { border-bottom: 0; }
 .live-head span:first-child, .live-head span:last-child { text-align: left; }
 
 /* Сколько места держит за собой поле ввода. Вес бывает трёхзначным и с
-   половиной («390», «77,5»), повторы — не длиннее двух знаков, поэтому
-   запас у них разный: общий минимум либо обрезал бы вес, либо отъедал
-   ширину у кнопок там, где она не нужна. */
+   половиной — самое длинное реальное значение «112,5» набирается в 44px, —
+   а повторы не длиннее двух знаков. Запас у них разный: общий минимум либо
+   зажимал бы вес, либо отъедал ширину у кнопок там, где она не нужна.
+
+   62px у веса — это не «лишь бы влезло». Со скрина с айфона: при 46px
+   «37,5» занимало 34,4px и по краям оставалось по пять точек — цифры
+   читались впритык, между двумя кнопками по 38px. Числу нужен воздух,
+   а не ровно своя ширина. */
 .stepper { display: flex; align-items: center; min-width: 0; }
-.stepper--w { --field-min: 46px; }
+.stepper--w { --field-min: 62px; }
 .stepper--r { --field-min: 34px; }
 
 /* Кнопки сжимаются раньше, чем поле: при жёсткой ширине они выдавливались
    за свою колонку и налезали на галочку — отсюда и кривизна строки. */
 .stepper__btn {
   flex: 0 1 40px;
-  width: 40px; min-width: 30px; height: 44px;
+  width: 40px; min-width: 26px; height: 44px;
   padding: 0;
   border: 1px solid var(--line);
   background: var(--surface-2);
@@ -769,6 +777,54 @@ tr:last-child td { border-bottom: 0; }
   padding: 0 12px;
   text-align: left;
 }
+
+/* Замена упражнения внутри слота — то, что раньше приходилось держать
+   в голове: икры идут то сидя, то в гакк-машине, на груди жим лёжа
+   и жим гантелей меняются местами. Список закрыт по умолчанию: в зале
+   нужны цифры, а выбор делается раз за тренировку. */
+.swap__open {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  width: 100%; min-height: var(--tap);
+  margin-bottom: 2px;
+  padding: 0;
+  border: 0; background: none;
+  color: var(--ink-2);
+  font-family: var(--font-body); font-size: 13px; font-weight: 400;
+  cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+}
+.swap__open .ico { width: 18px; height: 18px; transition: transform var(--t-quick) var(--ease); }
+.swap__open.is-open .ico { transform: rotate(180deg); }
+
+.swap { display: grid; gap: 6px; margin-bottom: 10px; }
+.swap__opt {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  min-height: var(--tap);
+  padding: 8px 12px;
+  text-align: left;
+  border: 1px solid var(--line);
+  /* Выбранное помечается закладкой, а не заливкой: жёлтый фон под текстом
+     забракован ещё на вкладках — на нём читается только чистый чёрный. */
+  border-left: 3px solid transparent;
+  border-radius: var(--r-s);
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font-family: var(--font-body); font-size: 14px; font-weight: 400;
+  cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+  transition: transform var(--t-tap) var(--ease), background var(--t-quick) var(--ease),
+              color var(--t-quick) var(--ease), border-color var(--t-quick) var(--ease);
+}
+.swap__opt:active { transform: scale(.985); }
+.swap__opt.is-on {
+  border-left-color: var(--accent);
+  background: var(--surface-3);
+  color: var(--ink);
+  font-weight: 500;
+}
+.swap__opt-name { min-width: 0; }
+.swap__opt-tick { color: var(--accent); display: grid; place-items: center; flex: none; }
+.swap__opt-tick .ico { width: 18px; height: 18px; }
 
 .live-check {
   display: flex; align-items: center; gap: 10px;
@@ -976,10 +1032,13 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
      в полный размер — сжимаем колонки, поле повторов остаётся читаемым.
      Колонки неравные: вес держит трёхзначное число с половиной, повторы —
      двузначное, и делить ширину поровну значит обрезать вес. */
-  .live-set, .live-head { grid-template-columns: 12px 1.1fr 0.9fr 38px; gap: 4px; }
+  .live-set, .live-head { grid-template-columns: 12px 1.5fr 1fr 38px; gap: 4px; }
   .live-set--wide, .live-head--wide { grid-template-columns: 12px 1fr 38px; }
-  .stepper__btn { min-width: 22px; }
-  .stepper--r { --field-min: 30px; }
+  /* Кнопкам на 320px остаётся 17–20px ширины: всё остальное забирают поля,
+     потому что читаемость числа важнее размера кнопки. Высота у них
+     по-прежнему 44px, палец попадает. Живой телефон Никиты — 414px,
+     там кнопки полного размера. */
+  .stepper__btn { min-width: 16px; }
   .live-done { width: 38px; }
   .stats--4 { grid-template-columns: 1fr 1fr; }
   .stat { padding: 10px 9px; }
@@ -1006,7 +1065,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <span class="brand__sub">Грудь · спина · ноги</span>
       </span>
     </div>
-    <span class="updated">обновлён<br>2 августа</span>
+    <span class="updated">обновлён<br>3 августа</span>
   </div>
   <nav class="tabs" aria-label="Разделы">
     <div class="tabs__scroll">
@@ -1028,89 +1087,89 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     <div class="card">
       <div class="card__label">Программа на эту тренировку</div>
       <h3 class="card__title plan-title">Прошлый раз — 28 июля</h3>
-      <div class="ex ex--main">
+      <div class="ex ex--main" data-pos="0">
       <div class="ex__head">
         <div style="min-width:0">
           <span class="ex__role">Основное</span>
-          <h3 class="ex__name">Жим лёжа</h3>
+          <h3 class="ex__name" data-plan-name>Жим гантелями лёжа</h3>
         </div>
       </div>
       <div class="plan">
         <div class="plan__row">
           <span class="plan__cap">Было</span>
-          <div class="sets plan__sets plan__sets--c2"><span class="set"><span class="set__w">77,5</span><span class="set__x">×</span><span class="set__r">5</span></span><span class="set"><span class="set__w">75</span><span class="set__x">×</span><span class="set__r">8</span></span><span class="set set--best"><span class="set__w">77,5</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">77,5</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+          <div class="sets plan__sets plan__sets--c2" data-plan-sets><span class="set set--best"><span class="set__w">28</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">28</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">28</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">28</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
         </div>
         <div class="plan__row">
           <span class="plan__cap">Цель</span>
-          <span class="plan__goal">77,5 кг</span>
+          <span class="plan__goal" data-plan-goal>28 кг</span>
         </div>
       </div>
-    </div><div class="ex">
+    </div><div class="ex" data-pos="1">
       <div class="ex__head">
         <div style="min-width:0">
           <span class="ex__role ex__role--acc">Добивка</span>
-          <h3 class="ex__name">Жим гантелями лёжа</h3>
+          <h3 class="ex__name" data-plan-name>Жим лёжа на наклонной скамье</h3>
         </div>
       </div>
       <div class="plan">
         <div class="plan__row">
           <span class="plan__cap">Было</span>
-          <div class="sets plan__sets plan__sets--c3"><span class="set set--best"><span class="set__w">28</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">28</span><span class="set__x">×</span><span class="set__r">3</span></span><span class="set"><span class="set__w">26</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+          <div class="sets plan__sets plan__sets--c3" data-plan-sets><span class="set set--best"><span class="set__w">62,5</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">62,5</span><span class="set__x">×</span><span class="set__r">6</span></span><span class="set"><span class="set__w">62,5</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
         </div>
         <div class="plan__row">
           <span class="plan__cap">Цель</span>
-          <span class="plan__goal">28 кг</span>
+          <span class="plan__goal" data-plan-goal>62,5 кг</span>
         </div>
       </div>
-    </div><div class="ex">
+    </div><div class="ex" data-pos="2">
       <div class="ex__head">
         <div style="min-width:0">
           <span class="ex__role ex__role--acc">Добивка</span>
-          <h3 class="ex__name">Разводка от груди в кроссовере</h3>
+          <h3 class="ex__name" data-plan-name>Бабочка</h3>
         </div>
       </div>
       <div class="plan">
         <div class="plan__row">
           <span class="plan__cap">Было</span>
-          <div class="sets plan__sets plan__sets--c3"><span class="set"><span class="set__w">30</span><span class="set__x">×</span><span class="set__r">11</span></span><span class="set set--best"><span class="set__w">35</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">35</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
+          <div class="sets plan__sets plan__sets--c3" data-plan-sets><span class="set set--best"><span class="set__w">72</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">72</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">72</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
         </div>
         <div class="plan__row">
           <span class="plan__cap">Цель</span>
-          <span class="plan__goal">35 кг</span>
+          <span class="plan__goal" data-plan-goal>72 кг</span>
         </div>
       </div>
-    </div><div class="ex">
+    </div><div class="ex" data-pos="3">
       <div class="ex__head">
         <div style="min-width:0">
           <span class="ex__role ex__role--acc">Добивка</span>
-          <h3 class="ex__name">Жим от груди сидя</h3>
+          <h3 class="ex__name" data-plan-name>Жим от груди сидя</h3>
         </div>
       </div>
       <div class="plan">
         <div class="plan__row">
           <span class="plan__cap">Было</span>
-          <div class="sets plan__sets plan__sets--c3"><span class="set set--best"><span class="set__w">95</span><span class="set__x">×</span><span class="set__r">8</span></span><span class="set"><span class="set__w">95</span><span class="set__x">×</span><span class="set__r">8</span></span><span class="set"><span class="set__w">95</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
+          <div class="sets plan__sets plan__sets--c3" data-plan-sets><span class="set set--best"><span class="set__w">95</span><span class="set__x">×</span><span class="set__r">8</span></span><span class="set"><span class="set__w">95</span><span class="set__x">×</span><span class="set__r">8</span></span><span class="set"><span class="set__w">95</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
         </div>
         <div class="plan__row">
           <span class="plan__cap">Цель</span>
-          <span class="plan__goal">95 кг</span>
+          <span class="plan__goal" data-plan-goal>95 кг</span>
         </div>
       </div>
-    </div><div class="ex">
+    </div><div class="ex" data-pos="4">
       <div class="ex__head">
         <div style="min-width:0">
           <span class="ex__role ex__role--acc">Добивка</span>
-          <h3 class="ex__name">Подъём штанги на бицепс стоя</h3>
+          <h3 class="ex__name" data-plan-name>Подъём штанги на бицепс стоя</h3>
         </div>
       </div>
       <div class="plan">
         <div class="plan__row">
           <span class="plan__cap">Было</span>
-          <div class="sets plan__sets plan__sets--c3"><span class="set set--best"><span class="set__w">37,5</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">37,5</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">37,5</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
+          <div class="sets plan__sets plan__sets--c3" data-plan-sets><span class="set set--best"><span class="set__w">37,5</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">37,5</span><span class="set__x">×</span><span class="set__r">7</span></span><span class="set"><span class="set__w">37,5</span><span class="set__x">×</span><span class="set__r">7</span></span></div>
         </div>
         <div class="plan__row">
           <span class="plan__cap">Цель</span>
-          <span class="plan__goal">37,5 кг</span>
+          <span class="plan__goal" data-plan-goal>37,5 кг</span>
         </div>
       </div>
     </div>
@@ -3517,20 +3576,23 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
 <footer class="foot">
   <p><strong>Как это обновляется.</strong> Записал тренировку в разделе «Сегодня», нажал «Скопировать тренировку», отправил текст мне в чат — я вношу её в файл и пересчитываю всю статистику. Страница обновится сама, когда телефон в следующий раз поймает сеть.</p>
   <p>Регресс считается только по главному упражнению дня и только против такой же роли: результат добивки после базового с результатом свежего подхода не сравнивается. Пробы максимума и калибровочные тренировки помечены отдельно и статистику не занижают.</p>
-  <p>Сборка 2 августа · версия 2e1b1b06</p>
+  <p>Сборка 3 августа · версия aedbbc6f</p>
 </footer>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script>window.__PROGRAM__={"day":"chest","dayTitle":"грудь","planDate":"2026-07-28","bodyweight":79.2,"items":[{"id":"bench-press","name":"Жим лёжа","role":"main","kind":"barbell","weight":77.5,"sets":4,"stepWeight":2.5,"targetText":"77,5 кг"},{"id":"db-bench-press","name":"Жим гантелями лёжа","role":"accessory","kind":"dumbbell","weight":28,"sets":3,"stepWeight":1,"targetText":"28 кг"},{"id":"cable-fly","name":"Разводка от груди в кроссовере","role":"accessory","kind":"machine","weight":35,"sets":3,"stepWeight":2.5,"targetText":"35 кг"},{"id":"chest-press-machine","name":"Жим от груди сидя","role":"accessory","kind":"machine","weight":95,"sets":3,"stepWeight":2.5,"targetText":"95 кг"},{"id":"barbell-curl","name":"Подъём штанги на бицепс стоя","role":"accessory","kind":"barbell","weight":37.5,"sets":3,"stepWeight":2.5,"targetText":"37,5 кг"}]};</script>
+<script>window.__PROGRAM__={"day":"chest","dayTitle":"грудь","planDate":"2026-07-28","bodyweight":79.2,"items":[{"role":"main","slot":"chest-press","pick":1,"options":[{"id":"bench-press","name":"Жим лёжа","kind":"barbell","weight":77.5,"sets":4,"stepWeight":2.5,"targetText":"77,5 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">5\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">75\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":2},{"id":"db-bench-press","name":"Жим гантелями лёжа","kind":"dumbbell","weight":28,"sets":4,"stepWeight":1,"targetText":"28 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">28\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">28\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">28\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">28\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":2}]},{"role":"accessory","slot":"chest-press","pick":1,"options":[{"id":"bench-press","name":"Жим лёжа","kind":"barbell","weight":77.5,"sets":4,"stepWeight":2.5,"targetText":"77,5 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">5\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">75\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":2},{"id":"incline-bench-press","name":"Жим лёжа на наклонной скамье","kind":"barbell","weight":62.5,"sets":3,"stepWeight":2.5,"targetText":"62,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">62,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">62,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">62,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":3}]},{"role":"accessory","slot":"chest-fly","pick":0,"options":[{"id":"pec-deck","name":"Бабочка","kind":"machine","weight":72,"sets":3,"stepWeight":2.5,"targetText":"72 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">72\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">72\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">72\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3},{"id":"cable-fly","name":"Разводка от груди в кроссовере","kind":"machine","weight":35,"sets":3,"stepWeight":2.5,"targetText":"35 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">11\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">35\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">35\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3}]},{"role":"accessory","slot":"chest-machine","pick":0,"options":[{"id":"chest-press-machine","name":"Жим от груди сидя","kind":"machine","weight":95,"sets":3,"stepWeight":2.5,"targetText":"95 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">95\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">95\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">95\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":3}]},{"role":"accessory","slot":"biceps","pick":0,"options":[{"id":"barbell-curl","name":"Подъём штанги на бицепс стоя","kind":"barbell","weight":37.5,"sets":3,"stepWeight":2.5,"targetText":"37,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3},{"id":"db-curl","name":"Подъём гантели на бицепс сидя","kind":"dumbbell","weight":12.5,"sets":1,"stepWeight":1,"targetText":"12,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">12,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":1}]}]};</script>
 <script>
 (function () {
   'use strict';
   document.body.classList.add('js');
 
   var PROGRAM = window.__PROGRAM__ || null;
-  var STORE = 'nk-training-draft-v1';
+  // v2: черновик хранит выбранное упражнение на каждом месте программы,
+  // и места считаются по позиции, а не по идентификатору. Старую запись
+  // читать нельзя — ключ сменён, чтобы она просто не подхватилась.
+  var STORE = 'nk-training-draft-v2';
 
   // Меньше трёх подходов на упражнение не бывает — удалять можно только то,
   // что добавлено сверху. Иначе одно случайное нажатие сносит программу.
@@ -3544,6 +3606,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     '<path class="live-done__tick" d="M7.2 12.6l3.2 3.2 6.4-6.9"/></svg>';
   var ICO_CHECK_FLAT = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">' +
     '<path d="M7.2 12.6l3.2 3.2 6.4-6.9"/></svg>';
+  var ICO_CHEV = '<svg class="ico ico--chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>';
 
   /* ───────────────────────── движение ─────────────────────────
 
@@ -3638,6 +3701,13 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         if (!raw) return blank();
         var d = JSON.parse(raw);
         if (!d || d.day !== PROGRAM.day || d.planDate !== PROGRAM.planDate) return blank();
+        // Черновик обязан совпадать с программой по числу мест и держать
+        // выбор в допустимых границах: иначе форма соберётся с дырами.
+        if (!d.items || d.items.length !== PROGRAM.items.length) return blank();
+        for (var i = 0; i < d.items.length; i++) {
+          var pick = d.items[i] && d.items[i].pick;
+          if (typeof pick !== 'number' || !PROGRAM.items[i].options[pick]) return blank();
+        }
         // Черновик мог полежать несколько дней. Пока в него ничего не введено,
         // дата обязана быть сегодняшней: иначе открываешь приложение в зале,
         // а в поле стоит число прошлой недели.
@@ -3666,13 +3736,18 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         date: today(),
         bodyweight: PROGRAM.bodyweight || '',
         notFirst: false,
-        items: PROGRAM.items.map(function (it) {
-          return {
-            id: it.id,
-            sets: Array.apply(null, Array(it.sets)).map(function () {
-              return { w: it.weight, r: '', done: false };
-            })
-          };
+        items: PROGRAM.items.map(function (it, i) { return blankItem(i, it.pick || 0); })
+      };
+    }
+
+    // Строки одного места программы под выбранное упражнение: столько
+    // подходов, сколько было в прошлый раз именно на нём, и его вес.
+    function blankItem(pos, pick) {
+      var o = PROGRAM.items[pos].options[pick];
+      return {
+        pick: pick,
+        sets: Array.apply(null, Array(o.sets)).map(function () {
+          return { w: o.weight, r: '', done: false };
         })
       };
     }
@@ -3687,15 +3762,67 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       try { localStorage.setItem(STORE, JSON.stringify(draft)); } catch (e) {}
     }
 
-    function itemState(id) {
-      for (var i = 0; i < draft.items.length; i++) if (draft.items[i].id === id) return draft.items[i];
-      return null;
+    // Всё адресуется позицией в программе. По идентификатору упражнения
+    // адресовать нельзя: один слот бывает в дне дважды, и упражнение
+    // на месте меняется прямо во время тренировки.
+    function itemState(pos) {
+      return draft.items[+pos] || null;
     }
 
-    function programItem(id) {
-      for (var i = 0; i < PROGRAM.items.length; i++) if (PROGRAM.items[i].id === id) return PROGRAM.items[i];
-      return null;
+    function programItem(pos) {
+      return PROGRAM.items[+pos] || null;
     }
+
+    /** Упражнение, выбранное сейчас на этом месте программы. */
+    function chosen(pos) {
+      var it = programItem(pos);
+      var st = itemState(pos);
+      if (!it || !st) return null;
+      return it.options[st.pick] || it.options[0];
+    }
+
+    /**
+     * Замена упражнения внутри слота. Введённые подходы относятся к прежнему
+     * движению, поэтому строки заводятся заново — но только с подтверждения,
+     * если в них уже что-то записано.
+     */
+    function swapTo(pos, pick) {
+      var st = itemState(pos);
+      var it = programItem(pos);
+      if (!st || !it || !it.options[pick] || st.pick === pick) return false;
+      var filled = st.sets.some(function (s) {
+        return s.done || (s.r !== '' && s.r !== null && s.r !== undefined);
+      });
+      if (filled && !confirm('В этом упражнении уже записаны подходы. Заменить его и начать заново?')) return false;
+      draft.items[pos] = blankItem(pos, pick);
+      save();
+      syncPlan(pos);
+      return true;
+    }
+
+    /**
+     * Карточка «Программа» наверху идёт следом за выбором: название, чипы
+     * прошлого раза и цель берутся у выбранного упражнения. Иначе в зале
+     * висели бы цифры движения, которое сегодня не делаешь.
+     */
+    function syncPlan(pos) {
+      var o = chosen(pos);
+      var card = document.querySelector('#today .ex[data-pos="' + pos + '"]');
+      if (!o || !card) return;
+      var name = card.querySelector('[data-plan-name]');
+      var sets = card.querySelector('[data-plan-sets]');
+      var goal = card.querySelector('[data-plan-goal]');
+      if (name) name.textContent = o.name;
+      if (goal) goal.textContent = o.targetText;
+      if (sets) {
+        sets.innerHTML = o.chips;
+        sets.className = 'sets plan__sets plan__sets--c' + o.chipCols;
+      }
+    }
+
+    // Какое место программы держит список замен открытым. Переживает
+    // пересборку формы: иначе список схлопывается сам после выбора.
+    var openSwap = -1;
 
     function render() {
       var html = '';
@@ -3718,26 +3845,45 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       }
       html += '</div>';
 
-      PROGRAM.items.forEach(function (it) {
-        var st = itemState(it.id);
-        if (!st) return;
+      PROGRAM.items.forEach(function (it, pos) {
+        var st = itemState(pos);
+        var o = chosen(pos);
+        if (!st || !o) return;
         var doneCount = st.sets.filter(function (s) { return s.done; }).length;
 
-        html += '<div class="live-ex">';
+        html += '<div class="live-ex" data-ex="' + pos + '">';
         html += '<div class="live-ex__head">';
         html += '<div style="min-width:0">';
         html += '<span class="ex__role' + (it.role === 'main' ? '' : ' ex__role--acc') + '">' + (it.role === 'main' ? 'Основное' : 'Добивка') + '</span>';
-        html += '<h3 class="ex__name">' + esc(it.name) + '</h3>';
-        html += '<div class="live-target">Цель: ' + esc(it.targetText) + '</div>';
+        html += '<h3 class="ex__name">' + esc(o.name) + '</h3>';
+        html += '<div class="live-target">Цель: ' + esc(o.targetText) + '</div>';
         html += '</div>';
         var allDone = st.sets.length > 0 && doneCount === st.sets.length;
-        html += '<span class="pill' + (allDone ? ' is-done' : '') + '" data-count="' + it.id + '">' + doneCount + ' / ' + st.sets.length + '</span>';
+        html += '<span class="pill' + (allDone ? ' is-done' : '') + '" data-count="' + pos + '">' + doneCount + ' / ' + st.sets.length + '</span>';
         html += '</div>';
         html += '<div class="live-ex__body">';
 
-        var noWeight = (it.kind === 'bodyweight' || it.kind === 'reps');
+        // Замена внутри слота. Список закрыт по умолчанию: в зале нужен
+        // не выбор, а цифры — выбор нужен раз в тренировку.
+        if (it.options.length > 1) {
+          var open = openSwap === pos;
+          html += '<button type="button" class="swap__open' + (open ? ' is-open' : '') + '" data-swapopen="' + pos +
+            '" aria-expanded="' + (open ? 'true' : 'false') + '">';
+          html += '<span>Сменить упражнение</span>' + ICO_CHEV + '</button>';
+          html += '<div class="swap"' + (open ? '' : ' hidden') + ' data-swap="' + pos + '">';
+          it.options.forEach(function (opt, k) {
+            html += '<button type="button" class="swap__opt' + (k === st.pick ? ' is-on' : '') +
+              '" data-swappick="' + pos + '|' + k + '" aria-pressed="' + (k === st.pick ? 'true' : 'false') + '">' +
+              '<span class="swap__opt-name">' + esc(opt.name) + '</span>' +
+              (k === st.pick ? '<span class="swap__opt-tick" aria-hidden="true">' + ICO_CHECK_FLAT + '</span>' : '') +
+              '</button>';
+          });
+          html += '</div>';
+        }
+
+        var noWeight = (o.kind === 'bodyweight' || o.kind === 'reps');
         var wide = noWeight ? ' live-set--wide' : '';
-        var weightCap = it.kind === 'bodyweight-plus' ? 'сверху, кг' : 'вес, кг';
+        var weightCap = o.kind === 'bodyweight-plus' ? 'сверху, кг' : 'вес, кг';
 
         html += '<div class="live-head' + (noWeight ? ' live-head--wide' : '') + '">';
         html += '<span></span>';
@@ -3747,17 +3893,17 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         st.sets.forEach(function (s, i) {
           html += '<div class="live-set' + wide + '">';
           html += '<span class="live-set__n">' + (i + 1) + '</span>';
-          if (!noWeight) html += stepper('w', it.id, i, s.w, it.stepWeight);
-          html += stepper('r', it.id, i, s.r, 1);
-          html += '<button type="button" class="live-done' + (s.done ? ' is-done' : '') + '" data-done="' + it.id + '|' + i +
+          if (!noWeight) html += stepper('w', pos, i, s.w, o.stepWeight);
+          html += stepper('r', pos, i, s.r, 1);
+          html += '<button type="button" class="live-done' + (s.done ? ' is-done' : '') + '" data-done="' + pos + '|' + i +
             '" aria-pressed="' + (s.done ? 'true' : 'false') + '" aria-label="Отметить подход выполненным">' + ICO_CHECK + '</button>';
           html += '</div>';
         });
 
         html += '<div class="btn-row" style="margin-top:8px">';
-        html += '<button type="button" class="btn btn--ghost" data-addset="' + it.id + '" style="padding:8px 14px;font-size:13.5px">+ подход</button>';
-        if (st.sets.length > minSets(it)) {
-          html += '<button type="button" class="btn btn--ghost" data-delset="' + it.id + '" style="padding:8px 14px;font-size:13.5px">− подход</button>';
+        html += '<button type="button" class="btn btn--ghost" data-addset="' + pos + '" style="padding:8px 14px;font-size:13.5px">+ подход</button>';
+        if (st.sets.length > minSets(o)) {
+          html += '<button type="button" class="btn btn--ghost" data-delset="' + pos + '" style="padding:8px 14px;font-size:13.5px">− подход</button>';
         }
         html += '</div>';
         html += '</div></div>';
@@ -3774,8 +3920,8 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       bind();
     }
 
-    function stepper(kind, id, idx, value, step) {
-      var key = id === null ? kind : kind + '|' + id + '|' + idx;
+    function stepper(kind, pos, idx, value, step) {
+      var key = pos === null ? kind : kind + '|' + pos + '|' + idx;
       var v = (value === null || value === undefined) ? '' : value;
       // Вид регулятора едет в класс: у веса и у повторов разная длина числа,
       // а значит и разный минимум ширины поля (см. --field-min в стилях).
@@ -3817,8 +3963,8 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       var p = key.split('|');
       if (p[0] === 'r') return 1;
       if (p[0] === 'bw') return 0.1;
-      for (var i = 0; i < PROGRAM.items.length; i++) if (PROGRAM.items[i].id === p[1]) return PROGRAM.items[i].stepWeight;
-      return 2.5;
+      var o = chosen(p[1]);
+      return o ? o.stepWeight : 2.5;
     }
 
     function bind() {
@@ -3877,6 +4023,34 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         });
       });
 
+      // Список замен разворачивается на месте, без пересборки формы:
+      // пересборка сбрасывала бы фокус и мигала бы всем экраном.
+      live.querySelectorAll('[data-swapopen]').forEach(function (el) {
+        el.addEventListener('click', function () {
+          var pos = +el.getAttribute('data-swapopen');
+          var box = live.querySelector('[data-swap="' + pos + '"]');
+          if (!box) return;
+          var open = box.hasAttribute('hidden');
+          if (open) box.removeAttribute('hidden'); else box.setAttribute('hidden', '');
+          el.classList.toggle('is-open', open);
+          el.setAttribute('aria-expanded', open ? 'true' : 'false');
+          openSwap = open ? pos : -1;
+        });
+      });
+
+      live.querySelectorAll('[data-swappick]').forEach(function (el) {
+        el.addEventListener('click', function () {
+          var p = el.getAttribute('data-swappick').split('|');
+          var pos = +p[0];
+          if (!swapTo(pos, +p[1])) return;
+          openSwap = -1;
+          // Без вспышки: акцентная вспышка означает «упражнение закрыто»,
+          // и занимать её подтверждением замены — размывать сигнал.
+          // Подтверждение и так очевидное: меняется название и цифры.
+          render();
+        });
+      });
+
       live.querySelectorAll('[data-addset]').forEach(function (el) {
         el.addEventListener('click', function () {
           var st = itemState(el.getAttribute('data-addset'));
@@ -3892,10 +4066,10 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       // случайное нажатие «+ подход» откатывается, программа — нет.
       live.querySelectorAll('[data-delset]').forEach(function (el) {
         el.addEventListener('click', function () {
-          var id = el.getAttribute('data-delset');
-          var st = itemState(id);
-          var it = programItem(id);
-          if (!st || !it || st.sets.length <= minSets(it)) return;
+          var pos = el.getAttribute('data-delset');
+          var st = itemState(pos);
+          var o = chosen(pos);
+          if (!st || !o || st.sets.length <= minSets(o)) return;
           var last = st.sets[st.sets.length - 1];
           var filled = last && (last.r !== '' && last.r !== null && last.r !== undefined);
           if (filled && !confirm('В последнем подходе уже записаны повторы. Удалить его?')) return;
@@ -3961,18 +4135,19 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       if (draft.notFirst) lines.push('Пометка: жим ногами делал не первым');
       lines.push('');
 
-      PROGRAM.items.forEach(function (it) {
-        var st = itemState(it.id);
-        if (!st) return;
+      PROGRAM.items.forEach(function (it, pos) {
+        var st = itemState(pos);
+        var o = chosen(pos);
+        if (!st || !o) return;
         var parts = [];
         st.sets.forEach(function (s) {
           if (s.r === '' || s.r === null) return;
-          if (it.kind === 'bodyweight' || it.kind === 'reps') parts.push(String(s.r));
-          else if (it.kind === 'bodyweight-plus') parts.push('+' + fmt(s.w) + ' x ' + s.r);
+          if (o.kind === 'bodyweight' || o.kind === 'reps') parts.push(String(s.r));
+          else if (o.kind === 'bodyweight-plus') parts.push('+' + fmt(s.w) + ' x ' + s.r);
           else parts.push(fmt(s.w) + ' x ' + s.r);
         });
         if (!parts.length) return;
-        lines.push('— ' + it.name + (it.role === 'main' ? ' [основное]' : '') + ': ' + parts.join(', '));
+        lines.push('— ' + o.name + (it.role === 'main' ? ' [основное]' : '') + ': ' + parts.join(', '));
       });
 
       // Названия приходят с неразрывными пробелами — в тексте для чата
@@ -3995,6 +4170,9 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     }
 
     render();
+    // Карточка «Программа» собрана на сервере с умолчанием, а в черновике
+    // может стоять другой выбор — подтягиваем её под него сразу при открытии.
+    PROGRAM.items.forEach(function (_, pos) { syncPlan(pos); });
   }
 
   /* ───────────────────────── всплывашка ───────────────────────── */
