@@ -1,6 +1,6 @@
-/* Офлайн-кэш дневника. Версия f9908eb5 — меняется при каждой пересборке,
+/* Офлайн-кэш дневника. Версия 1a910ca8 — меняется при каждой пересборке,
    поэтому старая копия не залипает после обновления. */
-var CACHE = 'nk-training-f9908eb5';
+var CACHE = 'nk-training-1a910ca8';
 var ASSETS = ['./', './index.html', './manifest.webmanifest', './apple-touch-icon.png', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', function (e) {
