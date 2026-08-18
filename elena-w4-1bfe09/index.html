@@ -1,0 +1,1128 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>План питания, неделя 4 — Елена Атаджанова</title>
+<style>*{margin:0;padding:0}img{max-width:100%}</style>
+</head>
+<body>
+<style>
+:root{
+  --ground:#FAF7F6; --surface:#FFFFFF; --surface-2:#F4EFED; --sunk:#F0E9E7;
+  --ink:#241E22; --ink-2:#6E6169; --ink-3:#8E858A; --line:#E5DCDA;
+  --accent:#8E2743; --accent-soft:#F5E3E7; --accent-ink:#8E2743;
+  --green:#3F6B4F; --green-soft:#E6EDE6;
+  --amber:#A46A18; --amber-soft:#F8EBD8;
+  --shadow:0 1px 2px rgba(36,30,34,.05), 0 8px 24px -18px rgba(36,30,34,.35);
+  --font-d:Georgia,"Iowan Old Style","Times New Roman",serif;
+  --font-b:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --ground:#151114; --surface:#1E191D; --surface-2:#272026; --sunk:#221C21;
+    --ink:#F1EAEC; --ink-2:#A2939A; --ink-3:#8A7C82; --line:#352C32;
+    --accent:#E07C91; --accent-soft:#3A2028; --accent-ink:#EE93A6;
+    --green:#8FBF9C; --green-soft:#1F2A22;
+    --amber:#E0A85E; --amber-soft:#2E2417;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#151114; --surface:#1E191D; --surface-2:#272026; --sunk:#221C21;
+  --ink:#F1EAEC; --ink-2:#A2939A; --ink-3:#8A7C82; --line:#352C32;
+  --accent:#E07C91; --accent-soft:#3A2028; --accent-ink:#EE93A6;
+  --green:#8FBF9C; --green-soft:#1F2A22;
+  --amber:#E0A85E; --amber-soft:#2E2417;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -18px rgba(0,0,0,.8);
+}
+:root[data-theme="light"]{
+  --ground:#FAF7F6; --surface:#FFFFFF; --surface-2:#F4EFED; --sunk:#F0E9E7;
+  --ink:#241E22; --ink-2:#6E6169; --ink-3:#8E858A; --line:#E5DCDA;
+  --accent:#8E2743; --accent-soft:#F5E3E7; --accent-ink:#8E2743;
+  --green:#3F6B4F; --green-soft:#E6EDE6;
+  --amber:#A46A18; --amber-soft:#F8EBD8;
+  --shadow:0 1px 2px rgba(36,30,34,.05), 0 8px 24px -18px rgba(36,30,34,.35);
+}
+
+*{box-sizing:border-box}
+/* overflow-x:clip, а не hidden: hidden делает html скролл-контейнером и ломает position:sticky */
+html{color-scheme:light dark;max-width:100%;overflow-x:clip}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+body{background:var(--ground);color:var(--ink);font-family:var(--font-b);
+  font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%;margin:0;
+  max-width:100%;overflow-x:clip;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:min(960px,100%);margin:0 auto;padding:28px 18px 72px;
+  display:flex;flex-direction:column;gap:20px}
+.card{scroll-margin-top:84px}
+h1,h2,h3,h4{font-family:var(--font-d);font-weight:400;text-wrap:balance;margin:0;line-height:1.2}
+p{margin:0}
+a{color:var(--accent-ink)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:4px;
+  box-shadow:var(--shadow);overflow:hidden}
+.pad{padding:26px 24px}
+.eyebrow{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:600}
+.lede{color:var(--ink-2);max-width:64ch}
+.num{font-variant-numeric:tabular-nums}
+.ic{width:22px;height:22px;flex:none}
+.ic-g{width:18px;height:18px;color:var(--accent)}
+
+/* ---------- обложка ---------- */
+.cover{background:var(--surface);position:relative}
+.cover-top{display:flex;gap:24px;align-items:center;padding:30px 26px 24px;
+  background:linear-gradient(180deg,var(--accent-soft),transparent)}
+.portrait{width:112px;height:112px;flex:none;border-radius:50%;object-fit:cover;
+  border:3px solid var(--surface);box-shadow:0 4px 18px -6px rgba(36,30,34,.45)}
+.cover-h1{font-size:clamp(1.55rem,4.6vw,2.3rem);letter-spacing:-.015em}
+.cover-for{font-size:clamp(1.05rem,3vw,1.3rem);color:var(--accent-ink);
+  font-family:var(--font-d);margin-top:6px}
+.byline{margin-top:12px;font-size:.86rem;color:var(--ink-2)}
+.byline b{color:var(--ink);font-weight:600}
+.tg{margin-top:7px}
+.tg a{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;font-weight:600;
+  text-decoration:none;color:var(--accent-ink);background:var(--surface);
+  border:1px solid var(--line);border-radius:99px;padding:5px 13px}
+.tg a::before{content:"";width:14px;height:14px;flex:none;background:currentColor;
+  -webkit-mask:var(--tg-mask) center/contain no-repeat;mask:var(--tg-mask) center/contain no-repeat}
+.tg a:hover{border-color:var(--accent);background:var(--accent-soft)}
+:root{--tg-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M21.9 4.3 18.6 20c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1L18 6.6c.4-.4-.1-.6-.6-.2L7.2 13l-4.9-1.5c-1.1-.3-1.1-1 .2-1.5l19.1-7.4c.9-.3 1.7.2 1.4 1.7Z'/%3E%3C/svg%3E")}
+.cover-stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
+.cover-stats div{padding:16px 12px;text-align:center;border-left:1px solid var(--line)}
+.cover-stats div:first-child{border-left:0}
+.cover-stats b{display:block;font-family:var(--font-d);font-size:1.5rem;line-height:1.1}
+.cover-stats span{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+@media (max-width:560px){
+  .cover-top{flex-direction:column;text-align:center;gap:16px}
+  .cover-stats{grid-template-columns:repeat(2,1fr)}
+  .cover-stats div:nth-child(3){border-left:0}
+  .cover-stats div:nth-child(n+3){border-top:1px solid var(--line)}
+}
+
+/* ---------- липкая навигация ---------- */
+/* полоса фона сверху и снизу прячет контент, проезжающий в зазорах flex-gap */
+.nav{position:sticky;top:0;z-index:20;padding:10px 0;margin:-10px 0;background:var(--ground)}
+.nav-in{display:flex;align-items:center;gap:4px;padding:7px 8px;
+  background:var(--surface);border:1px solid var(--line);border-radius:4px;
+  box-shadow:var(--shadow);
+  overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  -webkit-mask:linear-gradient(90deg,#000 calc(100% - 26px),transparent);
+  mask:linear-gradient(90deg,#000 calc(100% - 26px),transparent)}
+.nav-in:not(.is-scrollable){-webkit-mask:none;mask:none}
+.nav-in::-webkit-scrollbar{display:none}
+.nav a{flex:none;display:inline-flex;align-items:center;justify-content:center;
+  min-height:36px;padding:0 11px;border-radius:3px;text-decoration:none;
+  font-size:.82rem;font-weight:600;color:var(--ink-2);white-space:nowrap}
+.nav a:hover{background:var(--surface-2);color:var(--ink)}
+.nav a.is-day{min-width:38px;padding:0 8px;letter-spacing:.04em}
+.nav a[aria-current="true"]{background:var(--accent);color:#fff}
+.nav-sep{flex:none;width:1px;align-self:stretch;margin:4px 5px;background:var(--line)}
+@media print{.nav{display:none}}
+
+/* ---------- секции ---------- */
+.sec-h{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+.sec-h .shop-count{margin-left:auto}
+.sec-h h2{font-size:1.4rem}
+.sec-h .ic{color:var(--accent)}
+
+/* цепочка расчёта */
+.chain{display:flex;flex-direction:column;gap:0;margin-top:18px;
+  border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.chain-row{display:flex;align-items:baseline;gap:14px;padding:14px 16px;
+  border-bottom:1px solid var(--line);background:var(--surface)}
+.chain-row:last-child{border-bottom:0}
+.chain-row.is-goal{background:var(--accent-soft)}
+.chain-k{flex:1;min-width:0}
+.chain-k b{font-weight:600;display:block}
+.chain-k small{color:var(--ink-2);font-size:.82rem;display:block;margin-top:2px}
+.chain-v{font-family:var(--font-d);font-size:1.35rem;white-space:nowrap;
+  font-variant-numeric:tabular-nums}
+.chain-row.is-goal .chain-v{color:var(--accent-ink)}
+.formula{font-size:.8rem;color:var(--ink-3);font-variant-numeric:tabular-nums;
+  margin-top:2px;overflow-x:auto;white-space:nowrap;padding-bottom:2px}
+
+/* макросы */
+.bar{display:flex;height:9px;border-radius:99px;overflow:hidden;background:var(--sunk)}
+.bar span{display:block}
+.bar-p{background:var(--accent)}
+.bar-f{background:var(--amber)}
+.bar-c{background:var(--green)}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.legend div{flex:1 1 150px;border:1px solid var(--line);border-radius:3px;padding:12px 14px}
+.legend .dot{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:7px}
+.legend b{font-family:var(--font-d);font-size:1.3rem;display:block;margin-top:4px}
+.legend small{color:var(--ink-2);font-size:.8rem}
+
+/* режим дня */
+.rhythm{margin-top:18px;border-left:2px solid var(--line);padding-left:0;margin-left:8px}
+.r-row{display:flex;gap:14px;padding:0 0 18px 20px;position:relative}
+.r-row:last-child{padding-bottom:0}
+.r-row::before{content:"";position:absolute;left:-6px;top:7px;width:10px;height:10px;
+  border-radius:50%;background:var(--surface);border:2px solid var(--line)}
+.r-row.is-key::before{background:var(--accent);border-color:var(--accent)}
+.r-time{font-variant-numeric:tabular-nums;font-weight:600;font-size:.9rem;
+  width:52px;flex:none;color:var(--ink-2)}
+.r-txt b{font-weight:600}
+.r-txt small{display:block;color:var(--ink-2);font-size:.85rem;margin-top:2px}
+
+/* дни */
+.day-h{display:flex;align-items:center;gap:12px;padding:14px 20px;
+  background:var(--surface-2);border-bottom:1px solid var(--line)}
+.day-abbr{font-size:.7rem;font-weight:700;letter-spacing:.1em;color:var(--surface);
+  background:var(--accent);border-radius:3px;padding:4px 7px}
+.day-h h3{font-size:1.15rem;flex:1}
+.day-kcal{font-variant-numeric:tabular-nums;font-size:.88rem;color:var(--ink-2);font-weight:600}
+.meals{display:flex;flex-direction:column}
+.meal{display:flex;gap:14px;padding:16px 20px;border-bottom:1px solid var(--line);
+  align-items:flex-start}
+.m-ic{width:38px;height:38px;flex:none;border-radius:50%;background:var(--surface-2);
+  color:var(--accent);display:grid;place-items:center;margin-top:2px}
+.m-body{flex:1;min-width:0}
+.m-time{font-size:.72rem;letter-spacing:.1em;color:var(--ink-3);font-weight:600}
+.m-title{font-size:1.02rem;margin-top:1px}
+.f-list{list-style:none;padding:0;margin:8px 0 0;display:flex;flex-direction:column;gap:2px}
+.f-list li{display:flex;gap:10px;font-size:.87rem;color:var(--ink-2);align-items:baseline}
+.f-n{flex:1;min-width:0}
+.f-g{font-variant-numeric:tabular-nums;color:var(--ink-3);white-space:nowrap}
+.how{margin-top:9px;font-size:.83rem;color:var(--ink-2);background:var(--sunk);
+  border-radius:3px;padding:9px 11px}
+.m-num{text-align:right;flex:none;min-width:74px}
+.m-num b{font-family:var(--font-d);font-size:1.25rem;font-variant-numeric:tabular-nums}
+.m-num span{font-size:.7rem;color:var(--ink-3);display:block;margin-top:-3px}
+.m-macro{font-size:.72rem;color:var(--ink-3);font-variant-numeric:tabular-nums;margin-top:5px}
+.tag{font-size:.68rem;letter-spacing:.04em;padding:2px 7px;border-radius:99px;
+  vertical-align:middle;white-space:nowrap;font-family:var(--font-b)}
+.tag-fe{background:var(--amber-soft);color:var(--amber);font-weight:600}
+.day-f{padding:16px 20px;display:flex;flex-direction:column;gap:10px;background:var(--surface)}
+.day-tot{display:flex;gap:22px;margin:0;flex-wrap:wrap}
+.day-tot div{display:flex;gap:6px;align-items:baseline}
+.day-tot dt{font-size:.78rem;color:var(--ink-3)}
+.day-tot dd{margin:0;font-weight:600;font-size:.88rem;font-variant-numeric:tabular-nums}
+@media (max-width:480px){
+  .meal{gap:11px;padding:14px 15px}
+  .m-ic{width:32px;height:32px}
+  .m-ic .ic{width:19px;height:19px}
+  .m-num{min-width:62px}
+}
+
+/* покупки */
+.shop{display:grid;grid-template-columns:1fr;gap:22px;margin-top:20px}
+@media (min-width:620px){.shop{grid-template-columns:1fr 1fr;gap:22px 30px}}
+@media (min-width:900px){.shop{grid-template-columns:1fr 1fr 1fr;gap:24px 26px}}
+.shop-count{font-size:.78rem;font-weight:600;color:var(--accent-ink);
+  background:var(--accent-soft);border-radius:99px;padding:3px 10px;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.shop-g h4{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);
+  font-family:var(--font-b);font-weight:700;display:flex;align-items:center;gap:8px;
+  padding-bottom:8px;border-bottom:1px solid var(--line)}
+.shop-g ul{list-style:none;padding:0;margin:6px 0 0;display:flex;flex-direction:column;gap:2px}
+.shop-g li{border-radius:3px}
+.shop-g li:hover{background:var(--surface-2)}
+.shop-g label{display:flex;gap:10px;align-items:baseline;cursor:pointer;
+  min-height:40px;padding:9px 8px 2px;user-select:none}
+.shop-g input{margin:0;accent-color:var(--accent);width:18px;height:18px;
+  flex:none;transform:translateY(3px);cursor:pointer}
+.s-n{flex:1}
+.s-q{font-variant-numeric:tabular-nums;color:var(--ink-2);font-size:.88rem;white-space:nowrap}
+.shop-g input:checked ~ .s-n,.shop-g input:checked ~ .s-q{text-decoration:line-through;color:var(--ink-3)}
+.s-note{display:block;font-size:.78rem;color:var(--ink-3);padding:0 8px 9px 36px;margin-top:-2px}
+.shop-g li:has(input:checked) .s-note{color:var(--ink-3);opacity:.55}
+
+/* правила / заметки */
+.rules{list-style:none;padding:0;margin:16px 0 0;display:flex;flex-direction:column;gap:12px}
+.rules li{display:flex;gap:12px;align-items:flex-start}
+.rules .n{font-family:var(--font-d);font-size:.95rem;color:var(--accent-ink);
+  width:22px;flex:none;font-variant-numeric:tabular-nums;padding-top:1px}
+.rules b{font-weight:600}
+.rules small{display:block;color:var(--ink-2);font-size:.88rem;margin-top:2px}
+
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);
+  padding:14px 16px;border-radius:0 3px 3px 0;font-size:.9rem;margin-top:18px}
+.note b{font-weight:600}
+.note-green{border-left-color:var(--green);background:var(--green-soft)}
+.note-amber{border-left-color:var(--amber);background:var(--amber-soft)}
+
+table.tune{width:100%;border-collapse:collapse;margin-top:16px;font-size:.88rem}
+table.tune th,table.tune td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);
+  vertical-align:top}
+table.tune th{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:700}
+table.tune td:first-child{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
+.scroll-x{overflow-x:auto}
+
+footer.legal{font-size:.8rem;color:var(--ink-3);text-align:center;padding:6px 10px;max-width:62ch;
+  margin:0 auto;line-height:1.5}
+
+@media print{
+  body{background:#fff}
+  .card{box-shadow:none;break-inside:avoid;page-break-inside:avoid}
+  .wrap{gap:14px;padding:0}
+}
+
+/* ---- неделя 4 ---- */
+.tag-eve{background:var(--accent-soft);color:var(--accent);font-weight:600}
+/* трекер недели: два столбика галочек в одной сетке с заголовком — колонки не разъезжаются */
+.track{margin-top:18px;border:1px solid var(--line);border-radius:3px;overflow:hidden;
+  background:var(--surface)}
+.tr-row{display:grid;grid-template-columns:52px 1fr 1fr;align-items:center;
+  padding:9px 16px;border-top:1px solid var(--line)}
+.tr-row:first-child{border-top:0}
+.tr-row.is-head{background:var(--surface-2);font-size:.7rem;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--ink-3);padding:9px 16px}
+.tr-d{font-weight:600;font-size:.84rem;letter-spacing:.04em;color:var(--ink-2)}
+.tr-c{display:flex;align-items:center;cursor:pointer;padding:3px 0}
+.track input{width:19px;height:19px;accent-color:var(--accent);cursor:pointer;margin:0}
+.tr-foot{padding:11px 16px;border-top:1px solid var(--line);background:var(--surface-2);
+  font-size:.82rem;color:var(--ink-2)}
+@media (max-width:480px){
+  .tr-row,.tr-row.is-head,.tr-foot{padding-left:14px;padding-right:14px}
+  .tr-row{grid-template-columns:44px 1fr 1fr}
+}
+/* ---- со времён недели 3 ---- */
+/* вес с сотыми не влезает в строку формулы на телефоне — разрешаем перенос вместо прокрутки */
+.formula{white-space:normal;overflow-x:visible;line-height:1.5}
+.tag-bread{background:var(--green-soft);color:var(--green);font-weight:600}
+.tag-test{background:var(--surface-2);color:var(--ink-2);font-weight:600}
+.res{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:18px;
+  border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.res div{padding:16px 12px;text-align:center;border-left:1px solid var(--line)}
+.res div:first-child{border-left:0}
+.res b{display:block;font-family:var(--font-d);font-size:1.6rem;line-height:1.1;color:var(--accent-ink)}
+.res span{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+@media (max-width:480px){.res b{font-size:1.3rem}.res div{padding:13px 6px}}
+.new-list{list-style:none;padding:0;margin:16px 0 0;display:flex;flex-wrap:wrap;gap:8px}
+.new-list li{flex:1 1 210px;border:1px solid var(--line);border-radius:3px;padding:12px 14px;
+  font-size:.9rem}
+.new-list b{display:block;font-weight:600;margin-bottom:2px}
+.new-list small{color:var(--ink-2);font-size:.85rem}
+</style>
+<div class="wrap">
+<section class="card cover">
+  <div class="cover-top">
+    <img class="portrait" src="data:image/jpeg;base64,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" alt="Любовь Александрова, автор плана">
+    <div>
+      <p class="eyebrow">Персональная программа · неделя 4</p>
+      <h1 class="cover-h1">План питания для снижения веса</h1>
+      <p class="cover-for">для Елены Атаджановой</p>
+      <p class="byline">Составила <b>Любовь Александрова</b> · консультант по питанию</p>
+      <p class="tg"><a href="https://t.me/LubovAleksandrova">@LubovAleksandrova</a></p>
+    </div>
+  </div>
+  <div class="cover-stats num">
+    <div><b>167</b><span>рост, см</span></div>
+    <div><b>75,61</b><span>вес, кг</span></div>
+    <div><b>49</b><span>возраст</span></div>
+    <div><b>27,1</b><span>ИМТ</span></div>
+  </div>
+</section>
+<nav class="nav" aria-label="Разделы плана">
+  <div class="nav-in">
+    <a href="#results">Итоги</a>
+    <a href="#feel">Самочувствие</a>
+
+
+    <a href="#move">Движение</a>
+    <a href="#macros">Норма</a>
+    <a href="#rhythm">Режим дня</a>
+    <span class="nav-sep"></span>
+    <a class="is-day" href="#day-1">ПН</a><a class="is-day" href="#day-2">ВТ</a><a class="is-day" href="#day-3">СР</a><a class="is-day" href="#day-4">ЧТ</a><a class="is-day" href="#day-5">ПТ</a><a class="is-day" href="#day-6">СБ</a><a class="is-day" href="#day-7">ВС</a>
+    <span class="nav-sep"></span>
+    <a href="#shop">Покупки</a>
+    <a href="#rules">Правила</a>
+  </div>
+</nav>
+<section class="card pad" id="results">
+<div class="sec-h"><svg class="ic ic-g" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.4 13.8 9l5.6 1.8-5.6 1.8L12 18.2l-1.8-5.6L4.6 10.8 10.2 9Z"/></svg><h2>Итоги трёх недель</h2></div>
+  <p class="lede">Двадцать девять сантиметров за три недели, и тринадцать из них — за последнюю. Почти столько же, сколько за две предыдущие вместе. Лента здесь честнее весов: она показывает, что именно уходит и откуда.</p>
+  <div class="res num">
+    <div><b>−29 см</b><span>всего</span></div>
+    <div><b>−13 см</b><span>за неделю</span></div>
+    <div><b>−390 г</b><span>на весах</span></div>
+  </div>
+  <div class="note note-amber"><b>Почему весы показали плюс 600 граммов.</b> Это не жир. Чтобы набрать 600 г жира, надо съесть около 4600 ккал сверх расхода — по 2400 ккал каждый день, семь дней подряд. Ничего похожего не было. Плюс на весах дают вещи попроще: солёное накануне — каждый лишний грамм соли держит в теле около стакана воды; макароны и супы — с ними в мышцы возвращается гликоген, а он тянет за собой втрое больше воды, чем весит сам; и обычные суточные качели, которые у всех гуляют в пределах килограмма в обе стороны. Вода приходит и уходит за пару дней, жир так быстро не появляется. Объёмы за ту же неделю ушли на 13 см — вот на что смотреть.</div>
+  <p class="lede" style="margin-top:16px"><b>Норму мы не меняем — те же 1500 ккал.</b> Тут важно сказать прямо: план рассчитан так, чтобы уходило около 220 граммов в неделю, а в среднем выходит 130. Разница не в расчёте и не в продуктах. Она в днях, когда меню соблюдалось наполовину, и в прогулках, которые не состоялись. Поэтому на этой неделе мы не трогаем еду и не режем калории — сокращать нечего, план и так рабочий. Занимаемся другим: разделом «Движение» ниже.</p>
+</section>
+<section class="card pad" id="feel">
+<div class="sec-h"><svg class="ic ic-g" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.6 12.4h4.2l2-4.8 3.3 8.8 2.5-5.4 1.9 2.7h4.9"/></svg><h2>Что изменилось в самочувствии</h2></div>
+  <p class="lede">Это часть результата, которую весы не показывают вообще, а она из всех самая важная.</p>
+  <ul class="rules">
+    <li><span class="n">1</span><div><b>Пульс по дороге до стоянки: было 125–130, стало 105</b><small>Минус двадцать ударов на той же дороге и в том же темпе — это уже про сердце, а не про вес. Та же нагрузка обходится ему заметно дешевле, и запас на день остаётся больше.</small></div></li>
+    <li><span class="n">2</span><div><b>Одышки стало заметно меньше, по лестнице легче</b><small>Обычно это первое, что меняется, и меняется раньше цифр. Три недели назад тот же подъём давался тяжелее — стоит помнить об этом в дни, когда весы упрямятся.</small></div></li>
+    <li><span class="n">3</span><div><b>Тяжесть в животе из постоянной стала редкой</b><small>Продукты, которые мы убирали и возвращали по одному, своё дело сделали. Значит, рацион можно расширять дальше — и на этой неделе мы это и делаем.</small></div></li>
+    <li><span class="n">4</span><div><b>Энергии стало больше</b><small>Пять приёмов пищи вместо двух-трёх и белок в каждом — как раз про это: ровный сахар в крови вместо провалов после долгих перерывов.</small></div></li>
+  </ul>
+</section>
+<section class="card pad" id="new">
+<div class="sec-h"><svg class="ic ic-g" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.6" y="5.2" width="16.8" height="15.2" rx="2"/><path d="M3.6 10h16.8M8.4 3.4v3.4M15.6 3.4v3.4"/></svg><h2>Что нового на этой неделе</h2></div>
+  <p class="lede">Всё, что вы просили, — в меню. И встало оно в ту же дневную норму: порции пересчитаны, а не «разрешено в порядке исключения».</p>
+  <ul class="new-list">
+    <li><b>Маслины — три дня из семи</b><small>По 25 г, это пять-шесть штук: в понедельник и среду к салату, в пятницу к вечернему коктейлю. Перед едой промыть под водой — так уходит часть соли из рассола</small></li>
+    <li><b>Котлеты на пару — дважды</b><small>В понедельник из индейки, в четверг из говядины пополам с курицей. Вместо хлеба в фарш идёт тёртый кабачок: сочность та же, калорий меньше</small></li>
+    <li><b>Вечерний коктейль на ужин — вторник и пятница</b><small>Именно «Формула 1 Вечерний коктейль»: 3 мерные ложки на 250 мл молока, 93 ккал против 110 у утреннего, втрое больше пищевых волокон и L-триптофан для сна. Обязательно с большой миской салата, а обед в эти дни сытнее обычного</small></li>
+    <li><b>Банан — понедельник и пятница</b><small>В утренний перекус вместе с творогом. Один банан — это почти 23 г углеводов, поэтому он идёт с белком и в первой половине дня, а не вечером</small></li>
+    <li><b>Репчатый лук и белокочанная капуста</b><small>Возвращаются: лук в среду к печени, тушёная капуста в субботу к курице. Оба — только в готовом виде, сырыми пока не едим</small></li>
+    <li><b>Что осталось с прошлой недели</b><small>Брокколи, цветная капуста и обычное молоко в коктейле прошли чисто, поэтому остаются без ограничений. Супы — три раза, макароны — в трёх днях</small></li>
+  </ul>
+  <div class="note"><b>Почему возвращаем по одному в день.</b> Лук стоит в среду, капуста в субботу — специально в разные дни, между ними трое суток. Если что-то из этого не подойдёт, будет сразу видно, что именно, и убирать придётся одно, а не всё сразу. Отметьте себе, как прошли эти два дня.</div>
+</section>
+<section class="card pad" id="move">
+<div class="sec-h"><svg class="ic ic-g" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="14.2" cy="4.4" r="1.9"/><path d="M11.2 21l1.8-5.6-2.8-2.6-.7-4.2 4.4 1.5 2 2.7 2.7.9"/><path d="M9.7 8.6 6.2 10l-1 3.3"/><path d="M13 15.4l2.7 5.6"/></svg><h2>Движение: главное на этой неделе</h2></div>
+  <p class="lede">Меню на этой неделе почти не изменилось по цифрам — изменился акцент. Прошлые три недели ходьба выходила не каждый день, и это единственное место, где программа сейчас теряет результат.</p>
+  <ul class="rules">
+    <li><span class="n">1</span><div><b>Нижняя планка — 15 минут каждый день</b><small>Это тот минимум, который выполняется даже в самый занятой день: до магазина пешком, круг вокруг дома, дорога до машины длинным путём. Пропускать нельзя вообще ни одного дня — на этой планке всё и держится.</small></div></li>
+    <li><span class="n">2</span><div><b>Четыре дня из семи — 35–40 минут подряд</b><small>Темп такой, при котором говорить ещё можно, а петь уже трудно. Именно в этом темпе тело берёт энергию из жира, а не из последнего съеденного.</small></div></li>
+    <li><span class="n">3</span><div><b>Лестница вместо лифта</b><small>Пульс на подъёме у вас уже упал со 125 до 105 — лестница сейчас работает не «на износ», а ровно как тренировка.</small></div></li>
+    <li><span class="n">4</span><div><b>15 минут после ужина</b><small>Не ради калорий, а ради живота и сахара в крови: после вечерней прогулки и спится легче, и тяжести меньше.</small></div></li>
+  </ul>
+  <div class="note note-green"><b>Сколько это стоит в граммах.</b> Каждые дополнительные 2000 шагов в день — это 500–700 ккал за неделю, то есть примерно 80 граммов жира. За месяц набегает треть килограмма, и ни одного продукта из меню при этом убирать не надо. Ходьба — единственный инструмент, который добавляет результат, ничего не отнимая.</div>
+  <h3 style="margin-top:26px;font-size:1.1rem">Отмечайте прямо здесь</h3>
+  <p class="lede" style="margin-top:8px">Галочки сохраняются в телефоне: отметили — и они останутся до следующего открытия страницы. В конце недели одним взглядом видно, сколько дней прошло по плану.</p>
+  <div class="track">
+    <div class="tr-row is-head"><span>День</span><span>По плану</span><span>Прогулка</span></div>
+    <div class="tr-row"><span class="tr-d">ПН</span><label class="tr-c"><input type="checkbox" data-tr="plan-0" aria-label="Понедельник: день прошёл по плану"></label><label class="tr-c"><input type="checkbox" data-tr="walk-0" aria-label="Понедельник: прогулка состоялась"></label></div>
+    <div class="tr-row"><span class="tr-d">ВТ</span><label class="tr-c"><input type="checkbox" data-tr="plan-1" aria-label="Вторник: день прошёл по плану"></label><label class="tr-c"><input type="checkbox" data-tr="walk-1" aria-label="Вторник: прогулка состоялась"></label></div>
+    <div class="tr-row"><span class="tr-d">СР</span><label class="tr-c"><input type="checkbox" data-tr="plan-2" aria-label="Среда: день прошёл по плану"></label><label class="tr-c"><input type="checkbox" data-tr="walk-2" aria-label="Среда: прогулка состоялась"></label></div>
+    <div class="tr-row"><span class="tr-d">ЧТ</span><label class="tr-c"><input type="checkbox" data-tr="plan-3" aria-label="Четверг: день прошёл по плану"></label><label class="tr-c"><input type="checkbox" data-tr="walk-3" aria-label="Четверг: прогулка состоялась"></label></div>
+    <div class="tr-row"><span class="tr-d">ПТ</span><label class="tr-c"><input type="checkbox" data-tr="plan-4" aria-label="Пятница: день прошёл по плану"></label><label class="tr-c"><input type="checkbox" data-tr="walk-4" aria-label="Пятница: прогулка состоялась"></label></div>
+    <div class="tr-row"><span class="tr-d">СБ</span><label class="tr-c"><input type="checkbox" data-tr="plan-5" aria-label="Суббота: день прошёл по плану"></label><label class="tr-c"><input type="checkbox" data-tr="walk-5" aria-label="Суббота: прогулка состоялась"></label></div>
+    <div class="tr-row"><span class="tr-d">ВС</span><label class="tr-c"><input type="checkbox" data-tr="plan-6" aria-label="Воскресенье: день прошёл по плану"></label><label class="tr-c"><input type="checkbox" data-tr="walk-6" aria-label="Воскресенье: прогулка состоялась"></label></div>
+    <div class="tr-foot"><span id="trSum"></span></div>
+  </div>
+  <div class="note"><b>Цель недели — не семь из семи.</b> Пять дней «по плану» и пять прогулок уже дают другую цифру на весах через неделю. Идеально соблюдённая неделя бывает редко, а пять из семи — каждый раз, когда это записано и видно.</div>
+</section>
+
+
+<section class="card pad" id="macros">
+<div class="sec-h"><svg class="ic ic-g" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.4S3.6 15.2 3.6 9.4a4.7 4.7 0 0 1 8.4-2.9 4.7 4.7 0 0 1 8.4 2.9c0 5.8-8.4 11-8.4 11Z"/></svg><h2>Белки, жиры, углеводы</h2></div>
+  <p class="lede">Норма 1500 ккал в день раскладывается так.</p>
+  <div style="margin-top:18px"><div class="bar" role="img" aria-label="Белки 125 г, жиры 50 г, углеводы 135 г"><span class="bar-p" style="width:40.3%"></span><span class="bar-f" style="width:16.1%"></span><span class="bar-c" style="width:43.5%"></span></div></div>
+  <div class="legend">
+    <div><small><span class="dot" style="background:var(--accent)"></span>Белки</small>
+      <b class="num">125 г</b>
+      <small>1,6 г на кг веса. Верхняя граница диапазона выбрана намеренно: в дефиците и на фоне менопаузы белок защищает мышцы от распада — а именно мышцы держат объёмы подтянутыми, пока уходит жир. Вечерний коктейль в эту норму встроен: с молоком он даёт 17,5 г белка, столько же, сколько утренний.</small></div>
+    <div><small><span class="dot" style="background:var(--amber)"></span>Жиры</small>
+      <b class="num">50 г</b>
+      <small>30% калорий. Часть приходит из сливочного масла, сыра и сметаны в супах, часть — из маслин: в 25 г их около 2,7 г жира. Поэтому в дни с ними оливкового масла в блюдах меньше — это уже учтено в граммовках.</small></div>
+    <div><small><span class="dot" style="background:var(--green)"></span>Углеводы</small>
+      <b class="num">135 г</b>
+      <small>Крупы, картофель, хлеб на закваске, фрукты. Макароны из твёрдых сортов встают сюда же наравне с гречкой и булгуром — вопрос только в размере порции.</small></div>
+  </div>
+</section>
+<section class="card pad" id="rhythm">
+<div class="sec-h"><svg class="ic ic-g" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.8"/><path d="M12 6.8V12l3.4 2"/></svg><h2>Режим дня</h2></div>
+  <p class="lede">Порядок прежний: три основных приёма и два перекуса. Часы можно сдвигать под свой график — важны порядок и промежутки, а не точное время.</p>
+  <div class="rhythm">
+    <div class="r-row is-key"><div class="r-time">08:00</div>
+      <div class="r-txt"><b>Коктейль «Формула 1»</b><small>26 г порошка (2 ст. л.) на 250 мл молока 1,5% — 220 ккал, 17 г белка. Молоко теперь обычное — специальное больше не нужно</small></div></div>
+    <div class="r-row"><div class="r-time">11:00</div>
+      <div class="r-txt"><b>Перекус с белком</b><small>Творог, йогурт или кефир с фруктом — белок держит сытость до обеда</small></div></div>
+    <div class="r-row"><div class="r-time">14:00</div>
+      <div class="r-txt"><b>Обед</b><small>Белок, крупа или картофель, овощи. Три раза за неделю — суп, три раза к обеду идёт бутерброд</small></div></div>
+    <div class="r-row is-key"><div class="r-time">17:00</div>
+      <div class="r-txt"><b>Перекус и таблетка железа</b><small>Фрукт с витамином C и горсть орехов или тыквенных семечек. Цитрус, киви и клубника усиливают усвоение железа в несколько раз, поэтому в этот перекус идут именно они</small></div></div>
+    <div class="r-row"><div class="r-time">19:30</div>
+      <div class="r-txt"><b>Ужин</b><small>Белок и тушёные овощи, не позже чем за 2–2,5 часа до сна. Во вторник и пятницу вместо него — вечерний коктейль с салатом (203 ккал с молоком, 17,5 г белка), и это как раз 2,5 часа после таблетки железа, так что молоко в нём усвоению не мешает</small></div></div>
+  </div>
+  <div class="note note-amber"><b>Главное правило по железу — без изменений.</b> Молочное, чай и кофе снижают усвоение железа из таблетки. Поэтому таблетка в 17:00 с цитрусом, и <b>минимум два часа до и после неё</b> без молочного, чая и кофе. Всё молочное дня к этому времени уже съедено, а до ужина остаётся 2,5 часа. Орехи из того же перекуса лучше съесть минут через двадцать после таблетки, а не вместе с ней.</div>
+</section>
+<section class="card pad" style="padding-bottom:18px">
+<div class="sec-h"><svg class="ic ic-g" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.6" y="5.2" width="16.8" height="15.2" rx="2"/><path d="M3.6 10h16.8M8.4 3.4v3.4M15.6 3.4v3.4"/></svg><h2>Неделя по дням</h2></div>
+  <p class="lede">Веса указаны для сырых или сухих продуктов — как взвешивать до приготовления. Дни можно менять местами целиком, но не собирать «половину понедельника и половину среды»: тогда сумма за день разъедется. Четыре дня лучше оставить на своих местах: среду и субботу — в них стоит возвращённое, вторник и пятницу — в них вечерний коктейль, а обед под него сделан плотнее обычного.</p>
+</section>
+<section class="card day" id="day-1">
+ <header class="day-h">
+  <span class="day-abbr">ПН</span>
+  <h3>Понедельник</h3>
+  <span class="day-kcal">1528 ккал</span>
+ </header>
+ <div class="meals">
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 3h9l-1.2 16.2A2.8 2.8 0 0 1 12.5 22h-1A2.8 2.8 0 0 1 8.7 19.2Z"/><path d="M7.9 9.6h8.2"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">08:00</p>
+  <h4 class="m-title">Коктейль «Формула 1»</h4>
+  <ul class="f-list"><li><span class="f-n">«Формула 1» 26 г (2 ст. л.) + молоко 1,5% — 250 мл</span><span class="f-g"></span></li></ul>
+ </div>
+ <div class="m-num"><b>220</b><span>ккал</span>
+  <p class="m-macro">Б 17 · Ж 5 · У 26</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.6h18c0 4.8-3.4 8.3-9 8.3s-9-3.5-9-8.3Z"/><path d="M8.4 7.6c.7-.9.7-1.9 0-2.8M12 7.6c.7-.9.7-1.9 0-2.8M15.6 7.6c.7-.9.7-1.9 0-2.8"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">11:00</p>
+  <h4 class="m-title">Творог с бананом</h4>
+  <ul class="f-list"><li><span class="f-n">Творог 2%</span><span class="f-g">150 г</span></li><li><span class="f-n">Банан</span><span class="f-g">100 г</span></li></ul>
+ </div>
+ <div class="m-num"><b>244</b><span>ккал</span>
+  <p class="m-macro">Б 28,1 · Ж 3,3 · У 27,8</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="8.8" cy="12.8" rx="5.4" ry="3.5"/><ellipse cx="15.2" cy="17" rx="5.4" ry="3.5"/><path d="M10.6 6.4c.8-.9.8-1.9 0-2.8M14.2 6.4c.8-.9.8-1.9 0-2.8"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">14:00</p>
+  <h4 class="m-title">Котлеты из индейки на пару с гречкой и салатом</h4>
+  <ul class="f-list"><li><span class="f-n">Индейка, филе грудки, сырое</span><span class="f-g">165 г</span></li><li><span class="f-n">Кабачок</span><span class="f-g">60 г</span></li><li><span class="f-n">Яйцо куриное</span><span class="f-g">50 г</span></li><li><span class="f-n">Зелёный лук</span><span class="f-g">10 г</span></li><li><span class="f-n">Гречка, сухая</span><span class="f-g">55 г</span></li><li><span class="f-n">Огурец</span><span class="f-g">100 г</span></li><li><span class="f-n">Помидор</span><span class="f-g">100 г</span></li><li><span class="f-n">Маслины без косточки</span><span class="f-g">25 г</span></li><li><span class="f-n">Масло оливковое</span><span class="f-g">8 г</span></li><li><span class="f-n">Укроп, петрушка</span><span class="f-g">5 г</span></li></ul><p class="how">Филе лучше перекрутить самой: в покупном фарше почти всегда есть и жир, и хлеб. Вместо хлеба и манки в фарш идёт тёртый кабачок — он даёт ту же сочность и почти не добавляет калорий, а связывает всё одно целое яйцо. Из этого веса выходит три котлеты, на пару им нужно 20 минут. Маслины перед салатом откиньте на сито и промойте холодной водой: часть соли из рассола уходит вместе с ней.</p>
+ </div>
+ <div class="m-num"><b>592</b><span>ккал</span>
+  <p class="m-macro">Б 51,4 · Ж 21,3 · У 45,6</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 3.4v17.2M4.6 8.2l14.8 7.6M4.6 15.8l14.8-7.6"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">17:00</p>
+  <h4 class="m-title">Апельсин с грецким орехом <span class="tag tag-fe">+ таблетка железа</span></h4>
+  <ul class="f-list"><li><span class="f-n">Апельсин</span><span class="f-g">150 г</span></li><li><span class="f-n">Грецкий орех</span><span class="f-g">12 г</span></li></ul>
+ </div>
+ <div class="m-num"><b>143</b><span>ккал</span>
+  <p class="m-macro">Б 3,2 · Ж 8,1 · У 13</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.6 12c2.6-3.5 6-5.4 9.1-5.4 3.2 0 5.7 1.9 6.7 5.4-1 3.5-3.5 5.4-6.7 5.4-3.1 0-6.5-1.9-9.1-5.4Z"/><path d="M4.6 12 1.6 8.6v6.8Z"/><circle cx="17.2" cy="10.4" r=".9"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">19:30</p>
+  <h4 class="m-title">Треска с брокколи, кабачком и помидором</h4>
+  <ul class="f-list"><li><span class="f-n">Треска, филе, сырое</span><span class="f-g">165 г</span></li><li><span class="f-n">Брокколи</span><span class="f-g">150 г</span></li><li><span class="f-n">Кабачок</span><span class="f-g">150 г</span></li><li><span class="f-n">Помидор</span><span class="f-g">100 г</span></li><li><span class="f-n">Масло оливковое</span><span class="f-g">10 г</span></li><li><span class="f-n">Укроп, петрушка</span><span class="f-g">10 г</span></li></ul><p class="how">Треску запечь в фольге 20 минут при 190 °С. Брокколи — на пару 6–7 минут, она должна остаться ярко-зелёной: переваренная и тяжелее, и вкуса в ней нет.</p>
+ </div>
+ <div class="m-num"><b>329</b><span>ккал</span>
+  <p class="m-macro">Б 35,5 · Ж 12,4 · У 20,9</p></div>
+</article>
+</div>
+ <footer class="day-f">
+  <div class="bar" role="img" aria-label="Белки 135 г, жиры 50 г, углеводы 133 г"><span class="bar-p" style="width:42.4%"></span><span class="bar-f" style="width:15.8%"></span><span class="bar-c" style="width:41.8%"></span></div>
+  <dl class="day-tot">
+   <div><dt>Белки</dt><dd>135,2 г</dd></div>
+   <div><dt>Жиры</dt><dd>50,2 г</dd></div>
+   <div><dt>Углеводы</dt><dd>133,3 г</dd></div>
+  </dl>
+ </footer>
+</section>
+<section class="card day" id="day-2">
+ <header class="day-h">
+  <span class="day-abbr">ВТ</span>
+  <h3>Вторник</h3>
+  <span class="day-kcal">1498 ккал</span>
+ </header>
+ <div class="meals">
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 3h9l-1.2 16.2A2.8 2.8 0 0 1 12.5 22h-1A2.8 2.8 0 0 1 8.7 19.2Z"/><path d="M7.9 9.6h8.2"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">08:00</p>
+  <h4 class="m-title">Коктейль «Формула 1»</h4>
+  <ul class="f-list"><li><span class="f-n">«Формула 1» 26 г (2 ст. л.) + молоко 1,5% — 250 мл</span><span class="f-g"></span></li></ul>
+ </div>
+ <div class="m-num"><b>220</b><span>ккал</span>
+  <p class="m-macro">Б 17 · Ж 5 · У 26</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.6h18c0 4.8-3.4 8.3-9 8.3s-9-3.5-9-8.3Z"/><path d="M8.4 7.6c.7-.9.7-1.9 0-2.8M12 7.6c.7-.9.7-1.9 0-2.8M15.6 7.6c.7-.9.7-1.9 0-2.8"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">11:00</p>
+  <h4 class="m-title">Творог с персиком</h4>
+  <ul class="f-list"><li><span class="f-n">Творог 2%</span><span class="f-g">150 г</span></li><li><span class="f-n">Персик</span><span class="f-g">120 г</span></li></ul>
+ </div>
+ <div class="m-num"><b>205</b><span>ккал</span>
+  <p class="m-macro">Б 28,1 · Ж 3,1 · У 16,4</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M6.9 13.6c1.7-1.7 3.4-2.5 5.1-2.5s3.4.8 5.1 2.5"/><path d="M7.7 10.6c1.4-1.4 2.9-2.2 4.3-2.2s2.9.8 4.3 2.2"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">14:00</p>
+  <h4 class="m-title">Макароны с говядиной и помидорами</h4>
+  <ul class="f-list"><li><span class="f-n">Говядина постная (вырезка), сырая</span><span class="f-g">160 г</span></li><li><span class="f-n">Макароны из твёрдых сортов, сухие</span><span class="f-g">65 г</span></li><li><span class="f-n">Помидор</span><span class="f-g">150 г</span></li><li><span class="f-n">Зелёный лук</span><span class="f-g">10 г</span></li><li><span class="f-n">Масло оливковое</span><span class="f-g">5 г</span></li><li><span class="f-n">Сыр твёрдый 45–50%</span><span class="f-g">20 г</span></li></ul><p class="how">Обед сегодня плотнее обычного не случайно: вечером у вас коктейль, и основная еда дня переезжает на середину. Вес макарон сухой, до варки. Варить на минуту меньше, чем написано на пачке, — так они держат форму и спокойнее ведут себя с сахаром в крови.</p>
+ </div>
+ <div class="m-num"><b>628</b><span>ккал</span>
+  <p class="m-macro">Б 46,3 · Ж 25,7 · У 51,5</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 3.4v17.2M4.6 8.2l14.8 7.6M4.6 15.8l14.8-7.6"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">17:00</p>
+  <h4 class="m-title">Киви с миндалём <span class="tag tag-fe">+ таблетка железа</span></h4>
+  <ul class="f-list"><li><span class="f-n">Киви</span><span class="f-g">75 г</span></li><li><span class="f-n">Миндаль</span><span class="f-g">12 г</span></li></ul>
+ </div>
+ <div class="m-num"><b>115</b><span>ккал</span>
+  <p class="m-macro">Б 3,4 · Ж 6,4 · У 12,2</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.6 3h8.6l-1.15 15.5A2.7 2.7 0 0 1 10.4 21h-.9a2.7 2.7 0 0 1-2.65-2.5Z"/><path d="M6 9.3h7.9"/><path d="M21.4 6.1a3 3 0 1 1-3.4-3.1 2.3 2.3 0 0 0 3.4 3.1Z"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">19:30</p>
+  <h4 class="m-title">Вечерний коктейль с овощным салатом <span class="tag tag-eve">коктейль на ужин</span></h4>
+  <ul class="f-list"><li><span class="f-n">«Формула 1 Вечерний коктейль» 26 г (3 мерные ложки) + молоко 1,5% — 250 мл</span><span class="f-g"></span></li><li><span class="f-n">Огурец</span><span class="f-g">150 г</span></li><li><span class="f-n">Помидор</span><span class="f-g">150 г</span></li><li><span class="f-n">Перец болгарский</span><span class="f-g">100 г</span></li><li><span class="f-n">Укроп, петрушка</span><span class="f-g">10 г</span></li><li><span class="f-n">Масло оливковое</span><span class="f-g">5 г</span></li></ul><p class="how">Порция вечернего — 3 мерные ложки (26 г) на 250 мл молока 1,5%, отмеряется не так, как утренний. Салат — обязательная часть ужина, а не украшение к нему: один стакан не даёт ни объёма, ни сытости до сна, а с миской овощей вечер проходит спокойно. Овощи нарезать крупно, масло добавить в готовый салат.</p>
+ </div>
+ <div class="m-num"><b>330</b><span>ккал</span>
+  <p class="m-macro">Б 21,6 · Ж 10 · У 37,5</p></div>
+</article>
+</div>
+ <footer class="day-f">
+  <div class="bar" role="img" aria-label="Белки 116 г, жиры 50 г, углеводы 143 г"><span class="bar-p" style="width:37.5%"></span><span class="bar-f" style="width:16.2%"></span><span class="bar-c" style="width:46.3%"></span></div>
+  <dl class="day-tot">
+   <div><dt>Белки</dt><dd>116,3 г</dd></div>
+   <div><dt>Жиры</dt><dd>50,1 г</dd></div>
+   <div><dt>Углеводы</dt><dd>143,4 г</dd></div>
+  </dl>
+ </footer>
+</section>
+<section class="card day" id="day-3">
+ <header class="day-h">
+  <span class="day-abbr">СР</span>
+  <h3>Среда</h3>
+  <span class="day-kcal">1482 ккал</span>
+ </header>
+ <div class="meals">
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 3h9l-1.2 16.2A2.8 2.8 0 0 1 12.5 22h-1A2.8 2.8 0 0 1 8.7 19.2Z"/><path d="M7.9 9.6h8.2"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">08:00</p>
+  <h4 class="m-title">Коктейль «Формула 1»</h4>
+  <ul class="f-list"><li><span class="f-n">«Формула 1» 26 г (2 ст. л.) + молоко 1,5% — 250 мл</span><span class="f-g"></span></li></ul>
+ </div>
+ <div class="m-num"><b>220</b><span>ккал</span>
+  <p class="m-macro">Б 17 · Ж 5 · У 26</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.4 8.2h11.2l-1.3 11.4a2.1 2.1 0 0 1-2.1 1.9h-4.4a2.1 2.1 0 0 1-2.1-1.9Z"/><path d="M5.4 5.2h13.2v3H5.4z"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">11:00</p>
+  <h4 class="m-title">Кефир со сливой</h4>
+  <ul class="f-list"><li><span class="f-n">Кефир 1%</span><span class="f-g">300 г</span></li><li><span class="f-n">Слива</span><span class="f-g">120 г</span></li></ul>
+ </div>
+ <div class="m-num"><b>175</b><span>ккал</span>
+  <p class="m-macro">Б 9,8 · Ж 3,4 · У 25,7</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.8 8.4C7.2 5.2 11.6 3.9 15.4 5c3.6 1.1 5.4 4 4.6 7.2-.9 3.6-4.4 6.4-8.4 7-3.9.6-7-1.1-7.6-4-.5-2.4.4-4.9.8-6.8Z"/><path d="M9.2 9.8c1.6-1.2 3.8-1.5 5.2-.6 1.4.9 1.4 2.7.1 4.1-1.3 1.3-3.5 1.8-4.9 1-1.3-.8-1.5-2.7-.4-4.5Z"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">14:00</p>
+  <h4 class="m-title">Печень по-строгановски с луком и гречкой <span class="tag tag-fe">много железа</span> <span class="tag tag-test">пробуем сегодня</span></h4>
+  <ul class="f-list"><li><span class="f-n">Печень говяжья, сырая</span><span class="f-g">180 г</span></li><li><span class="f-n">Гречка, сухая</span><span class="f-g">70 г</span></li><li><span class="f-n">Лук репчатый</span><span class="f-g">60 г</span></li><li><span class="f-n">Сметана 10%</span><span class="f-g">20 г</span></li><li><span class="f-n">Зелёный лук</span><span class="f-g">10 г</span></li><li><span class="f-n">Огурец</span><span class="f-g">100 г</span></li><li><span class="f-n">Маслины без косточки</span><span class="f-g">25 г</span></li><li><span class="f-n">Масло оливковое</span><span class="f-g">4 г</span></li></ul><p class="how">Лук нарезать полукольцами и потомить на сковороде до мягкости и прозрачности, и только потом класть печень: тушёный лук переносится заметно легче сырого, поэтому сегодня он именно такой. Печень нарезать соломкой, обжарить 5–7 минут, добавить сметану и зелёный лук, потушить ещё три. Дольше — станет жёсткой. Маслины к огурцу промыть от рассола.</p>
+ </div>
+ <div class="m-num"><b>597</b><span>ккал</span>
+  <p class="m-macro">Б 43,6 · Ж 17,9 · У 62,9</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 3.4v17.2M4.6 8.2l14.8 7.6M4.6 15.8l14.8-7.6"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">17:00</p>
+  <h4 class="m-title">Чёрная смородина с тыквенными семечками <span class="tag tag-fe">+ таблетка железа</span></h4>
+  <ul class="f-list"><li><span class="f-n">Смородина чёрная свежая</span><span class="f-g">150 г</span></li><li><span class="f-n">Семечки тыквенные очищенные</span><span class="f-g">10 г</span></li></ul><p class="how">Смородина стоит сразу после печени не случайно: витамина C в ней вчетверо больше, чем в апельсине, а он и разгоняет усвоение железа. Тыквенные семечки — сами по себе источник железа.</p>
+ </div>
+ <div class="m-num"><b>122</b><span>ккал</span>
+  <p class="m-macro">Б 4,5 · Ж 5,5 · У 11,8</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.6 12c2.6-3.5 6-5.4 9.1-5.4 3.2 0 5.7 1.9 6.7 5.4-1 3.5-3.5 5.4-6.7 5.4-3.1 0-6.5-1.9-9.1-5.4Z"/><path d="M4.6 12 1.6 8.6v6.8Z"/><circle cx="17.2" cy="10.4" r=".9"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">19:30</p>
+  <h4 class="m-title">Горбуша с цветной капустой и морковью</h4>
+  <ul class="f-list"><li><span class="f-n">Горбуша, филе, сырое</span><span class="f-g">180 г</span></li><li><span class="f-n">Капуста цветная</span><span class="f-g">200 г</span></li><li><span class="f-n">Морковь</span><span class="f-g">90 г</span></li><li><span class="f-n">Масло оливковое</span><span class="f-g">3 г</span></li><li><span class="f-n">Укроп, петрушка</span><span class="f-g">10 г</span></li></ul>
+ </div>
+ <div class="m-num"><b>368</b><span>ккал</span>
+  <p class="m-macro">Б 42,1 · Ж 15,4 · У 16,5</p></div>
+</article>
+</div>
+ <footer class="day-f">
+  <div class="bar" role="img" aria-label="Белки 117 г, жиры 47 г, углеводы 143 г"><span class="bar-p" style="width:38.1%"></span><span class="bar-f" style="width:15.4%"></span><span class="bar-c" style="width:46.5%"></span></div>
+  <dl class="day-tot">
+   <div><dt>Белки</dt><dd>117,1 г</dd></div>
+   <div><dt>Жиры</dt><dd>47,2 г</dd></div>
+   <div><dt>Углеводы</dt><dd>142,8 г</dd></div>
+  </dl>
+ </footer>
+</section>
+<section class="card day" id="day-4">
+ <header class="day-h">
+  <span class="day-abbr">ЧТ</span>
+  <h3>Четверг</h3>
+  <span class="day-kcal">1497 ккал</span>
+ </header>
+ <div class="meals">
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 3h9l-1.2 16.2A2.8 2.8 0 0 1 12.5 22h-1A2.8 2.8 0 0 1 8.7 19.2Z"/><path d="M7.9 9.6h8.2"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">08:00</p>
+  <h4 class="m-title">Коктейль «Формула 1»</h4>
+  <ul class="f-list"><li><span class="f-n">«Формула 1» 26 г (2 ст. л.) + молоко 1,5% — 250 мл</span><span class="f-g"></span></li></ul>
+ </div>
+ <div class="m-num"><b>220</b><span>ккал</span>
+  <p class="m-macro">Б 17 · Ж 5 · У 26</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.6h18c0 4.8-3.4 8.3-9 8.3s-9-3.5-9-8.3Z"/><path d="M8.4 7.6c.7-.9.7-1.9 0-2.8M12 7.6c.7-.9.7-1.9 0-2.8M15.6 7.6c.7-.9.7-1.9 0-2.8"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">11:00</p>
+  <h4 class="m-title">Творог с малиной</h4>
+  <ul class="f-list"><li><span class="f-n">Творог 2%</span><span class="f-g">120 г</span></li><li><span class="f-n">Малина свежая</span><span class="f-g">120 г</span></li></ul>
+ </div>
+ <div class="m-num"><b>179</b><span>ккал</span>
+  <p class="m-macro">Б 22,6 · Ж 3 · У 13,9</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.8 11.2h12.6c0 4-2.8 7.1-6.3 7.1s-6.3-3.1-6.3-7.1Z"/><path d="M2 20.8h14.2"/><path d="M19.4 8.6v12.2"/><path d="M19.4 8.6c-1.3 0-2.3-1.2-2.3-2.7s1-2.7 2.3-2.7 2.3 1.2 2.3 2.7-1 2.7-2.3 2.7Z"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">14:00</p>
+  <h4 class="m-title">Куриный суп с вермишелью и овощами <span class="tag tag-bread">с бутербродом</span></h4>
+  <ul class="f-list"><li><span class="f-n">Куриное филе (грудка), сырое</span><span class="f-g">120 г</span></li><li><span class="f-n">Вермишель из твёрдых сортов, сухая</span><span class="f-g">35 г</span></li><li><span class="f-n">Картофель, сырой</span><span class="f-g">90 г</span></li><li><span class="f-n">Морковь</span><span class="f-g">60 г</span></li><li><span class="f-n">Зелёный лук</span><span class="f-g">10 г</span></li><li><span class="f-n">Укроп, петрушка</span><span class="f-g">5 г</span></li><li><span class="f-n">Масло оливковое</span><span class="f-g">5 г</span></li><li><span class="f-n">Хлеб ржаной на закваске</span><span class="f-g">30 г</span></li><li><span class="f-n">Масло сливочное 82,5%</span><span class="f-g">8 г</span></li><li><span class="f-n">Сыр твёрдый 45–50%</span><span class="f-g">10 г</span></li></ul><p class="how">Курицу отварить целым куском, вынуть, нарезать и вернуть в кастрюлю в конце — так она остаётся сочной. Вермишель класть за 5 минут до готовности, иначе разварится. Удобно сварить сразу на три порции: умножьте все продукты супа на три, а съешьте треть.</p>
+ </div>
+ <div class="m-num"><b>557</b><span>ккал</span>
+  <p class="m-macro">Б 39,7 · Ж 17,9 · У 57</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 3.4v17.2M4.6 8.2l14.8 7.6M4.6 15.8l14.8-7.6"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">17:00</p>
+  <h4 class="m-title">Апельсин с миндалём <span class="tag tag-fe">+ таблетка железа</span></h4>
+  <ul class="f-list"><li><span class="f-n">Апельсин</span><span class="f-g">150 г</span></li><li><span class="f-n">Миндаль</span><span class="f-g">12 г</span></li></ul>
+ </div>
+ <div class="m-num"><b>134</b><span>ккал</span>
+  <p class="m-macro">Б 3,9 · Ж 6,3 · У 13,3</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="8.8" cy="12.8" rx="5.4" ry="3.5"/><ellipse cx="15.2" cy="17" rx="5.4" ry="3.5"/><path d="M10.6 6.4c.8-.9.8-1.9 0-2.8M14.2 6.4c.8-.9.8-1.9 0-2.8"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">19:30</p>
+  <h4 class="m-title">Котлеты из говядины с курицей, картофель и салат</h4>
+  <ul class="f-list"><li><span class="f-n">Говядина постная (вырезка), сырая</span><span class="f-g">80 г</span></li><li><span class="f-n">Куриное филе (грудка), сырое</span><span class="f-g">90 г</span></li><li><span class="f-n">Кабачок</span><span class="f-g">50 г</span></li><li><span class="f-n">Зелёный лук</span><span class="f-g">10 г</span></li><li><span class="f-n">Картофель, сырой</span><span class="f-g">120 г</span></li><li><span class="f-n">Огурец</span><span class="f-g">100 г</span></li><li><span class="f-n">Помидор</span><span class="f-g">100 г</span></li><li><span class="f-n">Масло оливковое</span><span class="f-g">4 г</span></li><li><span class="f-n">Укроп, петрушка</span><span class="f-g">5 г</span></li></ul><p class="how">Половина говядины, половина курицы: так котлеты выходят сочными, а жира в них меньше, чем в чисто говяжьих. Мясо перекрутить вместе с кабачком и зелёным луком. Яйцо сегодня не нужно: фарш достаточно как следует вымесить и отбить о миску, тогда он держит форму сам. На пару 25 минут — эти котлеты плотнее индюшиных. Картофель отварить в мундире и подать тёплым.</p>
+ </div>
+ <div class="m-num"><b>406</b><span>ккал</span>
+  <p class="m-macro">Б 42,1 · Ж 13,6 · У 29</p></div>
+</article>
+</div>
+ <footer class="day-f">
+  <div class="bar" role="img" aria-label="Белки 125 г, жиры 46 г, углеводы 139 г"><span class="bar-p" style="width:40.3%"></span><span class="bar-f" style="width:14.8%"></span><span class="bar-c" style="width:44.9%"></span></div>
+  <dl class="day-tot">
+   <div><dt>Белки</dt><dd>125,2 г</dd></div>
+   <div><dt>Жиры</dt><dd>45,9 г</dd></div>
+   <div><dt>Углеводы</dt><dd>139,2 г</dd></div>
+  </dl>
+ </footer>
+</section>
+<section class="card day" id="day-5">
+ <header class="day-h">
+  <span class="day-abbr">ПТ</span>
+  <h3>Пятница</h3>
+  <span class="day-kcal">1470 ккал</span>
+ </header>
+ <div class="meals">
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 3h9l-1.2 16.2A2.8 2.8 0 0 1 12.5 22h-1A2.8 2.8 0 0 1 8.7 19.2Z"/><path d="M7.9 9.6h8.2"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">08:00</p>
+  <h4 class="m-title">Коктейль «Формула 1»</h4>
+  <ul class="f-list"><li><span class="f-n">«Формула 1» 26 г (2 ст. л.) + молоко 1,5% — 250 мл</span><span class="f-g"></span></li></ul>
+ </div>
+ <div class="m-num"><b>220</b><span>ккал</span>
+  <p class="m-macro">Б 17 · Ж 5 · У 26</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.6h18c0 4.8-3.4 8.3-9 8.3s-9-3.5-9-8.3Z"/><path d="M8.4 7.6c.7-.9.7-1.9 0-2.8M12 7.6c.7-.9.7-1.9 0-2.8M15.6 7.6c.7-.9.7-1.9 0-2.8"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">11:00</p>
+  <h4 class="m-title">Творог с бананом</h4>
+  <ul class="f-list"><li><span class="f-n">Творог 2%</span><span class="f-g">150 г</span></li><li><span class="f-n">Банан</span><span class="f-g">100 г</span></li></ul>
+ </div>
+ <div class="m-num"><b>244</b><span>ккал</span>
+  <p class="m-macro">Б 28,1 · Ж 3,3 · У 27,8</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.8 11.2h12.6c0 4-2.8 7.1-6.3 7.1s-6.3-3.1-6.3-7.1Z"/><path d="M2 20.8h14.2"/><path d="M19.4 8.6v12.2"/><path d="M19.4 8.6c-1.3 0-2.3-1.2-2.3-2.7s1-2.7 2.3-2.7 2.3 1.2 2.3 2.7-1 2.7-2.3 2.7Z"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">14:00</p>
+  <h4 class="m-title">Уха из трески с картофелем <span class="tag tag-bread">с бутербродом</span></h4>
+  <ul class="f-list"><li><span class="f-n">Треска, филе, сырое</span><span class="f-g">180 г</span></li><li><span class="f-n">Картофель, сырой</span><span class="f-g">110 г</span></li><li><span class="f-n">Морковь</span><span class="f-g">60 г</span></li><li><span class="f-n">Зелёный лук</span><span class="f-g">10 г</span></li><li><span class="f-n">Укроп, петрушка</span><span class="f-g">10 г</span></li><li><span class="f-n">Сметана 10%</span><span class="f-g">20 г</span></li><li><span class="f-n">Масло оливковое</span><span class="f-g">5 г</span></li><li><span class="f-n">Хлеб ржаной на закваске</span><span class="f-g">30 г</span></li><li><span class="f-n">Масло сливочное 82,5%</span><span class="f-g">8 г</span></li><li><span class="f-n">Сыр твёрдый 45–50%</span><span class="f-g">20 г</span></li></ul><p class="how">Сначала отварить картофель с морковью, треску положить последней и варить всего 8 минут — иначе развалится. Сметану добавить в тарелку, а не в кастрюлю. Сегодня вечером снова коктейль, поэтому обед сытный и с бутербродом.</p>
+ </div>
+ <div class="m-num"><b>517</b><span>ккал</span>
+  <p class="m-macro">Б 42,8 · Ж 21,4 · У 36,2</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 3.4v17.2M4.6 8.2l14.8 7.6M4.6 15.8l14.8-7.6"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">17:00</p>
+  <h4 class="m-title">Клубника с тыквенными семечками <span class="tag tag-fe">+ таблетка железа</span></h4>
+  <ul class="f-list"><li><span class="f-n">Клубника свежая</span><span class="f-g">200 г</span></li><li><span class="f-n">Семечки тыквенные очищенные</span><span class="f-g">12 г</span></li></ul>
+ </div>
+ <div class="m-num"><b>131</b><span>ккал</span>
+  <p class="m-macro">Б 5,2 · Ж 6,5 · У 15</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.6 3h8.6l-1.15 15.5A2.7 2.7 0 0 1 10.4 21h-.9a2.7 2.7 0 0 1-2.65-2.5Z"/><path d="M6 9.3h7.9"/><path d="M21.4 6.1a3 3 0 1 1-3.4-3.1 2.3 2.3 0 0 0 3.4 3.1Z"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">19:30</p>
+  <h4 class="m-title">Вечерний коктейль с салатом и маслинами <span class="tag tag-eve">коктейль на ужин</span></h4>
+  <ul class="f-list"><li><span class="f-n">«Формула 1 Вечерний коктейль» 26 г (3 мерные ложки) + молоко 1,5% — 250 мл</span><span class="f-g"></span></li><li><span class="f-n">Огурец</span><span class="f-g">150 г</span></li><li><span class="f-n">Помидор</span><span class="f-g">150 г</span></li><li><span class="f-n">Перец болгарский</span><span class="f-g">100 г</span></li><li><span class="f-n">Маслины без косточки</span><span class="f-g">25 г</span></li><li><span class="f-n">Укроп, петрушка</span><span class="f-g">10 г</span></li><li><span class="f-n">Масло оливковое</span><span class="f-g">5 г</span></li></ul><p class="how">Второй и последний вечерний коктейль на этой неделе, готовится так же — 3 мерные ложки на 250 мл молока 1,5%. Маслины промыть под водой и взвесить: 25 г — это пять-шесть штук, а «горсть из банки» легко выходит вдвое больше и тянет за собой соль. Салат съесть весь, не оставляя половину.</p>
+ </div>
+ <div class="m-num"><b>358</b><span>ккал</span>
+  <p class="m-macro">Б 21,8 · Ж 12,7 · У 39</p></div>
+</article>
+</div>
+ <footer class="day-f">
+  <div class="bar" role="img" aria-label="Белки 115 г, жиры 49 г, углеводы 144 г"><span class="bar-p" style="width:37.3%"></span><span class="bar-f" style="width:15.9%"></span><span class="bar-c" style="width:46.8%"></span></div>
+  <dl class="day-tot">
+   <div><dt>Белки</dt><dd>114,9 г</dd></div>
+   <div><dt>Жиры</dt><dd>48,9 г</dd></div>
+   <div><dt>Углеводы</dt><dd>143,9 г</dd></div>
+  </dl>
+ </footer>
+</section>
+<section class="card day" id="day-6">
+ <header class="day-h">
+  <span class="day-abbr">СБ</span>
+  <h3>Суббота</h3>
+  <span class="day-kcal">1478 ккал</span>
+ </header>
+ <div class="meals">
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 3h9l-1.2 16.2A2.8 2.8 0 0 1 12.5 22h-1A2.8 2.8 0 0 1 8.7 19.2Z"/><path d="M7.9 9.6h8.2"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">08:00</p>
+  <h4 class="m-title">Коктейль «Формула 1»</h4>
+  <ul class="f-list"><li><span class="f-n">«Формула 1» 26 г (2 ст. л.) + молоко 1,5% — 250 мл</span><span class="f-g"></span></li></ul>
+ </div>
+ <div class="m-num"><b>220</b><span>ккал</span>
+  <p class="m-macro">Б 17 · Ж 5 · У 26</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.4 8.2h11.2l-1.3 11.4a2.1 2.1 0 0 1-2.1 1.9h-4.4a2.1 2.1 0 0 1-2.1-1.9Z"/><path d="M5.4 5.2h13.2v3H5.4z"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">11:00</p>
+  <h4 class="m-title">Йогурт с абрикосами</h4>
+  <ul class="f-list"><li><span class="f-n">Йогурт натуральный 2,5% без добавок</span><span class="f-g">200 г</span></li><li><span class="f-n">Абрикос</span><span class="f-g">150 г</span></li></ul>
+ </div>
+ <div class="m-num"><b>192</b><span>ккал</span>
+  <p class="m-macro">Б 11,1 · Ж 5,6 · У 28,6</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.4 10.2c0-2 1.6-3.4 3.6-3.4s3.6 1.4 3.6 3.4c0 4.4-1.4 9-3.6 9s-3.6-4.6-3.6-9Z"/><path d="M12 6.8V5.2c0-1 .8-1.8 1.8-1.8h1.4"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">14:00</p>
+  <h4 class="m-title">Перец, фаршированный индейкой, под сыром</h4>
+  <ul class="f-list"><li><span class="f-n">Индейка, филе грудки, сырое</span><span class="f-g">190 г</span></li><li><span class="f-n">Рис бурый, сухой</span><span class="f-g">30 г</span></li><li><span class="f-n">Перец болгарский</span><span class="f-g">250 г</span></li><li><span class="f-n">Морковь</span><span class="f-g">50 г</span></li><li><span class="f-n">Помидор</span><span class="f-g">100 г</span></li><li><span class="f-n">Сыр твёрдый 45–50%</span><span class="f-g">25 г</span></li><li><span class="f-n">Масло оливковое</span><span class="f-g">5 г</span></li><li><span class="f-n">Зелёный лук</span><span class="f-g">10 г</span></li></ul><p class="how">Перцы разрезать пополам, вычистить. Индейку смешать с отваренным до полуготовности рисом, тёртой морковью и зеленью, набить половинки, залить помидором, протёртым вилкой. Запекать под фольгой 30 минут при 180 °С, снять фольгу, посыпать сыром и дать ему расплавиться 5 минут.</p>
+ </div>
+ <div class="m-num"><b>541</b><span>ккал</span>
+  <p class="m-macro">Б 54,4 · Ж 16,6 · У 42,7</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 3.4v17.2M4.6 8.2l14.8 7.6M4.6 15.8l14.8-7.6"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">17:00</p>
+  <h4 class="m-title">Грейпфрут с грецким орехом <span class="tag tag-fe">+ таблетка железа</span></h4>
+  <ul class="f-list"><li><span class="f-n">Грейпфрут</span><span class="f-g">200 г</span></li><li><span class="f-n">Грецкий орех</span><span class="f-g">12 г</span></li></ul>
+ </div>
+ <div class="m-num"><b>162</b><span>ккал</span>
+  <p class="m-macro">Б 3,2 · Ж 8 · У 18,2</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15.45 15.4c-2.13.65-4.3.32-5.7-1.1-2.29-2.27-1.76-6.5 1.17-9.42 2.93-2.93 7.15-3.46 9.43-1.18 1.41 1.41 1.74 3.57 1.1 5.71-1.4-.51-3.26-.02-4.64 1.36-1.38 1.38-1.87 3.23-1.36 4.63Z"/><path d="M11.25 15.6l-2.16 2.16a2.5 2.5 0 1 1-4.56 1.73 2.49 2.49 0 0 1-1.41-4.24 2.5 2.5 0 0 1 3.14-.32l2.16-2.16"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">19:30</p>
+  <h4 class="m-title">Курица с тушёной капустой и морковью <span class="tag tag-test">пробуем сегодня</span></h4>
+  <ul class="f-list"><li><span class="f-n">Куриное филе (грудка), сырое</span><span class="f-g">160 г</span></li><li><span class="f-n">Капуста белокочанная</span><span class="f-g">200 г</span></li><li><span class="f-n">Морковь</span><span class="f-g">60 г</span></li><li><span class="f-n">Помидор</span><span class="f-g">100 г</span></li><li><span class="f-n">Масло оливковое</span><span class="f-g">9 г</span></li><li><span class="f-n">Укроп, петрушка</span><span class="f-g">10 г</span></li></ul><p class="how">Капусту нашинковать и потушить с морковью и помидором под крышкой 20–25 минут — до мягкости, а не до хруста. Сырую капусту сегодня не едим: в тушёном виде она переносится заметно легче. Курицу нарезать и добавить к капусте в конце.</p>
+ </div>
+ <div class="m-num"><b>363</b><span>ккал</span>
+  <p class="m-macro">Б 43,3 · Ж 12,5 · У 18,3</p></div>
+</article>
+</div>
+ <footer class="day-f">
+  <div class="bar" role="img" aria-label="Белки 129 г, жиры 48 г, углеводы 134 г"><span class="bar-p" style="width:41.5%"></span><span class="bar-f" style="width:15.4%"></span><span class="bar-c" style="width:43.1%"></span></div>
+  <dl class="day-tot">
+   <div><dt>Белки</dt><dd>129,1 г</dd></div>
+   <div><dt>Жиры</dt><dd>47,8 г</dd></div>
+   <div><dt>Углеводы</dt><dd>133,9 г</dd></div>
+  </dl>
+ </footer>
+</section>
+<section class="card day" id="day-7">
+ <header class="day-h">
+  <span class="day-abbr">ВС</span>
+  <h3>Воскресенье</h3>
+  <span class="day-kcal">1515 ккал</span>
+ </header>
+ <div class="meals">
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 3h9l-1.2 16.2A2.8 2.8 0 0 1 12.5 22h-1A2.8 2.8 0 0 1 8.7 19.2Z"/><path d="M7.9 9.6h8.2"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">08:00</p>
+  <h4 class="m-title">Коктейль «Формула 1»</h4>
+  <ul class="f-list"><li><span class="f-n">«Формула 1» 26 г (2 ст. л.) + молоко 1,5% — 250 мл</span><span class="f-g"></span></li></ul>
+ </div>
+ <div class="m-num"><b>220</b><span>ккал</span>
+  <p class="m-macro">Б 17 · Ж 5 · У 26</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.6h18c0 4.8-3.4 8.3-9 8.3s-9-3.5-9-8.3Z"/><path d="M8.4 7.6c.7-.9.7-1.9 0-2.8M12 7.6c.7-.9.7-1.9 0-2.8M15.6 7.6c.7-.9.7-1.9 0-2.8"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">11:00</p>
+  <h4 class="m-title">Творог с малиной</h4>
+  <ul class="f-list"><li><span class="f-n">Творог 2%</span><span class="f-g">140 г</span></li><li><span class="f-n">Малина свежая</span><span class="f-g">150 г</span></li></ul>
+ </div>
+ <div class="m-num"><b>213</b><span>ккал</span>
+  <p class="m-macro">Б 26,4 · Ж 3,5 · У 17,1</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.8 11.2h12.6c0 4-2.8 7.1-6.3 7.1s-6.3-3.1-6.3-7.1Z"/><path d="M2 20.8h14.2"/><path d="M19.4 8.6v12.2"/><path d="M19.4 8.6c-1.3 0-2.3-1.2-2.3-2.7s1-2.7 2.3-2.7 2.3 1.2 2.3 2.7-1 2.7-2.3 2.7Z"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">14:00</p>
+  <h4 class="m-title">Суп-пюре из кабачка с курицей и гренкой <span class="tag tag-bread">с гренкой</span></h4>
+  <ul class="f-list"><li><span class="f-n">Куриное филе (грудка), сырое</span><span class="f-g">130 г</span></li><li><span class="f-n">Кабачок</span><span class="f-g">250 г</span></li><li><span class="f-n">Картофель, сырой</span><span class="f-g">80 г</span></li><li><span class="f-n">Морковь</span><span class="f-g">50 г</span></li><li><span class="f-n">Сметана 10%</span><span class="f-g">30 г</span></li><li><span class="f-n">Хлеб ржаной на закваске</span><span class="f-g">30 г</span></li><li><span class="f-n">Масло оливковое</span><span class="f-g">8 г</span></li><li><span class="f-n">Укроп, петрушка</span><span class="f-g">5 г</span></li></ul><p class="how">Кабачок, картофель и морковь отварить в небольшом количестве воды и пробить блендером прямо в кастрюле — без сливок суп всё равно получается бархатным. Курицу отварить отдельно, нарезать и положить в тарелку куском, а не пробивать. Хлеб подсушить в духовке и разломать на гренки.</p>
+ </div>
+ <div class="m-num"><b>459</b><span>ккал</span>
+  <p class="m-macro">Б 37,4 · Ж 15 · У 42,2</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 3.4v17.2M4.6 8.2l14.8 7.6M4.6 15.8l14.8-7.6"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">17:00</p>
+  <h4 class="m-title">Киви с грецким орехом <span class="tag tag-fe">+ таблетка железа</span></h4>
+  <ul class="f-list"><li><span class="f-n">Киви</span><span class="f-g">75 г</span></li><li><span class="f-n">Грецкий орех</span><span class="f-g">12 г</span></li></ul>
+ </div>
+ <div class="m-num"><b>124</b><span>ккал</span>
+  <p class="m-macro">Б 2,6 · Ж 8,2 · У 11,9</p></div>
+</article>
+<article class="meal">
+ <div class="m-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M6.9 13.6c1.7-1.7 3.4-2.5 5.1-2.5s3.4.8 5.1 2.5"/><path d="M7.7 10.6c1.4-1.4 2.9-2.2 4.3-2.2s2.9.8 4.3 2.2"/></svg></div>
+ <div class="m-body">
+  <p class="m-time">19:30</p>
+  <h4 class="m-title">Макароны с индейкой и помидорами</h4>
+  <ul class="f-list"><li><span class="f-n">Индейка, филе грудки, сырое</span><span class="f-g">160 г</span></li><li><span class="f-n">Макароны из твёрдых сортов, сухие</span><span class="f-g">50 г</span></li><li><span class="f-n">Помидор</span><span class="f-g">150 г</span></li><li><span class="f-n">Сыр твёрдый 45–50%</span><span class="f-g">20 г</span></li><li><span class="f-n">Масло оливковое</span><span class="f-g">6 г</span></li><li><span class="f-n">Зелёный лук</span><span class="f-g">10 г</span></li></ul><p class="how">Индейку нарезать кубиком и потушить с помидором, макароны отварить до состояния чуть плотнее мягкого. Сыр натереть прямо в горячее блюдо.</p>
+ </div>
+ <div class="m-num"><b>498</b><span>ккал</span>
+  <p class="m-macro">Б 46,8 · Ж 15,3 · У 41</p></div>
+</article>
+</div>
+ <footer class="day-f">
+  <div class="bar" role="img" aria-label="Белки 130 г, жиры 47 г, углеводы 138 г"><span class="bar-p" style="width:41.3%"></span><span class="bar-f" style="width:14.9%"></span><span class="bar-c" style="width:43.8%"></span></div>
+  <dl class="day-tot">
+   <div><dt>Белки</dt><dd>130,3 г</dd></div>
+   <div><dt>Жиры</dt><dd>47 г</dd></div>
+   <div><dt>Углеводы</dt><dd>138,1 г</dd></div>
+  </dl>
+ </footer>
+</section>
+<section class="card pad" id="shop">
+<div class="sec-h"><svg class="ic ic-g" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9.6" cy="19.4" r="1.5"/><circle cx="17.4" cy="19.4" r="1.5"/><path d="M2.6 3.6h2.8l2.6 12.2h11"/><path d="M7.4 7.2h13.4l-1.6 6.6H8.8"/></svg><h2>Список покупок на неделю</h2><span class="shop-count" id="shopCount" hidden></span></div>
+  <p class="lede">Собран из тех же граммов, что стоят в плане, с запасом на округление до магазинной фасовки. Галочки можно ставить прямо с телефона в магазине.</p>
+<div class="shop">
+<div class="shop-g"><h4><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.8 8.4C7.2 5.2 11.6 3.9 15.4 5c3.6 1.1 5.4 4 4.6 7.2-.9 3.6-4.4 6.4-8.4 7-3.9.6-7-1.1-7.6-4-.5-2.4.4-4.9.8-6.8Z"/><path d="M9.2 9.8c1.6-1.2 3.8-1.5 5.2-.6 1.4.9 1.4 2.7.1 4.1-1.3 1.3-3.5 1.8-4.9 1-1.3-.8-1.5-2.7-.4-4.5Z"/></svg>Мясо, птица, рыба</h4><ul>
+<li><label><input type="checkbox"><span class="s-n">Индейка, филе грудки</span><span class="s-q">0,55 кг</span></label><span class="s-note">≈ 3 филе</span></li>
+<li><label><input type="checkbox"><span class="s-n">Куриное филе (грудка)</span><span class="s-q">0,5 кг</span></label><span class="s-note">≈ 3 филе</span></li>
+<li><label><input type="checkbox"><span class="s-n">Треска, филе</span><span class="s-q">0,35 кг</span></label><span class="s-note">можно замороженное</span></li>
+<li><label><input type="checkbox"><span class="s-n">Говядина постная (вырезка)</span><span class="s-q">0,25 кг</span></label><span class="s-note">одним куском</span></li>
+<li><label><input type="checkbox"><span class="s-n">Печень говяжья</span><span class="s-q">0,2 кг</span></label><span class="s-note">на среду</span></li>
+<li><label><input type="checkbox"><span class="s-n">Горбуша, филе</span><span class="s-q">0,2 кг</span></label><span class="s-note">или другая красная рыба</span></li>
+</ul></div>
+<div class="shop-g"><h4><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.4 8.2h11.2l-1.3 11.4a2.1 2.1 0 0 1-2.1 1.9h-4.4a2.1 2.1 0 0 1-2.1-1.9Z"/><path d="M5.4 5.2h13.2v3H5.4z"/></svg>Молочное и яйца</h4><ul>
+<li><label><input type="checkbox"><span class="s-n">Молоко 1,5%</span><span class="s-q">2,5 л</span></label><span class="s-note">на девять коктейлей по 250 мл: семь утренних и два вечерних</span></li>
+<li><label><input type="checkbox"><span class="s-n">Творог 2%</span><span class="s-q">0,75 кг</span></label><span class="s-note">пачками по 200 г</span></li>
+<li><label><input type="checkbox"><span class="s-n">Кефир 1%</span><span class="s-q">0,3 л</span></label><span class="s-note">лучше трёхдневный, не свежий</span></li>
+<li><label><input type="checkbox"><span class="s-n">Йогурт натуральный 2,5% без добавок</span><span class="s-q">0,2 кг</span></label><span class="s-note">без сахара и наполнителей</span></li>
+<li><label><input type="checkbox"><span class="s-n">Сыр твёрдый 45–50%</span><span class="s-q">0,1 кг</span></label><span class="s-note">гауда, российский, тильзитер</span></li>
+<li><label><input type="checkbox"><span class="s-n">Сметана 10%</span><span class="s-q">1 маленькая банка</span></label><span class="s-note">в печень, уху и суп-пюре · уходит 70 г за неделю</span></li>
+<li><label><input type="checkbox"><span class="s-n">Яйцо куриное</span><span class="s-q">1 шт.</span></label><span class="s-note">категория С1 — целиком в котлеты в понедельник</span></li>
+<li><label><input type="checkbox"><span class="s-n">Масло сливочное 82,5%</span><span class="s-q">1 пачка</span></label><span class="s-note">настоящее сливочное, не спред · нужно 16 г за неделю</span></li>
+</ul></div>
+<div class="shop-g"><h4><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21v-6.8"/><path d="M6.6 10.6a3.3 3.3 0 0 1 1.6-4.5 3.5 3.5 0 0 1 3.8-3 3.5 3.5 0 0 1 3.8 3 3.3 3.3 0 0 1 1.6 4.5c.9 1.6-.3 3.6-2.2 3.6H8.8c-1.9 0-3.1-2-2.2-3.6Z"/></svg>Овощи и зелень</h4><ul>
+<li><label><input type="checkbox"><span class="s-n">Помидор</span><span class="s-q">10 шт.</span></label><span class="s-note">≈ 1100 г</span></li>
+<li><label><input type="checkbox"><span class="s-n">Огурец</span><span class="s-q">5 шт.</span></label><span class="s-note">≈ 600 г</span></li>
+<li><label><input type="checkbox"><span class="s-n">Кабачок</span><span class="s-q">2 шт.</span></label><span class="s-note">молодой, с тонкой кожурой · ≈ 510 г</span></li>
+<li><label><input type="checkbox"><span class="s-n">Перец болгарский</span><span class="s-q">3 шт.</span></label><span class="s-note">крупные, ровные — под фарширование · ≈ 450 г</span></li>
+<li><label><input type="checkbox"><span class="s-n">Картофель, сырой</span><span class="s-q">0,4 кг</span></label></li>
+<li><label><input type="checkbox"><span class="s-n">Морковь</span><span class="s-q">5 шт.</span></label><span class="s-note">≈ 370 г</span></li>
+<li><label><input type="checkbox"><span class="s-n">Капуста цветная</span><span class="s-q">0,2 кг</span></label><span class="s-note">свежая, соцветиями</span></li>
+<li><label><input type="checkbox"><span class="s-n">Капуста белокочанная</span><span class="s-q">0,2 кг</span></label><span class="s-note">молодая, некрупный кочан — на субботу</span></li>
+<li><label><input type="checkbox"><span class="s-n">Брокколи</span><span class="s-q">0,15 кг</span></label><span class="s-note">свежая, соцветиями</span></li>
+<li><label><input type="checkbox"><span class="s-n">Зелёный лук</span><span class="s-q">1 пучок</span></label><span class="s-note">зелёные перья</span></li>
+<li><label><input type="checkbox"><span class="s-n">Укроп, петрушка</span><span class="s-q">1 пучок</span></label><span class="s-note">в салаты и к рыбе</span></li>
+<li><label><input type="checkbox"><span class="s-n">Лук репчатый</span><span class="s-q">0,1 кг</span></label><span class="s-note">одна средняя луковица — на среду</span></li>
+</ul></div>
+<div class="shop-g"><h4><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 3.4v17.2M4.6 8.2l14.8 7.6M4.6 15.8l14.8-7.6"/></svg>Фрукты и ягоды</h4><ul>
+<li><label><input type="checkbox"><span class="s-n">Апельсин</span><span class="s-q">2 шт.</span></label><span class="s-note">≈ 300 г</span></li>
+<li><label><input type="checkbox"><span class="s-n">Малина свежая</span><span class="s-q">0,3 кг</span></label><span class="s-note">брать плотную, не мятую</span></li>
+<li><label><input type="checkbox"><span class="s-n">Банан</span><span class="s-q">2 шт.</span></label><span class="s-note">плотный, с ровной кожурой — переспелый слаще и калорийнее · ≈ 200 г</span></li>
+<li><label><input type="checkbox"><span class="s-n">Клубника свежая</span><span class="s-q">0,2 кг</span></label><span class="s-note">витамина C в ней не меньше, чем в цитрусе</span></li>
+<li><label><input type="checkbox"><span class="s-n">Грейпфрут</span><span class="s-q">1 шт.</span></label><span class="s-note">≈ 200 г</span></li>
+<li><label><input type="checkbox"><span class="s-n">Киви</span><span class="s-q">2 шт.</span></label><span class="s-note">≈ 150 г</span></li>
+<li><label><input type="checkbox"><span class="s-n">Смородина чёрная свежая</span><span class="s-q">0,15 кг</span></label><span class="s-note">витамина C в ней вчетверо больше, чем в апельсине</span></li>
+<li><label><input type="checkbox"><span class="s-n">Абрикос</span><span class="s-q">4 шт.</span></label><span class="s-note">спелые, ароматные · ≈ 150 г</span></li>
+<li><label><input type="checkbox"><span class="s-n">Персик</span><span class="s-q">1 шт.</span></label><span class="s-note">можно нектарин · ≈ 120 г</span></li>
+<li><label><input type="checkbox"><span class="s-n">Слива</span><span class="s-q">2 шт.</span></label><span class="s-note">плотная, не переспелая · ≈ 120 г</span></li>
+</ul></div>
+<div class="shop-g"><h4><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V8.6"/><path d="M12 8.6c0-2.7 1.7-4.7 4.1-5.5.4 2.9-1 5.1-4.1 5.5Z"/><path d="M12 8.6C12 5.9 10.3 3.9 7.9 3.1c-.4 2.9 1 5.1 4.1 5.5Z"/><path d="M12 14.4c0-2.7 1.7-4.7 4.1-5.5.4 2.9-1 5.1-4.1 5.5Z"/><path d="M12 14.4c0-2.7-1.7-4.7-4.1-5.5-.4 2.9 1 5.1 4.1 5.5Z"/></svg>Крупы и хлеб</h4><ul>
+<li><label><input type="checkbox"><span class="s-n">Гречка</span><span class="s-q">0,15 кг</span></label><span class="s-note">из пачки хватит надолго</span></li>
+<li><label><input type="checkbox"><span class="s-n">Макароны из твёрдых сортов, сухие</span><span class="s-q">0,15 кг</span></label><span class="s-note">на пачке должно быть «группа А» или durum</span></li>
+<li><label><input type="checkbox"><span class="s-n">Хлеб ржаной на закваске</span><span class="s-q">1 булка</span></label><span class="s-note">нужно 3 ломтика по 30 г</span></li>
+<li><label><input type="checkbox"><span class="s-n">Вермишель из твёрдых сортов</span><span class="s-q">0,05 кг</span></label><span class="s-note">самая мелкая, для супа — из той же пачки, если она мелкая</span></li>
+<li><label><input type="checkbox"><span class="s-n">Рис бурый</span><span class="s-q">0,05 кг</span></label><span class="s-note">для начинки перцев</span></li>
+</ul></div>
+<div class="shop-g"><h4><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.4c3.4 4.1 5.6 6.9 5.6 9.5A5.6 5.6 0 0 1 12 18.6a5.6 5.6 0 0 1-5.6-5.7c0-2.6 2.2-5.4 5.6-9.5Z"/></svg>Бакалея</h4><ul>
+<li><label><input type="checkbox"><span class="s-n">Масло оливковое</span><span class="s-q">82 г</span></label><span class="s-note">мерить чайной ложкой</span></li>
+<li><label><input type="checkbox"><span class="s-n">Маслины без косточки</span><span class="s-q">1 маленькая банка</span></label><span class="s-note">чёрные, в собственном рассоле, без ароматизаторов · уходит 75 г за неделю</span></li>
+<li><label><input type="checkbox"><span class="s-n">Грецкий орех</span><span class="s-q">36 г</span></label><span class="s-note">очищенный</span></li>
+<li><label><input type="checkbox"><span class="s-n">Миндаль</span><span class="s-q">24 г</span></label><span class="s-note">сырой, не солёный</span></li>
+<li><label><input type="checkbox"><span class="s-n">Семечки тыквенные очищенные</span><span class="s-q">22 г</span></label><span class="s-note">сырые, без соли — в них много железа</span></li>
+</ul></div>
+</div>
+  <div class="note"><b>Отдельно — две банки Herbalife.</b> «Формула 1» на утро: семь порций по 26 г, это 182 г за неделю, банки 550 г хватает примерно на три недели. «Формула 1 Вечерний коктейль» — отдельный продукт с другим составом, его нужно докупить: в банке 416 г, это 16 порций, а у нас их две в неделю — хватит надолго. Перепутать их нельзя: у вечернего порция отмеряется тремя мерными ложками, у утреннего — двумя столовыми.</div>
+  <div class="note note-green"><b>Про маслины в магазине.</b> Берём чёрные без косточки в собственном рассоле — в составе только маслины, вода и соль, без ароматизаторов и «с лимоном». Зелёные оливки жирнее почти в полтора раза: если возьмёте их, порцию уменьшайте с 25 до 18 г. Банка стоит в холодильнике неделями, на три раза её хватает с запасом.</div>
+  <div class="note"><b>Про макароны.</b> На пачке ищем «группа А» или durum — это и есть твёрдые сорта. Такие макароны после варки держат форму и не слипаются, а в тарелке ведут себя спокойнее обычных: сытость от них держится дольше. Для супа удобнее взять отдельно мелкую вермишель из той же муки.</div>
+</section>
+<section class="card pad" id="rules">
+<div class="sec-h"><svg class="ic ic-g" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.6c4.2 5 6.8 8.4 6.8 11.5A6.8 6.8 0 0 1 12 21a6.8 6.8 0 0 1-6.8-6.9C5.2 11 7.8 7.6 12 2.6Z"/><path d="M8.6 14.2a3.4 3.4 0 0 0 3.4 3.4"/></svg><h2>Как это работает на практике</h2></div>
+  <ul class="rules">
+    <li><span class="n">1</span><div><b>Вода — 2–2,2 литра в день</b><small>Чистая вода, не считая чая и кофе. Пить между приёмами пищи, а не запивать еду: так железо усваивается лучше.</small></div></li>
+    <li><span class="n">2</span><div><b>Готовим варкой, тушением, на пару или в духовке</b><small>Без панировки и без жарки в масле. Оливковое масло добавляем уже в готовое блюдо и мерим чайной ложкой: в ложке 5 г и 45 ккал, «на глаз» ошибка легко доходит до 200 ккал в день.</small></div></li>
+    <li><span class="n">3</span><div><b>Бутерброд — тонкий ломтик и ровно 8 г масла</b><small>Это чайная ложка без горки. Сыр отрезаем куском и взвешиваем: 20 г — это примерно пластинка толщиной со спичку, а «просто кусочек» легко превращается в 50 г и +110 ккал.</small></div></li>
+    <li><span class="n">4</span><div><b>Соль — до 5 г в день, сахар в чай не добавляем</b><small>Меньше соли — меньше отёков, и вес на весах честнее отражает реальные изменения. На этой неделе это правило особенно к месту: маслины солёные, поэтому их промываем, взвешиваем и не добавляем соль в то блюдо, куда они пошли.</small></div></li>
+    <li><span class="n">5</span><div><b>Суп варим кастрюлей, а едим порцией</b><small>В плане указаны продукты на одну тарелку. Удобно умножить всё на три, сварить на три дня и съесть треть кастрюли — но именно треть, а не «сколько войдёт». Проще всего разлить сразу по контейнерам, тогда порция считается сама собой.</small></div></li>
+    <li><span class="n">6</span><div><b>Овощи из списка можно есть свободно</b><small>Огурец, кабачок, зелень, помидор, перец, листовой салат — если голодно, добавляем сверх плана, на калорийность это почти не влияет. Брокколи и цветная капуста теперь тоже без ограничений: они прошли спокойно. А вот тушёный лук и белокочанную едим только в свои дни и в указанном количестве — среда и суббота. Фасоль, горох и чечевицу пока не добавляем.</small></div></li>
+    <li><span class="n">7</span><div><b>Вечерний коктейль — это ужин целиком</b><small>Не добавка к ужину и не «выпью, раз лёгкий». Во вторник и пятницу вечером — только коктейль и салат из плана, больше ничего. И наоборот: в остальные дни коктейль вечером не пьём, там полноценный ужин с белком.</small></div></li>
+    <li><span class="n">8</span><div><b>Взвешиваться раз в неделю, в один день и час</b><small>Утром натощак после туалета. И раз в неделю — сантиметровая лента: талия, живот, бёдра. Лента у вас идёт заметно впереди весов, поэтому мерить её даже важнее. И не переносите взвешивание на день после солёного или праздничного: вода испортит всю картину.</small></div></li>
+    <li><span class="n">9</span><div><b>Замены — только равные по продукту</b><small>Рыбу меняем на рыбу, крупу на крупу, в том же весе. Курицу на колбасу или кашу на печенье — нет.</small></div></li>
+  </ul>
+  <h3 style="margin-top:26px;font-size:1.1rem">Чем заменить, если продукт не пошёл</h3>
+  <div class="scroll-x">
+  <table class="tune">
+    <thead><tr><th>Продукт</th><th>Замена</th><th>Как считать</th></tr></thead>
+    <tbody>
+      <tr><td>Вечерний коктейль</td><td>Обычная «Формула 1» на молоке</td><td>Та же порция. Калорий выйдет на 17 больше — это в пределах нормы дня, но пищевых волокон и L-триптофана в утреннем меньше, поэтому это замена на крайний случай</td></tr>
+      <tr><td>Маслины</td><td>Зелёные оливки</td><td>18 г вместо 25: в зелёных жира почти в полтора раза больше</td></tr>
+      <tr><td>Котлеты на пару</td><td>Тефтели или фрикадельки в духовке</td><td>Тот же вес фарша, без панировки и без обжарки</td></tr>
+      <tr><td>Банан</td><td>Яблоко или груша</td><td>150 г вместо одного банана</td></tr>
+      <tr><td>Макароны из твёрдых сортов</td><td>Гречка, булгур или бурый рис</td><td>Тот же вес в сухом виде</td></tr>
+      <tr><td>Тушёная белокочанная капуста</td><td>Цветная капуста или кабачок</td><td>Тот же вес. Если суббота с ней прошла тяжело — меняем и говорим об этом</td></tr>
+      <tr><td>Тушёный репчатый лук</td><td>Зелёные перья лука</td><td>15 г перьев вместо 60 г репчатого</td></tr>
+      <tr><td>Чёрная смородина</td><td>Клубника, киви или апельсин</td><td>Тот же вес. Главное, чтобы во втором перекусе остался фрукт с витамином C — он идёт вместе с таблеткой железа</td></tr>
+      <tr><td>Слива, абрикос</td><td>Персик, нектарин</td><td>Тот же вес</td></tr>
+      <tr><td>Хлеб на закваске</td><td>Ржаные хлебцы</td><td>2 хлебца вместо ломтика 30 г</td></tr>
+      <tr><td>Творог 2%</td><td>Творог 5% или зернёный без сливок</td><td>Тот же вес. Йогуртом творог не заменяем: белка в нём втрое меньше, и день недоберёт норму</td></tr>
+      <tr><td>Кефир 1%</td><td>Йогурт натуральный без добавок</td><td>Тот же вес</td></tr>
+      <tr><td>Горбуша</td><td>Форель, кета, скумбрия</td><td>Тот же вес</td></tr>
+      <tr><td>Индейка</td><td>Куриная грудка</td><td>Тот же вес</td></tr>
+      <tr><td>Сыр твёрдый</td><td>Любой выдержанный сорт 45–50%</td><td>Тот же вес; плавленый и колбасный сыр не подходят</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+
+<footer class="legal">Четвёртая неделя программы. Составлено 18 августа 2026 года по итогам трёх недель и не заменяет консультацию врача.</footer>
+</div>
+<script>
+(function () {
+  "use strict";
+
+  /* ---- подсветка текущего раздела в липкой панели ---- */
+  var links = Array.prototype.slice.call(document.querySelectorAll(".nav a"));
+  var targets = links
+    .map(function (a) { return document.querySelector(a.getAttribute("href")); })
+    .filter(Boolean);
+
+  var strip = document.querySelector(".nav-in");
+
+  function spy() {
+    /* разделы идут в порядке документа: активен последний, чей верх уже проехал панель.
+       Порог считаем от реальной высоты панели, а не константой. */
+    var navH = strip ? strip.getBoundingClientRect().bottom : 60;
+    var th = Math.max(navH + 30, window.innerHeight * 0.3);
+    var best = null;
+    targets.forEach(function (t) {
+      if (t.getBoundingClientRect().top <= th) { best = t; }
+    });
+    var active = null;
+    links.forEach(function (a) {
+      if (best && a.getAttribute("href") === "#" + best.id) {
+        a.setAttribute("aria-current", "true");
+        active = a;
+      } else {
+        a.removeAttribute("aria-current");
+      }
+    });
+    /* подтягиваем активную вкладку в видимую часть ленты на узком экране */
+    if (active && strip && strip.scrollWidth > strip.clientWidth) {
+      var l = active.offsetLeft, r = l + active.offsetWidth;
+      if (l < strip.scrollLeft + 8) { strip.scrollLeft = l - 8; }
+      else if (r > strip.scrollLeft + strip.clientWidth - 8) {
+        strip.scrollLeft = r - strip.clientWidth + 8;
+      }
+    }
+  }
+
+  function markScrollable() {
+    if (!strip) { return; }
+    strip.classList.toggle("is-scrollable", strip.scrollWidth > strip.clientWidth + 1);
+  }
+
+  if (targets.length) {
+    var ticking = false;
+    var onScroll = function () {
+      if (ticking) { return; }
+      ticking = true;
+      requestAnimationFrame(function () { spy(); ticking = false; });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", function () { markScrollable(); spy(); });
+    markScrollable();
+    spy();
+  }
+
+  /* ---- список покупок: счётчик и запоминание галочек ---- */
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".shop-g input[type=checkbox]"));
+  var counter = document.getElementById("shopCount");
+  if (!boxes.length || !counter) { return; }
+
+  var KEY = "plan-w4-shop-v1";
+  var store = {
+    read: function () { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } },
+    write: function (v) { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) { /* приватный режим */ } }
+  };
+
+  boxes.forEach(function (b, i) { b.dataset.k = "i" + i; });
+
+  var saved = store.read();
+  boxes.forEach(function (b) { if (saved[b.dataset.k]) { b.checked = true; } });
+
+  function render() {
+    var n = boxes.filter(function (b) { return b.checked; }).length;
+    counter.hidden = false;
+    counter.textContent = n === 0
+      ? "куплено 0 из " + boxes.length
+      : (n === boxes.length ? "всё куплено ✓" : "куплено " + n + " из " + boxes.length);
+  }
+
+  boxes.forEach(function (b) {
+    b.addEventListener("change", function () {
+      var s = store.read();
+      if (b.checked) { s[b.dataset.k] = 1; } else { delete s[b.dataset.k]; }
+      store.write(s);
+      render();
+    });
+  });
+
+  render();
+})();
+
+(function(){
+  var KEY='plan-w4-track-v1', box=document.querySelectorAll('.track input'), sum=document.getElementById('trSum');
+  if(!box.length) return;
+  var saved={};
+  try{ saved=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ saved={}; }
+  function count(){
+    if(!sum) return;
+    var n=0, w=0;
+    box.forEach(function(i){ if(i.checked){ i.dataset.tr.indexOf('plan')===0 ? n++ : w++; } });
+    sum.textContent='По плану '+n+' из 7 · прогулки '+w+' из 7';
+  }
+  box.forEach(function(i){
+    if(saved[i.dataset.tr]) i.checked=true;
+    i.addEventListener('change',function(){
+      saved[i.dataset.tr]=i.checked;
+      try{ localStorage.setItem(KEY,JSON.stringify(saved)); }catch(e){}
+      count();
+    });
+  });
+  count();
+})();
+</script>
+</body>
+</html>
