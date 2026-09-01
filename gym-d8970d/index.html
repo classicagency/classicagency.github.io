@@ -650,6 +650,78 @@ details[open] > summary .sum__chev { transform: rotate(180deg); }
 .btn--wide { width: 100%; }
 .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
 
+/* ─────────────────── переключатель дат внутри карточки ─────────────────── */
+
+/* Тот же язык, что у вкладок разделов: активная — тёмная плашка с жёлтой
+   линией снизу, а не заливка. Ряд прокручивается вбок: замеров с годами
+   станет много, и переносить их в две строки значило бы рвать шкалу времени. */
+.segs {
+  display: flex;
+  gap: 6px;
+  margin: 10px 0 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.segs::-webkit-scrollbar { display: none; }
+.seg {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  min-height: var(--tap);
+  padding: 7px 12px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 10px 10px 0 0;
+  border: 1px solid transparent;
+  border-bottom: 2px solid transparent;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  cursor: pointer;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  transition: transform var(--t-tap) var(--ease), background var(--t-quick) var(--ease),
+              color var(--t-quick) var(--ease), border-color var(--t-quick) var(--ease);
+}
+.seg:active { transform: scale(.96); }
+.seg.is-active {
+  background: var(--surface-3);
+  border-color: var(--line);
+  border-bottom-color: var(--accent);
+  color: var(--ink);
+}
+
+/* Со скриптами показывается одна панель, без них — все подряд, каждая
+   со своей датой в заголовке. Тот же приём, что у разделов. */
+body.js .comp-pane { display: none; }
+body.js .comp-pane.is-active { display: block; }
+
+.comp-pane__date {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 4px;
+}
+.comp-pane__note { margin: 0 0 12px; font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+
+/* Изменение к прошлому замеру. Направление читается знаком и подписью,
+   цвет только усиливает: серым идёт нормальный ход, красным — то, что
+   двинулось не туда (растёт жир). Акцент здесь не используется — он стоит
+   дорого и помечает действие, а не любой прогресс. */
+.stat__chg {
+  margin-top: 5px;
+  font-size: 12px;
+  line-height: 1.25;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.stat__chg--bad { color: var(--down); }
+.stat__chg--same, .stat__chg--first { color: var(--ink-3); }
+
 /* ───────────────────────────── таблица ───────────────────────────── */
 
 .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; }
@@ -1037,6 +1109,8 @@ body.js .section.is-active { animation: sectionIn var(--t-move) var(--ease) both
 
 /* 4. Заливка лесенки едет от нуля при открытии раздела. */
 .ladder__fill { transform-origin: left center; }
+body.js .comp-pane.is-active { animation: sectionIn var(--t-move) var(--ease) both; }
+
 body.js .section.is-active .ladder__fill { animation: ladderFill var(--t-draw) var(--ease) both; }
 @keyframes ladderFill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
@@ -5496,23 +5570,41 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     </div>
 
     
-    <div class="card">
-      <div class="card__label">Состав тела на 01.09</div>
-      <h3 class="card__title">Заметно тренированный</h3>
-      <div class="stats stats--4">
-        <div class="stat"><span class="stat__value">69,9<span class="stat__unit">кг</span></span><div class="stat__label">безжировая масса</div></div>
-        <div class="stat"><span class="stat__value">9,5<span class="stat__unit">кг</span></span><div class="stat__label">жировая масса</div></div>
-        <div class="stat"><span class="stat__value">12<span class="stat__unit">%</span></span><div class="stat__label">доля жира</div></div>
-        <div class="stat stat--accent"><span class="stat__value">20,7</span><div class="stat__label">FFMI</div></div>
+    <div class="card" id="composition">
+      <div class="card__label">Состав тела</div>
+      <div class="segs" role="tablist" aria-label="Дата замера">
+        <button type="button" class="seg is-active" data-comp="2026-09-01" role="tab" aria-selected="true">01.09</button><button type="button" class="seg" data-comp="2026-07-31" role="tab" aria-selected="false">31.07</button>
       </div>
+      <div class="comp-pane is-active" data-comp-pane="2026-09-01" role="tabpanel" aria-label="Состав тела на 1 сентября">
+      <div class="comp-pane__date">1 сентября</div>
+      <h3 class="card__title">Заметно тренированный</h3>
+      <p class="comp-pane__note">32 дня с прошлого замера, на весах за них +0,4 кг. Взвешивание в этот день — 79,4 кг.</p>
+      <div class="stats stats--4">
+        <div class="stat"><span class="stat__value">69,9<span class="stat__unit">кг</span></span><div class="stat__label">безжировая масса</div><div class="stat__chg stat__chg--good">+2,6 кг</div></div>
+        <div class="stat"><span class="stat__value">9,5<span class="stat__unit">кг</span></span><div class="stat__label">жировая масса</div><div class="stat__chg stat__chg--good">−2,2 кг</div></div>
+        <div class="stat"><span class="stat__value">12<span class="stat__unit">%</span></span><div class="stat__label">доля жира</div><div class="stat__chg stat__chg--good">−2,8 %</div></div>
+        <div class="stat stat--accent"><span class="stat__value">20,7</span><div class="stat__label">FFMI</div><div class="stat__chg stat__chg--good">+0,8</div></div>
+      </div>
+    </div><div class="comp-pane" data-comp-pane="2026-07-31" role="tabpanel" aria-label="Состав тела на 31 июля">
+      <div class="comp-pane__date">31 июля</div>
+      <h3 class="card__title">Тренированный</h3>
+      <p class="comp-pane__note">Первый замер — сравнивать пока не с чем. Взвешивание в этот день — 79 кг.</p>
+      <div class="stats stats--4">
+        <div class="stat"><span class="stat__value">67,3<span class="stat__unit">кг</span></span><div class="stat__label">безжировая масса</div><div class="stat__chg stat__chg--first">первый замер</div></div>
+        <div class="stat"><span class="stat__value">11,7<span class="stat__unit">кг</span></span><div class="stat__label">жировая масса</div><div class="stat__chg stat__chg--first">первый замер</div></div>
+        <div class="stat"><span class="stat__value">14,8<span class="stat__unit">%</span></span><div class="stat__label">доля жира</div><div class="stat__chg stat__chg--first">первый замер</div></div>
+        <div class="stat stat--accent"><span class="stat__value">19,9</span><div class="stat__label">FFMI</div><div class="stat__chg stat__chg--first">первый замер</div></div>
+      </div>
+    </div>
       <p class="hint">FFMI — безжировая масса на квадрат роста, приведённая к 1,80 м. Он не зависит от роста и потому отвечает на вопрос «какой у меня уровень» честнее, чем вес. Ориентиры: 18 — нетренированный мужчина, 20 — заметно тренированный, 22–23 — продвинутый после лет серьёзной работы, 25 — потолок натурального тренинга.</p>
+      <p class="hint">Прыжок FFMI между двумя замерами почти всегда завышен. Доля жира здесь считается по одной разнице «талия минус шея», поэтому три сантиметра, ушедшие с талии при том же весе, формула целиком записывает в прибавку безжировой массы. Настоящая сухая масса растёт медленнее: до килограмма в месяц в первый год тренировок и 0,2–0,4 кг дальше. Смотреть стоит на направление за три-четыре замера, а не на разницу между двумя.</p>
       <p class="hint">Процента мышечной массы здесь нет намеренно: по сантиметру он не считается ни одной формулой. Безжировая масса — это мышцы вместе с костями, водой и органами; на скелетную мускулатуру приходится примерно половина веса тела.</p>
       <p class="hint">Доля жира — тоже оценка, а не измерение. Смотреть на неё стоит рядом с весом: вес растёт, а доля стоит — набирается мышца; растут обе — пора снимать калории.</p>
     </div>
   </section>
 
 <footer class="foot">
-  <p>Сборка 1 сентября · версия 36f8eaf3</p>
+  <p>Сборка 1 сентября · версия bac4a2c8</p>
 </footer>
 </main>
 
@@ -5624,6 +5716,35 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
 
   var start = (location.hash || '').replace('#', '');
   if (!start || !show(start, false)) show(sections[0].id, false);
+
+  /* ──────────────── состав тела: переключение по датам ────────────────
+
+     Панели уже отрисованы все — скрипт только оставляет одну видимой.
+     Поэтому без скриптов раздел не ломается: замеры читаются подряд,
+     у каждого своя дата в заголовке. */
+
+  var segs = Array.prototype.slice.call(document.querySelectorAll('[data-comp]'));
+  var panes = Array.prototype.slice.call(document.querySelectorAll('[data-comp-pane]'));
+
+  if (segs.length && panes.length) {
+    segs.forEach(function (s) {
+      s.addEventListener('click', function () {
+        var date = s.getAttribute('data-comp');
+        var hit = false;
+        panes.forEach(function (p) {
+          var on = p.getAttribute('data-comp-pane') === date;
+          p.classList.toggle('is-active', on);
+          if (on) hit = true;
+        });
+        if (!hit) return;
+        segs.forEach(function (b) {
+          var on = b === s;
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-selected', on ? 'true' : 'false');
+        });
+      });
+    });
+  }
 
   /* ───────────────────────── ввод тренировки ───────────────────────── */
 
