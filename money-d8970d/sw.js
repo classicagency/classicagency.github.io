@@ -1,6 +1,6 @@
-/* Офлайн-кэш приложения «Деньги». Версия cb466a49 меняется при каждой
+/* Офлайн-кэш приложения «Деньги». Версия dd3b9f22 меняется при каждой
    пересборке, поэтому старая копия не залипает после обновления. */
-var CACHE = 'nk-money-cb466a49';
+var CACHE = 'nk-money-dd3b9f22';
 var ASSETS = ['./', './index.html', './manifest.webmanifest', './apple-touch-icon.png', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', function (e) {
