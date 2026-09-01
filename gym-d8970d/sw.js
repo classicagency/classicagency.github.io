@@ -1,6 +1,6 @@
-/* Офлайн-кэш дневника. Версия 4efb801f — меняется при каждой пересборке,
+/* Офлайн-кэш дневника. Версия 36f8eaf3 — меняется при каждой пересборке,
    поэтому старая копия не залипает после обновления. */
-var CACHE = 'nk-training-4efb801f';
+var CACHE = 'nk-training-36f8eaf3';
 var ASSETS = ['./', './index.html', './manifest.webmanifest', './apple-touch-icon.png', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', function (e) {
