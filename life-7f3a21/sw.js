@@ -1,8 +1,8 @@
-/* Офлайн-кэш приложения «Ассистент». Версия 4dd78309 меняется при каждой
+/* Офлайн-кэш приложения «Ассистент». Версия 0aac3b58 меняется при каждой
    пересборке, поэтому старая копия не залипает после обновления.
    Файл шлюза (gate.json) не кэшируется никогда: в нём адрес туннеля,
    и вчерашний адрес хуже, чем его отсутствие. */
-var CACHE = 'nk-assist-4dd78309';
+var CACHE = 'nk-assist-0aac3b58';
 var ASSETS = ['./', './index.html', './manifest.webmanifest', './apple-touch-icon.png', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', function (e) {
@@ -18,6 +18,14 @@ self.addEventListener('activate', function (e) {
 self.addEventListener('fetch', function (e) {
   if (e.request.method !== 'GET') return;
   if (e.request.url.indexOf('gate.json') !== -1) return;
+  // Всё, что уходит на другой адрес, — это движок на компьютере. Его ответы
+  // кэшировать нельзя ни при каких условиях: первый ответ «работаю» ложился
+  // в кэш и отдавался вечно, поэтому готовый ответ ассистента не появлялся
+  // на экране никогда. Поймано на живой странице, тесты этого не видели —
+  // двойник отвечал «готово» с первого раза.
+  try {
+    if (new URL(e.request.url).origin !== self.location.origin) return;
+  } catch (err) { return; }
 
   if (e.request.mode === 'navigate') {
     e.respondWith(
