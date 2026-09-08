@@ -1,8 +1,8 @@
-/* Офлайн-кэш приложения «Ассистент». Версия 0aac3b58 меняется при каждой
+/* Офлайн-кэш приложения «Ассистент». Версия 78f0cf79 меняется при каждой
    пересборке, поэтому старая копия не залипает после обновления.
    Файл шлюза (gate.json) не кэшируется никогда: в нём адрес туннеля,
    и вчерашний адрес хуже, чем его отсутствие. */
-var CACHE = 'nk-assist-0aac3b58';
+var CACHE = 'nk-assist-78f0cf79';
 var ASSETS = ['./', './index.html', './manifest.webmanifest', './apple-touch-icon.png', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', function (e) {
