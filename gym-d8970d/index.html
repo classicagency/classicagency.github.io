@@ -1231,7 +1231,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <span class="brand__sub">Грудь · спина · ноги</span>
       </span>
     </div>
-    <span class="updated">обновлён<br>1 октября</span>
+    <span class="updated">обновлён<br>2 октября</span>
   </div>
   <nav class="tabs" aria-label="Разделы">
     <div class="tabs__scroll">
@@ -7371,8 +7371,8 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       <div class="card__label">Обхваты</div>
       <h3 class="card__title">Замеры раз в месяц</h3>
       <div class="table-wrap"><table class="table--fit">
-        <thead><tr><th>Обхват</th><th class="num">01.09</th><th class="num">31.07</th></tr></thead>
-        <tbody><tr><td>Грудь</td><td class="num">96,5</td><td class="num">96</td></tr><tr><td>Рука</td><td class="num">35,5</td><td class="num">35,5</td></tr><tr><td>Талия</td><td class="num">83</td><td class="num">86</td></tr><tr><td>Бёдра</td><td class="num">99</td><td class="num">101</td></tr><tr><td>Шея</td><td class="num">40,5</td><td class="num">40</td></tr></tbody>
+        <thead><tr><th>Обхват</th><th class="num">02.10</th><th class="num">01.09</th><th class="num">31.07</th></tr></thead>
+        <tbody><tr data-field="chest"><td>Грудь</td><td class="num">98</td><td class="num">96,5</td><td class="num">96</td></tr><tr data-field="arm"><td>Рука</td><td class="num">36</td><td class="num">35,5</td><td class="num">35,5</td></tr><tr data-field="waist"><td>Талия</td><td class="num">81</td><td class="num">83</td><td class="num">86</td></tr><tr data-field="hips"><td>Бёдра</td><td class="num">99</td><td class="num">99</td><td class="num">101</td></tr><tr data-field="neck"><td>Шея</td><td class="num">41</td><td class="num">40,5</td><td class="num">40</td></tr><tr data-field="thigh"><td>Нога (бедро)</td><td class="num">58</td><td class="num">—</td><td class="num">—</td></tr><tr data-field="calf"><td>Нога (икра)</td><td class="num">37</td><td class="num">—</td><td class="num">—</td></tr></tbody>
       </table></div>
       <p class="hint">Все значения в сантиметрах, рука — в напряжении. Смысл замеров в том, чтобы грудь и рука росли быстрее талии: если талия обгоняет, набор идёт не туда.</p>
     </div>
@@ -7381,9 +7381,19 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     <div class="card" id="composition">
       <div class="card__label">Состав тела</div>
       <div class="segs" role="tablist" aria-label="Дата замера">
-        <button type="button" class="seg is-active" data-comp="2026-09-01" role="tab" aria-selected="true">01.09</button><button type="button" class="seg" data-comp="2026-07-31" role="tab" aria-selected="false">31.07</button>
+        <button type="button" class="seg is-active" data-comp="2026-10-02" role="tab" aria-selected="true">02.10</button><button type="button" class="seg" data-comp="2026-09-01" role="tab" aria-selected="false">01.09</button><button type="button" class="seg" data-comp="2026-07-31" role="tab" aria-selected="false">31.07</button>
       </div>
-      <div class="comp-pane is-active" data-comp-pane="2026-09-01" role="tabpanel" aria-label="Состав тела на 1 сентября">
+      <div class="comp-pane is-active" data-comp-pane="2026-10-02" role="tabpanel" aria-label="Состав тела на 2 октября">
+      <div class="comp-pane__date">2 октября</div>
+      <h3 class="card__title">Заметно тренированный</h3>
+      <p class="comp-pane__note">31 день с прошлого замера, на весах за них +0,8 кг. Точного взвешивания в этот день нет — взят ближайший вес 80,2 кг от 1 октября.</p>
+      <div class="stats stats--4">
+        <div class="stat"><span class="stat__value">72,3<span class="stat__unit">кг</span></span><div class="stat__label">безжировая масса</div><div class="stat__chg stat__chg--good">+2,4 кг</div></div>
+        <div class="stat"><span class="stat__value">7,9<span class="stat__unit">кг</span></span><div class="stat__label">жировая масса</div><div class="stat__chg stat__chg--good">−1,6 кг</div></div>
+        <div class="stat"><span class="stat__value">9,8<span class="stat__unit">%</span></span><div class="stat__label">доля жира</div><div class="stat__chg stat__chg--good">−2,2 %</div></div>
+        <div class="stat stat--accent"><span class="stat__value">21,4</span><div class="stat__label">FFMI</div><div class="stat__chg stat__chg--good">+0,7</div></div>
+      </div>
+    </div><div class="comp-pane" data-comp-pane="2026-09-01" role="tabpanel" aria-label="Состав тела на 1 сентября">
       <div class="comp-pane__date">1 сентября</div>
       <h3 class="card__title">Заметно тренированный</h3>
       <p class="comp-pane__note">32 дня с прошлого замера, на весах за них +0,4 кг. Взвешивание в этот день — 79,4 кг.</p>
@@ -7412,7 +7422,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
   </section>
 
 <footer class="foot">
-  <p>Сборка 1 октября · версия 24ef8b54</p>
+  <p>Сборка 2 октября · версия 632fe756</p>
 </footer>
 </main>
 
