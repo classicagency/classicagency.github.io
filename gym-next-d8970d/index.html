@@ -418,11 +418,15 @@ body.js .section.is-active { display: block; }
    320–393 пикселях число вылезало из колонки (поймала проверка «число
    в поле с запасом»). Рамки вокруг пары нет — рамки у упражнений уже
    есть, вторая делала бы блок тяжёлым. Внутри пары зазор меньше, чем
-   между парами: близость читается раньше подписи. */
-.pair { position: relative; margin: 0 0 16px; }
+   между парами: близость читается раньше подписи.
+   Скобка охватывает и подпись «Суперсет»: начатая от середины подписи,
+   она выглядела грязно (Никита, 15.10.2026). Верх скобки — над подписью,
+   отступ до соседей сверху и снизу одинаковый, 14 пикселей: поля соседних
+   карточек схлопываются с полями пары. */
+.pair { position: relative; margin: 14px 0; padding-top: 5px; }
 .pair::before {
   content: '';
-  position: absolute; left: -10px; top: 8px; bottom: 0; width: 6px;
+  position: absolute; left: -10px; top: 0; bottom: 0; width: 6px;
   border: 2px solid var(--pair-line); border-right: 0;
   border-radius: 6px 0 0 6px;
   pointer-events: none;
@@ -438,7 +442,6 @@ body.js .section.is-active { display: block; }
   text-transform: uppercase;
   color: var(--ink);
 }
-.pair__rest { font-size: 12.5px; color: var(--ink-2); }
 .plan__first { font-size: 13px; color: var(--ink-2); }
 
 /* Программа на тренировку: две строки — что было в прошлый раз и цель.
@@ -824,15 +827,34 @@ tr:last-child td { border-bottom: 0; }
 .live-bar__inner { max-width: 720px; margin: 0 auto; display: flex; gap: 8px; align-items: center; }
 
 .live-ex { border: 1px solid var(--line); border-radius: var(--r-m); background: var(--surface-1); margin-bottom: 10px; overflow: hidden; }
-/* Шапка формы: название во всю ширину — рядом со счётчиком «Подъём на бицепс
-   в тренажёре сидя» на 414 пикселях рвался на две строки. Под названием одна
-   строка: отдых слева, замена и счётчик справа. Две строки у названия —
-   только у длинных, и тогда ровные. */
-.live-ex__head { padding: 13px 14px 11px; }
-.live-ex__head .ex__name { text-wrap: balance; }
-.live-ex__bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 6px; min-height: 24px; }
-.live-meta { font-size: 13px; color: var(--ink-2); line-height: 1.3; white-space: nowrap; }
-.live-ex__tools { display: inline-flex; align-items: center; gap: 6px; flex: none; }
+/* Шапка формы — две колонки (Никита, 15.10.2026). Слева название и под ним
+   отдых; справа счётчик в правом верхнем углу, в одной точке у всех карточек,
+   и прямо под ним «Сменить». Название в одну строку, если не задевает
+   счётчик, иначе в две ровные. «Сменить» висит под счётчиком абсолютно:
+   в потоке она задала бы колонке свою ширину (86 пикселей против 47
+   у счётчика), и названия, которые помещаются рядом со счётчиком, рвались бы
+   из-за кнопки строкой ниже. Обтекание тут не годится: Chromium при нём
+   не выравнивает строки, и «сидя» повисало одно на второй строке.
+   Ритм строк: счётчик и «Сменить» по 22 пикселя через 4, строка названия 24,
+   отдых — 18 через 4, «Основное» — 22 через 2. Тогда при названии в строку
+   отдых встаёт ровно напротив «Сменить», при двух строках «Сменить» —
+   напротив второй, у главного — напротив названия под «Основное»
+   (расхождение центров не больше пикселя). */
+.live-ex__head {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 10px; align-items: start;
+  padding: 13px 14px 11px;
+}
+.live-ex__main { min-width: 0; }
+.live-ex__main .ex__name { line-height: 24px; text-wrap: balance; }
+.live-ex__main .ex__role { display: block; line-height: 22px; margin-bottom: 2px; }
+.live-ex__side { position: relative; display: flex; flex-direction: column; align-items: flex-end; }
+.live-ex__side .pill { height: 22px; padding: 0 9px; }
+.has-swap .live-ex__side { min-height: 48px; }
+.live-ex__side .swap__open { position: absolute; right: 0; top: 26px; height: 22px; }
+/* Палец ловит по-прежнему 44 пикселя: кнопка стала на 2 ниже — поле шире на 1 сверху и снизу. */
+.live-ex__side .swap__open::after { top: -11px; bottom: -11px; }
+.live-meta { display: block; margin-top: 4px; font-size: 13px; color: var(--ink-2); line-height: 18px; white-space: nowrap; }
+.live-meta:empty { display: none; }
 .live-ex__body { padding: 0 14px 13px; }
 
 /* Форма отделяется от заголовка карточки: иначе подзаголовок слипается
@@ -1137,17 +1159,48 @@ body.has-rest { padding-bottom: var(--rest-h, 132px); }
 .rest.is-over .rest__track { background: rgba(14, 14, 14, .18); }
 .rest.is-over .rest__fill { background: var(--accent-ink); }
 
-/* Разминка над подходами: не вписывается, поэтому без полей — строкой. */
-.live-warm { font-size: 13px; color: var(--ink); line-height: 1.4; margin: 0 0 10px; }
+/* Разминка не вписывается, поэтому без полей. Строкой над подходами она
+   утяжеляла шапку и вставала невпопад (Никита, 15.10.2026) — два варианта
+   на выбор, переключатель WARM_VIEW в app.js.
+   «Плашка»: справа от «+ подход», в свободном углу карточки. Высота кнопки,
+   две строки: сверху подпись и что после разминки, снизу цифры. Без рамки,
+   чтобы не читалась кнопкой рядом с настоящей. Плашка занимает весь остаток
+   строки; где остатка меньше 165 пикселей (у упражнения на 4 подхода рядом
+   стоит и «− подход», на 320 пикселях — у всех), она уходит под кнопки
+   во всю ширину. Сделанная разминка тает и уходит из строки. */
+.live-ex__foot { margin-top: 8px; align-items: center; }
+.live-warm {
+  display: flex; flex-direction: column; justify-content: center;
+  flex: 1 1 165px; min-height: var(--tap);
+  padding: 5px 11px;
+  border-radius: var(--r-s);
+  background: var(--surface-2);
+  font-size: 12.5px; line-height: 16px; color: var(--ink);
+  transition: opacity var(--t-quick) var(--ease);
+}
 .live-warm__cap {
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
   letter-spacing: .06em;
   text-transform: uppercase;
   color: var(--ink-2);
-  margin-right: 8px;
 }
+.live-warm__top { display: flex; align-items: baseline; gap: 6px; white-space: nowrap; }
+.live-warm__top .live-warm__tail { font-size: 12px; color: var(--ink-2); }
+.live-warm__top .live-warm__tail::before { content: '·'; margin-right: 6px; }
+.live-warm.is-fading { opacity: 0; }
+.live-warm.is-gone { display: none; }
+/* «Строки»: бледные цифры в колонках веса и повторов над первым подходом,
+   справа — «разминка» и у последней строки хвост. Сделанная бледнеет ещё
+   сильнее, но остаётся: иначе таблица сдвинулась бы под пальцем. */
+.live-set--warm { padding: 4px 0; min-height: 34px; transition: opacity var(--t-quick) var(--ease); }
+.live-warm__num { text-align: center; font-size: 14px; color: var(--ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.live-warm__tag {
+  justify-self: end; display: flex; flex-direction: column; align-items: flex-end;
+  font-size: 11px; line-height: 13px; color: var(--ink-3); white-space: nowrap;
+}
+.live-set--warm.is-gone { opacity: .4; }
 
 .copybox {
   width: 100%;
@@ -1328,9 +1381,12 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
      там кнопки полного размера. */
   .stepper__btn { min-width: 16px; }
   .live-done { width: 38px; }
-  /* Строке под названием на 320px тесно: у замены остаётся только значок. */
+  /* Узкой шапке тесно: у замены под счётчиком остаётся только значок. */
   .swap__open { padding: 0 7px; }
   .swap__open-text { display: none; }
+  /* «до суперсета» в строке разминки на 320 пикселях вставало в 4 пикселях
+     от числа повторов. */
+  .live-warm__tag { font-size: 10px; line-height: 12px; }
   .stats--4 { grid-template-columns: 1fr 1fr; }
   .stat { padding: 10px 9px; }
   .stat__value { font-size: 17px; }
@@ -8252,13 +8308,13 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
   </section>
 
 <footer class="foot">
-  <p>Сборка 15 октября · версия b06f9480</p>
+  <p>Сборка 15 октября · версия f6332871</p>
 </footer>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script>window.__PROGRAM__={"day":"chest","dayTitle":"грудь","planDate":"2026-10-12","bodyweight":80.2,"signal":{"topic":"nk-otdyh-1a64fadfa4","message":"Отдых закончился"},"items":[{"role":"main","slot":"chest-press","pick":1,"shared":false,"rest":180,"pair":null,"pairStart":false,"pairHead":"","meta":"отдых 3 мин","options":[{"id":"bench-press","name":"Жим лёжа","kind":"barbell","weight":77.5,"sets":3,"stepWeight":2.5,"targetText":"77,5 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">60\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">13\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">70\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":"40 × 8, 60 × 4 — потом 2 мин"},{"id":"db-bench-press","name":"Жим гантелями лёжа","kind":"dumbbell","weight":30,"sets":3,"stepWeight":1,"targetText":"30 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">24\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">28\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":2,"warmup":"16 × 8, 22 × 4 — потом 2 мин"}]},{"role":"accessory","slot":"chest-press","pick":0,"shared":false,"rest":150,"pair":null,"pairStart":false,"pairHead":"","meta":"отдых 2 мин 30 сек","options":[{"id":"incline-bench-press","name":"Жим лёжа на наклонной скамье","kind":"barbell","weight":65,"sets":3,"stepWeight":2.5,"targetText":"65 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">62,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">65\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">65\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"chest-machine","pick":0,"shared":false,"rest":75,"pair":"press-abs","pairStart":true,"pairHead":"отдых 1 мин 15 сек","meta":"","options":[{"id":"chest-press-machine","name":"Жим от груди сидя","kind":"machine","weight":100,"sets":3,"stepWeight":2.5,"targetText":"100 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">100\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">100\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">100\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"abs","pick":0,"shared":false,"rest":75,"pair":"press-abs","pairStart":false,"pairHead":"","meta":"","options":[{"id":"abs-crunch-db","name":"Скручивания на наклонной скамье с гантелью","kind":"dumbbell","weight":10,"sets":3,"stepWeight":1,"targetText":"Подбор веса: начни с 10 кг","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""},{"id":"abs-crunch-cable","name":"Скручивания на верхнем блоке стоя на коленях","kind":"machine","weight":"","sets":3,"stepWeight":2.5,"targetText":"Подбор веса на 10–15 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""}]},{"role":"accessory","slot":"chest-fly","pick":1,"shared":false,"rest":60,"pair":"fly-biceps","pairStart":true,"pairHead":"отдых 1 мин","meta":"","options":[{"id":"pec-deck","name":"Бабочка","kind":"machine","weight":72,"sets":3,"stepWeight":2.5,"targetText":"72 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">72\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">72\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">72\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":""},{"id":"cable-fly","name":"Разводка от груди в кроссовере","kind":"machine","weight":35,"sets":3,"stepWeight":2.5,"targetText":"35 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">11\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">35\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">35\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"biceps","pick":0,"shared":false,"rest":60,"pair":"fly-biceps","pairStart":false,"pairHead":"","meta":"","options":[{"id":"biceps-machine","name":"Подъём на бицепс в тренажёре сидя","kind":"machine","weight":54,"sets":3,"stepWeight":2.5,"targetText":"54 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">50\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":2,"warmup":"25 × 8 — потом 2 мин"},{"id":"barbell-curl","name":"Подъём штанги на бицепс стоя","kind":"barbell","weight":37.5,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 37,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":"20 × 8 — потом 2 мин"},{"id":"barbell-curl-seated","name":"Подъём штанги на бицепс сидя","kind":"barbell","weight":40,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 40 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">14\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>","chipCols":3,"warmup":"20 × 8 — потом 2 мин"},{"id":"db-curl","name":"Подъём гантели на бицепс сидя","kind":"dumbbell","weight":12.5,"sets":3,"stepWeight":1,"targetText":"12,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">12,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":1,"warmup":"6 × 8 — потом 2 мин"}]},{"role":"accessory","slot":"biceps","pick":0,"shared":false,"rest":60,"pair":"arms","pairStart":true,"pairHead":"отдых 1 мин","meta":"","options":[{"id":"db-curl-standing","name":"Подъём гантелей на бицепс стоя","kind":"dumbbell","weight":15,"sets":3,"stepWeight":1,"targetText":"15 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">15\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">5\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">14\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":2,"warmup":""},{"id":"db-curl","name":"Подъём гантели на бицепс сидя","kind":"dumbbell","weight":12.5,"sets":3,"stepWeight":1,"targetText":"12,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">12,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":1,"warmup":""},{"id":"barbell-curl","name":"Подъём штанги на бицепс стоя","kind":"barbell","weight":37.5,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 37,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":""},{"id":"barbell-curl-seated","name":"Подъём штанги на бицепс сидя","kind":"barbell","weight":40,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 40 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">14\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"triceps","pick":0,"shared":false,"rest":60,"pair":"arms","pairStart":false,"pairHead":"","meta":"","options":[{"id":"triceps-overhead-rope","name":"Трицепс из-за головы с канатом","kind":"machine","weight":"","sets":3,"stepWeight":2.5,"targetText":"Подбор веса на 6–9 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""},{"id":"triceps-overhead-db","name":"Разгибание одной гантели из-за головы сидя","kind":"dumbbell","weight":"","sets":3,"stepWeight":1,"targetText":"Подбор веса на 6–9 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""}]}]};</script>
+<script>window.__PROGRAM__={"day":"chest","dayTitle":"грудь","planDate":"2026-10-12","bodyweight":80.2,"signal":{"topic":"nk-otdyh-1a64fadfa4","message":"Отдых закончился"},"items":[{"role":"main","slot":"chest-press","pick":1,"shared":false,"rest":180,"pair":null,"pairStart":false,"meta":"отдых 3 мин","options":[{"id":"bench-press","name":"Жим лёжа","kind":"barbell","weight":77.5,"sets":3,"stepWeight":2.5,"targetText":"77,5 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">60\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">13\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">70\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":"40 × 8, 60 × 4 — потом 2 мин","warmText":"40 × 8, 60 × 4","warmTail":"потом 2 мин","warmSets":[{"w":"40","r":8},{"w":"60","r":4}]},{"id":"db-bench-press","name":"Жим гантелями лёжа","kind":"dumbbell","weight":30,"sets":3,"stepWeight":1,"targetText":"30 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">24\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">28\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":2,"warmup":"16 × 8, 22 × 4 — потом 2 мин","warmText":"16 × 8, 22 × 4","warmTail":"потом 2 мин","warmSets":[{"w":"16","r":8},{"w":"22","r":4}]}]},{"role":"accessory","slot":"chest-press","pick":0,"shared":false,"rest":150,"pair":null,"pairStart":false,"meta":"отдых 2 мин 30 сек","options":[{"id":"incline-bench-press","name":"Жим лёжа на наклонной скамье","kind":"barbell","weight":65,"sets":3,"stepWeight":2.5,"targetText":"65 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">62,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">65\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">65\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":"","warmText":"","warmTail":"","warmSets":[]}]},{"role":"accessory","slot":"chest-machine","pick":0,"shared":false,"rest":75,"pair":"press-abs","pairStart":true,"meta":"отдых 1 мин 15 сек","options":[{"id":"chest-press-machine","name":"Жим от груди сидя","kind":"machine","weight":100,"sets":3,"stepWeight":2.5,"targetText":"100 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">100\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">100\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">100\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":3,"warmup":"","warmText":"","warmTail":"","warmSets":[]}]},{"role":"accessory","slot":"abs","pick":0,"shared":false,"rest":75,"pair":"press-abs","pairStart":false,"meta":"отдых 1 мин 15 сек","options":[{"id":"abs-crunch-db","name":"Скручивания на наклонной скамье с гантелью","kind":"dumbbell","weight":10,"sets":3,"stepWeight":1,"targetText":"Подбор веса: начни с 10 кг","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":"","warmText":"","warmTail":"","warmSets":[]},{"id":"abs-crunch-cable","name":"Скручивания на верхнем блоке стоя на коленях","kind":"machine","weight":"","sets":3,"stepWeight":2.5,"targetText":"Подбор веса на 10–15 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":"","warmText":"","warmTail":"","warmSets":[]}]},{"role":"accessory","slot":"chest-fly","pick":1,"shared":false,"rest":60,"pair":"fly-biceps","pairStart":true,"meta":"отдых 1 мин","options":[{"id":"pec-deck","name":"Бабочка","kind":"machine","weight":72,"sets":3,"stepWeight":2.5,"targetText":"72 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">72\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">72\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">72\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":"","warmText":"","warmTail":"","warmSets":[]},{"id":"cable-fly","name":"Разводка от груди в кроссовере","kind":"machine","weight":35,"sets":3,"stepWeight":2.5,"targetText":"35 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">11\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">35\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">35\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>","chipCols":3,"warmup":"","warmText":"","warmTail":"","warmSets":[]}]},{"role":"accessory","slot":"biceps","pick":0,"shared":false,"rest":60,"pair":"fly-biceps","pairStart":false,"meta":"отдых 1 мин","options":[{"id":"biceps-machine","name":"Подъём на бицепс в тренажёре сидя","kind":"machine","weight":54,"sets":3,"stepWeight":2.5,"targetText":"54 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">50\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":2,"warmup":"25 × 8 — до суперсета","warmText":"25 × 8","warmTail":"до суперсета","warmSets":[{"w":"25","r":8}]},{"id":"barbell-curl","name":"Подъём штанги на бицепс стоя","kind":"barbell","weight":37.5,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 37,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":"20 × 8 — до суперсета","warmText":"20 × 8","warmTail":"до суперсета","warmSets":[{"w":"20","r":8}]},{"id":"barbell-curl-seated","name":"Подъём штанги на бицепс сидя","kind":"barbell","weight":40,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 40 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">14\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>","chipCols":3,"warmup":"20 × 8 — до суперсета","warmText":"20 × 8","warmTail":"до суперсета","warmSets":[{"w":"20","r":8}]},{"id":"db-curl","name":"Подъём гантели на бицепс сидя","kind":"dumbbell","weight":12.5,"sets":3,"stepWeight":1,"targetText":"12,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">12,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":1,"warmup":"6 × 8 — до суперсета","warmText":"6 × 8","warmTail":"до суперсета","warmSets":[{"w":"6","r":8}]}]},{"role":"accessory","slot":"biceps","pick":0,"shared":false,"rest":60,"pair":"arms","pairStart":true,"meta":"отдых 1 мин","options":[{"id":"db-curl-standing","name":"Подъём гантелей на бицепс стоя","kind":"dumbbell","weight":15,"sets":3,"stepWeight":1,"targetText":"15 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">15\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">5\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">14\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":2,"warmup":"","warmText":"","warmTail":"","warmSets":[]},{"id":"db-curl","name":"Подъём гантели на бицепс сидя","kind":"dumbbell","weight":12.5,"sets":3,"stepWeight":1,"targetText":"12,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">12,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":1,"warmup":"","warmText":"","warmTail":"","warmSets":[]},{"id":"barbell-curl","name":"Подъём штанги на бицепс стоя","kind":"barbell","weight":37.5,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 37,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":"","warmText":"","warmTail":"","warmSets":[]},{"id":"barbell-curl-seated","name":"Подъём штанги на бицепс сидя","kind":"barbell","weight":40,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 40 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">14\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>","chipCols":3,"warmup":"","warmText":"","warmTail":"","warmSets":[]}]},{"role":"accessory","slot":"triceps","pick":0,"shared":false,"rest":60,"pair":"arms","pairStart":false,"meta":"отдых 1 мин","options":[{"id":"triceps-overhead-rope","name":"Трицепс из-за головы с канатом","kind":"machine","weight":"","sets":3,"stepWeight":2.5,"targetText":"Подбор веса на 6–9 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":"","warmText":"","warmTail":"","warmSets":[]},{"id":"triceps-overhead-db","name":"Разгибание одной гантели из-за головы сидя","kind":"dumbbell","weight":"","sets":3,"stepWeight":1,"targetText":"Подбор веса на 6–9 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":"","warmText":"","warmTail":"","warmSets":[]}]}]};</script>
 <script>
 (function () {
   'use strict';
@@ -8273,6 +8329,11 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
   // Меньше трёх подходов на упражнение не бывает — удалять можно только то,
   // что добавлено сверху. Иначе одно случайное нажатие сносит программу.
   var MIN_SETS = 3;
+
+  // Где стоит разминка: 'plate' — плашкой справа от «+ подход», 'rows' —
+  // бледными строками над первым подходом. Два варианта на выбор Никите
+  // (15.10.2026): копия для показа собирает второй заменой этой строки.
+  var WARM_VIEW = 'plate';
 
   // Знаки нарисованы фигурами: глифы шрифта стоят в кнопке вкось.
   var ICO_MINUS = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12"/></svg>';
@@ -8575,26 +8636,29 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         if (!st || !o) return;
         var doneCount = st.sets.filter(function (s) { return s.done; }).length;
 
-        // Пара суперсета — общей полосой слева и шапкой с отдыхом: отдых
-        // у пары один, после каждого подхода.
+        // Пара суперсета — скобкой слева, она охватывает и подпись «Суперсет»,
+        // и оба упражнения. Отдых — в каждом упражнении пары, как у одиночных.
         if (it.pairStart) {
-          html += '<div class="pair pair--live" data-livepair><div class="pair__head"><span class="pair__cap">Суперсет</span>' +
-            (it.pairHead ? '<span class="pair__rest">' + esc(it.pairHead) + '</span>' : '') + '</div>';
+          html += '<div class="pair pair--live" data-livepair><div class="pair__head"><span class="pair__cap">Суперсет</span></div>';
         }
 
-        // Шапка: название во всю ширину карточки, под ним одна строка —
-        // отдых слева, замена и счётчик справа. Цель, «Добивка» и «3 подхода
-        // по 6–9» убраны (Никита, 15.10.2026): цель уже стоит в полях веса
-        // и в «Прошлом разе», остальное он знает.
+        // Шапка — две колонки (Никита, 15.10.2026). Слева название и под ним
+        // отдых. Справа счётчик в правом верхнем углу, в одной точке у всех
+        // карточек, и прямо под ним «Сменить». Название ложится в одну строку,
+        // если не задевает счётчик, иначе — в две ровные. «Сменить» висит под
+        // счётчиком и ширину колонки не задаёт: иначе названия, которые
+        // помещаются рядом со счётчиком, рвались бы из-за кнопки ниже.
         var swappable = it.options.length > 1;
         var open = swappable && openSwap === pos;
+        var allDone = st.sets.length > 0 && doneCount === st.sets.length;
         html += '<div class="live-ex" data-ex="' + pos + '">';
-        html += '<div class="live-ex__head">';
+        html += '<div class="live-ex__head' + (swappable ? ' has-swap' : '') + '">';
+        html += '<div class="live-ex__main">';
         if (it.role === 'main') html += '<span class="ex__role">Основное</span>';
         html += '<h3 class="ex__name">' + esc(o.name) + '</h3>';
-        html += '<div class="live-ex__bar">';
         html += '<span class="live-meta">' + esc(it.meta || '') + '</span>';
-        html += '<span class="live-ex__tools">';
+        html += '</div><div class="live-ex__side">';
+        html += '<span class="pill' + (allDone ? ' is-done' : '') + '" data-count="' + pos + '">' + doneCount + ' / ' + st.sets.length + '</span>';
         // Замена — маленькой кнопкой: нужна раз в тренировку, когда тренажёр
         // занят, и строкой на всю ширину отрезала шапку от подходов.
         if (swappable) {
@@ -8602,9 +8666,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
             '" aria-expanded="' + (open ? 'true' : 'false') + '" aria-label="Сменить упражнение">' + ICO_SWAP +
             '<span class="swap__open-text">Сменить</span></button>';
         }
-        var allDone = st.sets.length > 0 && doneCount === st.sets.length;
-        html += '<span class="pill' + (allDone ? ' is-done' : '') + '" data-count="' + pos + '">' + doneCount + ' / ' + st.sets.length + '</span>';
-        html += '</span></div></div>';
+        html += '</div></div>';
         html += '<div class="live-ex__body">';
 
         // Список замен закрыт по умолчанию: в зале нужен не выбор, а цифры.
@@ -8620,18 +8682,34 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
           html += '</div>';
         }
 
-        // Разминка строкой над подходами: веса посчитаны от рабочего,
-        // вписывать её не нужно.
-        if (o.warmup) html += '<div class="live-warm"><span class="live-warm__cap">Разминка</span>' + esc(o.warmup) + '</div>';
-
         var noWeight = (o.kind === 'bodyweight' || o.kind === 'reps');
         var wide = noWeight ? ' live-set--wide' : '';
         var weightCap = o.kind === 'bodyweight-plus' ? 'сверху, кг' : 'вес, кг';
+        // Разминка сделана — плашка гаснет: место свободно, цифры больше
+        // не нужны (Никита, 15.10.2026). Вписывать разминку не нужно никогда.
+        var warmGone = o.warmText && warmDone(pos) ? ' is-gone' : '';
 
         html += '<div class="live-head' + (noWeight ? ' live-head--wide' : '') + '">';
         html += '<span></span>';
         if (!noWeight) html += '<span>' + weightCap + '</span>';
         html += '<span>повторов</span><span></span></div>';
+
+        // Вариант «строки»: разминка — бледными строками над первым подходом,
+        // в тех же колонках веса и повторов, без полей и галочки. Сделанная
+        // не исчезает, а бледнеет ещё сильнее: убранные строки сдвинули бы
+        // таблицу вверх прямо под пальцем.
+        if (WARM_VIEW === 'rows' && o.warmText) {
+          o.warmSets.forEach(function (s, k) {
+            var last = k === o.warmSets.length - 1;
+            html += '<div class="live-set live-set--warm' + wide + warmGone + '" data-warm="' + pos + '">';
+            html += '<span class="live-set__n"></span>';
+            if (!noWeight) html += '<span class="live-warm__num">' + esc(s.w) + '</span>';
+            html += '<span class="live-warm__num">' + esc(s.r) + '</span>';
+            html += '<span class="live-warm__tag">разминка' +
+              (last && o.warmTail ? '<span class="live-warm__tail">' + esc(o.warmTail) + '</span>' : '') + '</span>';
+            html += '</div>';
+          });
+        }
 
         st.sets.forEach(function (s, i) {
           html += '<div class="live-set' + wide + '">';
@@ -8643,10 +8721,20 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
           html += '</div>';
         });
 
-        html += '<div class="btn-row" style="margin-top:8px">';
+        html += '<div class="btn-row live-ex__foot">';
         html += '<button type="button" class="btn btn--ghost" data-addset="' + pos + '" style="padding:8px 14px;font-size:13.5px">+ подход</button>';
         if (st.sets.length > minSets(o)) {
           html += '<button type="button" class="btn btn--ghost" data-delset="' + pos + '" style="padding:8px 14px;font-size:13.5px">− подход</button>';
+        }
+        // Вариант «плашка»: разминка — справа от «+ подход», в свободном углу
+        // карточки, а не строкой над подходами: там она утяжеляла шапку
+        // (Никита, 15.10.2026). Две строки по высоте кнопки: сверху подпись
+        // и что после разминки, снизу цифры.
+        if (WARM_VIEW === 'plate' && o.warmText) {
+          html += '<span class="live-warm' + warmGone + '" data-warm="' + pos + '">' +
+            '<span class="live-warm__top"><span class="live-warm__cap">Разминка</span>' +
+            (o.warmTail ? '<span class="live-warm__tail">' + esc(o.warmTail) + '</span>' : '') + '</span>' +
+            '<span class="live-warm__val">' + esc(o.warmText) + '</span></span>';
         }
         html += '</div>';
         html += '</div></div>';
@@ -8766,6 +8854,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
           // и после подхода, а «Готово» на клавиатуре айфона — не конец
           // подхода. Снятая галочка гасит отдых, который от неё пошёл.
           if (s.done) startRest(+p[0], +p[1]); else undoRest(+p[0], +p[1]);
+          syncWarm(+p[0]);
           var pill = live.querySelector('[data-count="' + p[0] + '"]');
           if (pill) {
             var done = st.sets.filter(function (x) { return x.done; }).length;
@@ -8981,6 +9070,66 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       return a === b ? null : [a, b];
     }
 
+    /** Места, которые делят разминку: пара целиком или одно место. */
+    function warmSpan(pos) {
+      var pr = pairOf(pos);
+      var out = [];
+      for (var p = pr ? pr[0] : pos; p <= (pr ? pr[1] : pos); p++) out.push(p);
+      return out;
+    }
+
+    /**
+     * Разминка сделана: стоит галочка хотя бы одного рабочего подхода. В паре —
+     * любого подхода пары: её разминка идёт до первого круга.
+     */
+    function warmDone(pos) {
+      return warmSpan(pos).some(function (p) {
+        var st = itemState(p);
+        return !!(st && st.sets.some(function (s) { return s.done; }));
+      });
+    }
+
+    /**
+     * Галочку поставили или сняли — разминка места и его пары гаснет или
+     * возвращается. Плашка сперва тает и только потом уходит из строки;
+     * строки разминки только бледнеют — таблица не сдвигается под пальцем.
+     */
+    function syncWarm(pos) {
+      var gone = warmDone(pos);
+      warmSpan(pos).forEach(function (p) {
+        live.querySelectorAll('[data-warm="' + p + '"]').forEach(function (el) {
+          var want = gone ? 'gone' : 'shown';
+          var now = el.getAttribute('data-warm-state') || (el.classList.contains('is-gone') ? 'gone' : 'shown');
+          if (now === want) return;
+          el.setAttribute('data-warm-state', want);
+          clearTimeout(el._warmTimer);
+          if (WARM_VIEW !== 'plate') { el.classList.toggle('is-gone', gone); return; }
+          el.classList.add('is-fading');
+          if (gone) {
+            var ms = parseFloat(getComputedStyle(el).transitionDuration) * 1000 || 0;
+            el._warmTimer = setTimeout(function () { el.classList.add('is-gone'); el.classList.remove('is-fading'); }, ms);
+          } else {
+            el.classList.remove('is-gone');
+            void el.offsetWidth;   // кадр с прозрачной плашкой — иначе она не проявится, а мигнёт
+            el.classList.remove('is-fading');
+          }
+        });
+      });
+    }
+
+    /**
+     * Перед этим подходом — разминка. У одиночного упражнения — его своя
+     * перед первым подходом. У пары — разминка всей пары перед первым кругом:
+     * подсказка стоит у первого подхода первого упражнения, а посреди
+     * суперсета её нет.
+     */
+    function warmAhead(t) {
+      if (t.set !== 0 || warmDone(t.pos)) return false;
+      var pr = pairOf(t.pos);
+      if (pr && t.pos !== pr[0]) return false;
+      return warmSpan(t.pos).some(function (p) { var x = chosen(p); return !!(x && x.warmText); });
+    }
+
     /** Следующий подход: в паре — по очереди А → Б → А, иначе следующий этого же места. */
     function nextStep(pos, idx) {
       var pr = pairOf(pos);
@@ -9005,7 +9154,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     function nextOf(t) {
       var o = chosen(t.pos);
       if (!o) return { step: '', name: '' };
-      var warm = t.set === 0 && o.warmup ? ', сначала разминка' : '';
+      var warm = warmAhead(t) ? ', сначала разминка' : '';
       return { step: 'Дальше · подход ' + (t.set + 1) + warm, name: o.name };
     }
 
