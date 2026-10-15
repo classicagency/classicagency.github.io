@@ -1053,6 +1053,35 @@ tr:last-child td { border-bottom: 0; }
 .live-done.is-done .live-done__tick { stroke-dashoffset: 0; }
 
 .live-target { font-size: 12.5px; color: var(--ink-2); margin-top: 2px; }
+/* Отдых между подходами — полоса внизу экрана. Пока идёт — серая, кончился —
+   жёлтая: это сигнал к действию, единственное, ради чего тратится акцент.
+   На жёлтом — только чёрный. Атрибут hidden проигрывает display блока,
+   поэтому скрытие задано отдельно. */
+.rest {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+  padding: 10px calc(var(--pad) + var(--safe-right)) calc(12px + var(--safe-bottom)) calc(var(--pad) + var(--safe-left));
+  background: var(--surface-2);
+  border-top: 1px solid var(--line);
+  font-size: 13px; line-height: 1.4; color: var(--ink-2);
+}
+.rest[hidden] { display: none; }
+body.has-rest { padding-bottom: 104px; }
+.rest__row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.rest__cap {
+  font-family: var(--font-display); font-size: 11px; font-weight: 600;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2);
+}
+.rest__time { font-family: var(--font-num); font-size: 22px; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+.rest__next { margin-top: 2px; color: var(--ink); }
+.rest__note { margin-top: 2px; color: var(--down); }
+.rest__note:empty { display: none; }
+.rest__track { margin-top: 8px; height: 3px; border-radius: 2px; background: var(--surface-3); overflow: hidden; }
+.rest__fill { height: 100%; width: 0; background: var(--ink-2); }
+.rest.is-over { background: var(--accent); border-top-color: var(--accent); }
+.rest.is-over .rest__cap, .rest.is-over .rest__time, .rest.is-over .rest__next { color: var(--accent-ink); }
+.rest.is-over .rest__track { background: rgba(14, 14, 14, .18); }
+.rest.is-over .rest__fill { background: var(--accent-ink); }
+
 /* Разминка над подходами: не вписывается, поэтому без полей — строкой. */
 .live-warm { font-size: 13px; color: var(--ink); line-height: 1.4; margin: 0 0 10px; }
 .live-warm__cap {
@@ -8173,13 +8202,13 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
   </section>
 
 <footer class="foot">
-  <p>Сборка 15 октября · версия cc5c6dea</p>
+  <p>Сборка 15 октября · версия ce621b64</p>
 </footer>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script>window.__PROGRAM__={"day":"chest","dayTitle":"грудь","planDate":"2026-10-12","bodyweight":80.2,"items":[{"role":"main","slot":"chest-press","pick":1,"shared":false,"rest":180,"pair":null,"pairHead":"","meta":"3 подхода по 6–9 повторов, отдых 3 минуты","options":[{"id":"bench-press","name":"Жим лёжа","kind":"barbell","weight":77.5,"sets":3,"stepWeight":2.5,"targetText":"77,5 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">60\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">13\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">70\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":"40 × 8, 60 × 4"},{"id":"db-bench-press","name":"Жим гантелями лёжа","kind":"dumbbell","weight":30,"sets":3,"stepWeight":1,"targetText":"30 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">24\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">28\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":2,"warmup":"16 × 8, 22 × 4"}]},{"role":"accessory","slot":"chest-press","pick":0,"shared":false,"rest":150,"pair":null,"pairHead":"","meta":"3 подхода по 6–9 повторов, отдых 2 минуты 30 секунд","options":[{"id":"incline-bench-press","name":"Жим лёжа на наклонной скамье","kind":"barbell","weight":65,"sets":3,"stepWeight":2.5,"targetText":"65 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">62,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">65\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">65\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"chest-machine","pick":0,"shared":false,"rest":75,"pair":"press-abs","pairHead":"По очереди, отдых 1 минута 15 секунд после каждого подхода","meta":"3 подхода по 6–9 повторов","options":[{"id":"chest-press-machine","name":"Жим от груди сидя","kind":"machine","weight":100,"sets":3,"stepWeight":2.5,"targetText":"100 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">100\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">100\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">100\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"abs","pick":0,"shared":false,"rest":75,"pair":"press-abs","pairHead":"","meta":"3 подхода по 10–15 повторов","options":[{"id":"abs-crunch-db","name":"Скручивания на наклонной скамье с гантелью","kind":"dumbbell","weight":10,"sets":3,"stepWeight":1,"targetText":"Подбор веса: начни с 10 кг","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""},{"id":"abs-crunch-cable","name":"Скручивания на верхнем блоке стоя на коленях","kind":"machine","weight":"","sets":3,"stepWeight":2.5,"targetText":"Подбор веса на 10–15 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""}]},{"role":"accessory","slot":"chest-fly","pick":1,"shared":false,"rest":60,"pair":"fly-biceps","pairHead":"По очереди, отдых 1 минута после каждого подхода","meta":"3 подхода по 6–9 повторов","options":[{"id":"pec-deck","name":"Бабочка","kind":"machine","weight":72,"sets":3,"stepWeight":2.5,"targetText":"72 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">72\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">72\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">72\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":""},{"id":"cable-fly","name":"Разводка от груди в кроссовере","kind":"machine","weight":35,"sets":3,"stepWeight":2.5,"targetText":"35 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">11\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">35\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">35\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"biceps","pick":0,"shared":false,"rest":60,"pair":"fly-biceps","pairHead":"","meta":"3 подхода по 6–9 повторов","options":[{"id":"biceps-machine","name":"Подъём на бицепс в тренажёре сидя","kind":"machine","weight":54,"sets":3,"stepWeight":2.5,"targetText":"54 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">50\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":2,"warmup":"25 × 8"},{"id":"barbell-curl","name":"Подъём штанги на бицепс стоя","kind":"barbell","weight":37.5,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 37,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":"20 × 8"},{"id":"barbell-curl-seated","name":"Подъём штанги на бицепс сидя","kind":"barbell","weight":40,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 40 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">14\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>","chipCols":3,"warmup":"20 × 8"},{"id":"db-curl","name":"Подъём гантели на бицепс сидя","kind":"dumbbell","weight":12.5,"sets":3,"stepWeight":1,"targetText":"12,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">12,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":1,"warmup":"6 × 8"}]},{"role":"accessory","slot":"biceps","pick":0,"shared":false,"rest":60,"pair":"arms","pairHead":"По очереди, отдых 1 минута после каждого подхода","meta":"3 подхода по 6–9 повторов","options":[{"id":"db-curl-standing","name":"Подъём гантелей на бицепс стоя","kind":"dumbbell","weight":15,"sets":3,"stepWeight":1,"targetText":"15 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">15\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">5\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">14\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":2,"warmup":""},{"id":"db-curl","name":"Подъём гантели на бицепс сидя","kind":"dumbbell","weight":12.5,"sets":3,"stepWeight":1,"targetText":"12,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">12,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":1,"warmup":""},{"id":"barbell-curl","name":"Подъём штанги на бицепс стоя","kind":"barbell","weight":37.5,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 37,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":""},{"id":"barbell-curl-seated","name":"Подъём штанги на бицепс сидя","kind":"barbell","weight":40,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 40 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">14\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"triceps","pick":0,"shared":false,"rest":60,"pair":"arms","pairHead":"","meta":"3 подхода по 6–9 повторов","options":[{"id":"triceps-overhead-rope","name":"Трицепс из-за головы с канатом","kind":"machine","weight":"","sets":3,"stepWeight":2.5,"targetText":"Подбор веса на 6–9 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""},{"id":"triceps-overhead-db","name":"Разгибание одной гантели из-за головы сидя","kind":"dumbbell","weight":"","sets":3,"stepWeight":1,"targetText":"Подбор веса на 6–9 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""}]}]};</script>
+<script>window.__PROGRAM__={"day":"chest","dayTitle":"грудь","planDate":"2026-10-12","bodyweight":80.2,"signal":{"topic":"nk-otdyh-1a64fadfa4","message":"Отдых закончился"},"items":[{"role":"main","slot":"chest-press","pick":1,"shared":false,"rest":180,"pair":null,"pairHead":"","meta":"3 подхода по 6–9 повторов, отдых 3 минуты","options":[{"id":"bench-press","name":"Жим лёжа","kind":"barbell","weight":77.5,"sets":3,"stepWeight":2.5,"targetText":"77,5 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">60\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">13\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">70\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":"40 × 8, 60 × 4"},{"id":"db-bench-press","name":"Жим гантелями лёжа","kind":"dumbbell","weight":30,"sets":3,"stepWeight":1,"targetText":"30 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">24\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">28\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":2,"warmup":"16 × 8, 22 × 4"}]},{"role":"accessory","slot":"chest-press","pick":0,"shared":false,"rest":150,"pair":null,"pairHead":"","meta":"3 подхода по 6–9 повторов, отдых 2 минуты 30 секунд","options":[{"id":"incline-bench-press","name":"Жим лёжа на наклонной скамье","kind":"barbell","weight":65,"sets":3,"stepWeight":2.5,"targetText":"65 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">62,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">65\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">65\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"chest-machine","pick":0,"shared":false,"rest":75,"pair":"press-abs","pairHead":"По очереди, отдых 1 минута 15 секунд после каждого подхода","meta":"3 подхода по 6–9 повторов","options":[{"id":"chest-press-machine","name":"Жим от груди сидя","kind":"machine","weight":100,"sets":3,"stepWeight":2.5,"targetText":"100 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">100\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">100\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">100\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"abs","pick":0,"shared":false,"rest":75,"pair":"press-abs","pairHead":"","meta":"3 подхода по 10–15 повторов","options":[{"id":"abs-crunch-db","name":"Скручивания на наклонной скамье с гантелью","kind":"dumbbell","weight":10,"sets":3,"stepWeight":1,"targetText":"Подбор веса: начни с 10 кг","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""},{"id":"abs-crunch-cable","name":"Скручивания на верхнем блоке стоя на коленях","kind":"machine","weight":"","sets":3,"stepWeight":2.5,"targetText":"Подбор веса на 10–15 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""}]},{"role":"accessory","slot":"chest-fly","pick":1,"shared":false,"rest":60,"pair":"fly-biceps","pairHead":"По очереди, отдых 1 минута после каждого подхода","meta":"3 подхода по 6–9 повторов","options":[{"id":"pec-deck","name":"Бабочка","kind":"machine","weight":72,"sets":3,"stepWeight":2.5,"targetText":"72 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">72\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">72\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">72\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":""},{"id":"cable-fly","name":"Разводка от груди в кроссовере","kind":"machine","weight":35,"sets":3,"stepWeight":2.5,"targetText":"35 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">11\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">35\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">35\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"biceps","pick":0,"shared":false,"rest":60,"pair":"fly-biceps","pairHead":"","meta":"3 подхода по 6–9 повторов","options":[{"id":"biceps-machine","name":"Подъём на бицепс в тренажёре сидя","kind":"machine","weight":54,"sets":3,"stepWeight":2.5,"targetText":"54 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">50\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":2,"warmup":"25 × 8"},{"id":"barbell-curl","name":"Подъём штанги на бицепс стоя","kind":"barbell","weight":37.5,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 37,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":"20 × 8"},{"id":"barbell-curl-seated","name":"Подъём штанги на бицепс сидя","kind":"barbell","weight":40,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 40 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">14\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>","chipCols":3,"warmup":"20 × 8"},{"id":"db-curl","name":"Подъём гантели на бицепс сидя","kind":"dumbbell","weight":12.5,"sets":3,"stepWeight":1,"targetText":"12,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">12,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":1,"warmup":"6 × 8"}]},{"role":"accessory","slot":"biceps","pick":0,"shared":false,"rest":60,"pair":"arms","pairHead":"По очереди, отдых 1 минута после каждого подхода","meta":"3 подхода по 6–9 повторов","options":[{"id":"db-curl-standing","name":"Подъём гантелей на бицепс стоя","kind":"dumbbell","weight":15,"sets":3,"stepWeight":1,"targetText":"15 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">15\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">5\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">14\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":2,"warmup":""},{"id":"db-curl","name":"Подъём гантели на бицепс сидя","kind":"dumbbell","weight":12.5,"sets":3,"stepWeight":1,"targetText":"12,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">12,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":1,"warmup":""},{"id":"barbell-curl","name":"Подъём штанги на бицепс стоя","kind":"barbell","weight":37.5,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 37,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":""},{"id":"barbell-curl-seated","name":"Подъём штанги на бицепс сидя","kind":"barbell","weight":40,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 40 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">14\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"triceps","pick":0,"shared":false,"rest":60,"pair":"arms","pairHead":"","meta":"3 подхода по 6–9 повторов","options":[{"id":"triceps-overhead-rope","name":"Трицепс из-за головы с канатом","kind":"machine","weight":"","sets":3,"stepWeight":2.5,"targetText":"Подбор веса на 6–9 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""},{"id":"triceps-overhead-db","name":"Разгибание одной гантели из-за головы сидя","kind":"dumbbell","weight":"","sets":3,"stepWeight":1,"targetText":"Подбор веса на 6–9 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""}]}]};</script>
 <script>
 (function () {
   'use strict';
@@ -8635,8 +8664,11 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     function bind() {
       live.querySelectorAll('[data-field]').forEach(function (el) {
         el.addEventListener('input', function () {
-          setValue(el.getAttribute('data-field'), el.value === '' ? '' : +el.value);
+          var key = el.getAttribute('data-field');
+          var was = getValue(key);
+          setValue(key, el.value === '' ? '' : +el.value);
           save();
+          restOnReps(key, was);
         });
       });
 
@@ -8651,7 +8683,9 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
           if (cur === '' && key === 'bw' && PROGRAM.bodyweight) cur = PROGRAM.bodyweight;
           var next = Math.round(((cur === '' ? 0 : +cur) + dir * step) * 100) / 100;
           if (next < 0) next = 0;
+          var was = getValue(key);
           setValue(key, next);
+          restOnReps(key, was);
           var field = live.querySelector('[data-field="' + key + '"]');
           if (field) {
             field.value = next;
@@ -8789,6 +8823,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       var reset = document.getElementById('live-reset');
       if (reset) reset.addEventListener('click', function () {
         if (!confirm('Очистить введённое и начать тренировку заново?')) return;
+        stopRest();
         draft = blank();
         save();
         render();
@@ -8836,10 +8871,170 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
+    /* ───────────────────────── отдых между подходами ───────────────────────── */
+
+    // Вписал повторы подхода — пошёл отдых этого места программы: полоса
+    // внизу экрана, что делать дальше, и сигнал в ntfy на заблокированный
+    // экран. Страница при заблокированном экране заморожена и сама подать
+    // сигнал не может (решение Никиты 15.10.2026). В ntfy всегда ОДИН
+    // отложенный заказ: следующий подход заменяет его по тому же номеру,
+    // и прерванный отдых не догоняет уведомлением. Снимать пришедшее
+    // уведомление нельзя: приложение ntfy на айфоне показывает такую команду
+    // пустой записью.
+    var REST_STORE = 'nk-training-rest-preview';
+    var restState = loadRest();
+    var restEl = null;
+    var restTimer = null;
+
+    function loadRest() {
+      try {
+        var r = JSON.parse(localStorage.getItem(REST_STORE) || 'null');
+        // Отдых, закончившийся больше двух минут назад, не всплывает снова.
+        return r && r.ends && r.ends + 120000 > Date.now() ? r : null;
+      } catch (e) { return null; }
+    }
+    function saveRest() {
+      try { localStorage.setItem(REST_STORE, JSON.stringify(restState)); } catch (e) {}
+    }
+
+    function isEmpty(v) { return v === '' || v === null || v === undefined; }
+
+    /** Повторы подхода появились впервые — отдых пошёл. Правка вписанного не перезапускает. */
+    function restOnReps(key, was) {
+      var p = String(key).split('|');
+      if (p[0] !== 'r' || !isEmpty(was) || isEmpty(getValue(key))) return;
+      startRest(+p[1], +p[2]);
+    }
+
+    function setsOf(pos) { var st = itemState(pos); return st ? st.sets.length : 0; }
+
+    /** Пара суперсета вокруг места: [первое, второе] или null. */
+    function pairOf(pos) {
+      var it = programItem(pos);
+      if (!it || !it.pair) return null;
+      var a = pos, b = pos;
+      while (a > 0 && PROGRAM.items[a - 1].pair === it.pair) a--;
+      while (b < PROGRAM.items.length - 1 && PROGRAM.items[b + 1].pair === it.pair) b++;
+      return a === b ? null : [a, b];
+    }
+
+    /** Следующий подход: в паре — по очереди А → Б → А, иначе следующий этого же места. */
+    function nextStep(pos, idx) {
+      var pr = pairOf(pos);
+      var after = function (p) { return p + 1 < PROGRAM.items.length ? { pos: p + 1, set: 0 } : null; };
+      if (!pr) return idx + 1 < setsOf(pos) ? { pos: pos, set: idx + 1 } : after(pos);
+      var a = pr[0], b = pr[1];
+      if (pos === a) {
+        if (idx < setsOf(b)) return { pos: b, set: idx };
+        if (idx + 1 < setsOf(a)) return { pos: a, set: idx + 1 };
+        return after(b);
+      }
+      if (idx + 1 < setsOf(a)) return { pos: a, set: idx + 1 };
+      if (idx + 1 < setsOf(pos)) return { pos: pos, set: idx + 1 };
+      return after(b);
+    }
+
+    function nextText(t) {
+      var o = chosen(t.pos);
+      if (!o) return '';
+      var warm = t.set === 0 && o.warmup ? ', сначала разминка' : '';
+      return 'Дальше — ' + o.name + ', подход ' + (t.set + 1) + warm;
+    }
+
+    function startRest(pos, idx) {
+      var it = programItem(pos);
+      if (!it || !it.rest) return;
+      var t = nextStep(pos, idx);
+      // Последний подход дня: отдыхать не перед чем, сигнал не нужен.
+      if (!t) { stopRest(); return; }
+      restState = { ends: Date.now() + it.rest * 1000, total: it.rest, next: nextText(t), signal: 'wait' };
+      saveRest();
+      showRest();
+      sendSignal(restState);
+    }
+
+    function sendSignal(st) {
+      var sig = PROGRAM.signal;
+      if (!sig || !window.fetch) { st.signal = 'off'; return; }
+      var done = function (ok) {
+        st.signal = ok ? 'ok' : 'fail';
+        if (st === restState) { saveRest(); tickRest(); }
+      };
+      // Простой запрос: тема и задержка — в адресе, текст — телом. Без
+      // заголовков браузер не шлёт предварительный запрос согласования:
+      // на мобильном интернете в зале это на один обмен быстрее, а WebKit
+      // с JSON-запросом в проверках не отправлял ничего.
+      var sec = Math.max(10, Math.round((st.ends - Date.now()) / 1000));
+      var url = 'https://ntfy.sh/' + encodeURIComponent(sig.topic) + '?delay=' + sec + 's&sequence-id=otdyh';
+      var text = sig.message;
+      // Проверки идут на локальном сервере: там заказ наружу не уходит, а
+      // записывается. 15.10.2026 WebKit в проверках прошёл мимо перехвата
+      // и отправил заказы на настоящий сервер, в тему Никиты.
+      var host = location.hostname;
+      if (host === '127.0.0.1' || host === 'localhost') {
+        (window.__signals = window.__signals || []).push({ url: url, body: text });
+        done(true);
+        return;
+      }
+      try {
+        fetch(url, { method: 'POST', body: text })
+          .then(function (r) { done(r.ok); }, function () { done(false); });
+      } catch (e) { done(false); }
+    }
+
+    function mmss(s) { return Math.floor(s / 60) + ':' + (s % 60 < 10 ? '0' : '') + (s % 60); }
+
+    function showRest() {
+      if (!restState) return;
+      if (!restEl) {
+        restEl = document.createElement('div');
+        restEl.className = 'rest';
+        restEl.id = 'rest';
+        restEl.setAttribute('role', 'timer');
+        restEl.innerHTML = '<div class="rest__row"><span class="rest__cap">Отдых</span>' +
+          '<span class="rest__time" data-rest-time></span></div>' +
+          '<div class="rest__next" data-rest-next></div>' +
+          '<div class="rest__note" data-rest-note></div>' +
+          '<div class="rest__track"><div class="rest__fill" data-rest-fill></div></div>';
+        // Тап по полосе убирает её. Заказ в ntfy остаётся: следующий подход
+        // всё равно его заменит.
+        restEl.addEventListener('click', stopRest);
+        document.body.appendChild(restEl);
+      }
+      restEl.hidden = false;
+      document.body.classList.add('has-rest');
+      tickRest();
+      if (!restTimer) restTimer = setInterval(tickRest, 250);
+    }
+
+    function tickRest() {
+      if (!restState || !restEl) return;
+      var left = Math.max(0, Math.ceil((restState.ends - Date.now()) / 1000));
+      if (restState.ends + 120000 < Date.now()) { stopRest(); return; }
+      var over = left === 0;
+      restEl.classList.toggle('is-over', over);
+      restEl.querySelector('[data-rest-time]').textContent = over ? 'закончился' : mmss(left);
+      restEl.querySelector('[data-rest-next]').textContent = restState.next;
+      restEl.querySelector('[data-rest-note]').textContent = restState.signal === 'fail'
+        ? 'Сигнал на заблокированный экран не отправлен — нет сети' : '';
+      restEl.querySelector('[data-rest-fill]').style.width =
+        Math.min(100, (1 - left / restState.total) * 100).toFixed(1) + '%';
+    }
+
+    function stopRest() {
+      restState = null;
+      saveRest();
+      if (restTimer) { clearInterval(restTimer); restTimer = null; }
+      if (restEl) restEl.hidden = true;
+      document.body.classList.remove('has-rest');
+    }
+
     render();
     // Карточка «Программа» собрана на сервере с умолчанием, а в черновике
     // может стоять другой выбор — подтягиваем её под него сразу при открытии.
     PROGRAM.items.forEach(function (_, pos) { syncPlan(pos); });
+    // Страницу перезагрузили посреди отдыха — отсчёт продолжается с того же места.
+    if (restState) showRest();
   }
 
   /* ───────────────────────── всплывашка ───────────────────────── */
