@@ -32,6 +32,7 @@
   --line:        #2A2A2D;
   --line-soft:   #1F1F22;
   --grid:        #232326;
+  --pair-line:   #6A6A6F;   /* скобка суперсета: заметнее рамок, тише текста */
 
   --ink:         #FFFFFF;
   --ink-2:       #ABABAB;
@@ -408,31 +409,36 @@ body.js .section.is-active { display: block; }
   color: var(--accent);
   margin-bottom: 3px;
 }
-.ex__role--acc { color: var(--ink-2); }
 .ex__note { font-size: 12.5px; color: var(--ink-2); margin-top: 5px; line-height: 1.4; }
-/* Программа места: подходы и отдых — строкой под названием. */
-.ex__meta { font-size: 12.5px; color: var(--ink-2); margin-top: 3px; line-height: 1.4; }
 
-/* Пара суперсета: рельс слева и шапка с общим отдыхом. Не рамка — рамки
-   у упражнений уже есть, вторая вокруг них делала бы блок тяжёлым. */
-.pair { margin-bottom: 10px; padding-left: 10px; border-left: 2px solid var(--surface-3); }
+/* Пара суперсета: скобка слева на высоту обоих упражнений и шапка
+   «Суперсет». Никита 15.10.2026: пару было видно только по подписи —
+   «хочется больше понятности». Скобка стоит в поле внешней карточки,
+   а не отступом: отступ отнимал у регуляторов формы 12 пикселей, и на
+   320–393 пикселях число вылезало из колонки (поймала проверка «число
+   в поле с запасом»). Рамки вокруг пары нет — рамки у упражнений уже
+   есть, вторая делала бы блок тяжёлым. Внутри пары зазор меньше, чем
+   между парами: близость читается раньше подписи. */
+.pair { position: relative; margin: 0 0 16px; }
+.pair::before {
+  content: '';
+  position: absolute; left: -10px; top: 8px; bottom: 0; width: 6px;
+  border: 2px solid var(--pair-line); border-right: 0;
+  border-radius: 6px 0 0 6px;
+  pointer-events: none;
+}
+.pair > .ex, .pair > .live-ex { margin-bottom: 6px; }
 .pair > .ex:last-child, .pair > .live-ex:last-child { margin-bottom: 0; }
-/* В форме ввода рельс не ставится: отступ слева отнимал у регуляторов
-   12 пикселей, и на 320–393 пикселях число вылезало из колонки (поймала
-   проверка «число в поле с запасом»). Пару держат шапка и узкий зазор. */
-.pair--live { padding-left: 0; border-left: 0; margin-bottom: 14px; }
-.pair--live > .live-ex { margin-bottom: 6px; }
-.pair__head { font-size: 12.5px; color: var(--ink-2); line-height: 1.4; margin: 0 0 8px; }
+.pair__head { display: flex; align-items: baseline; gap: 8px; margin: 0 0 7px; line-height: 1.4; }
 .pair__cap {
-  display: block;
   font-family: var(--font-display);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: .06em;
   text-transform: uppercase;
   color: var(--ink);
-  margin-bottom: 2px;
 }
+.pair__rest { font-size: 12.5px; color: var(--ink-2); }
 .plan__first { font-size: 13px; color: var(--ink-2); }
 
 /* Программа на тренировку: две строки — что было в прошлый раз и цель.
@@ -818,7 +824,15 @@ tr:last-child td { border-bottom: 0; }
 .live-bar__inner { max-width: 720px; margin: 0 auto; display: flex; gap: 8px; align-items: center; }
 
 .live-ex { border: 1px solid var(--line); border-radius: var(--r-m); background: var(--surface-1); margin-bottom: 10px; overflow: hidden; }
-.live-ex__head { padding: 13px 14px 11px; display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+/* Шапка формы: название во всю ширину — рядом со счётчиком «Подъём на бицепс
+   в тренажёре сидя» на 414 пикселях рвался на две строки. Под названием одна
+   строка: отдых слева, замена и счётчик справа. Две строки у названия —
+   только у длинных, и тогда ровные. */
+.live-ex__head { padding: 13px 14px 11px; }
+.live-ex__head .ex__name { text-wrap: balance; }
+.live-ex__bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 6px; min-height: 24px; }
+.live-meta { font-size: 13px; color: var(--ink-2); line-height: 1.3; white-space: nowrap; }
+.live-ex__tools { display: inline-flex; align-items: center; gap: 6px; flex: none; }
 .live-ex__body { padding: 0 14px 13px; }
 
 /* Форма отделяется от заголовка карточки: иначе подзаголовок слипается
@@ -958,20 +972,27 @@ tr:last-child td { border-bottom: 0; }
 /* Замена упражнения внутри слота — то, что раньше приходилось держать
    в голове: икры идут то сидя, то в гакк-машине, на груди жим лёжа
    и жим гантелей меняются местами. Список закрыт по умолчанию: в зале
-   нужны цифры, а выбор делается раз за тренировку. */
+   нужны цифры, а выбор делается раз за тренировку. Кнопка — маленькая,
+   контуром, рядом со счётчиком (Никита 15.10.2026: строка «Сменить
+   упражнение» на всю ширину отрезала шапку от подходов). Видимая высота
+   как у счётчика, а палец ловит поле в 44 пикселя — его даёт ::after. */
 .swap__open {
-  display: flex; align-items: center; justify-content: space-between; gap: 8px;
-  width: 100%; min-height: var(--tap);
-  margin-bottom: 2px;
-  padding: 0;
-  border: 0; background: none;
+  position: relative;
+  display: inline-flex; align-items: center; gap: 4px;
+  height: 24px; padding: 0 9px 0 7px;
+  border: 1px solid #3A3A3F; border-radius: 999px;
+  background: transparent;
   color: var(--ink-2);
-  font-family: var(--font-body); font-size: 13px; font-weight: 400;
+  font-family: var(--font-body); font-size: 12px; font-weight: 500; line-height: 1;
   cursor: pointer;
   -webkit-appearance: none; appearance: none;
+  transition: background var(--t-quick) var(--ease), color var(--t-quick) var(--ease),
+              border-color var(--t-quick) var(--ease), transform var(--t-tap) var(--ease);
 }
-.swap__open .ico { width: 18px; height: 18px; transition: transform var(--t-quick) var(--ease); }
-.swap__open.is-open .ico { transform: rotate(180deg); }
+.swap__open::after { content: ''; position: absolute; left: -4px; right: -4px; top: -10px; bottom: -10px; }
+.swap__open:active { transform: scale(.96); }
+.swap__open .ico { width: 14px; height: 14px; flex: none; }
+.swap__open.is-open { background: var(--surface-3); border-color: var(--surface-3); color: var(--ink); }
 
 .swap { display: grid; gap: 6px; margin-bottom: 10px; }
 /* Свой display перебивает браузерное правило для атрибута hidden:
@@ -1052,33 +1073,67 @@ tr:last-child td { border-bottom: 0; }
 .live-done.is-done .live-done__ring { opacity: 0; }
 .live-done.is-done .live-done__tick { stroke-dashoffset: 0; }
 
-.live-target { font-size: 12.5px; color: var(--ink-2); margin-top: 2px; }
 /* Отдых между подходами — полоса внизу экрана. Пока идёт — серая, кончился —
    жёлтая: это сигнал к действию, единственное, ради чего тратится акцент.
-   На жёлтом — только чёрный. Атрибут hidden проигрывает display блока,
-   поэтому скрытие задано отдельно. */
+   На жёлтом — только чёрный.
+   Полоса выезжает снизу и уезжает вниз на темпе появления раздела (--t-move,
+   мягкий старт), а не возникает рывком — просьба Никиты 15.10.2026. Скрытие —
+   через visibility с задержкой на время выезда: display и атрибут hidden
+   анимацию обрывают.
+   Сверху «Отдых» и цифры по центру строки (по базовой линии мелкая подпись
+   садилась вниз и липла к тексту под ней), под полосой отсчёта — «Дальше ·
+   подход 2» и отдельной строкой название: так «подход 2» не повисает один
+   на второй строке, а длинное название рвётся на две ровные. */
 .rest {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
-  padding: 10px calc(var(--pad) + var(--safe-right)) calc(12px + var(--safe-bottom)) calc(var(--pad) + var(--safe-left));
+  padding: 12px calc(var(--pad) + var(--safe-right)) calc(14px + var(--safe-bottom)) calc(var(--pad) + var(--safe-left));
   background: var(--surface-2);
   border-top: 1px solid var(--line);
   font-size: 13px; line-height: 1.4; color: var(--ink-2);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transform: translateY(calc(100% + 2px));
+  visibility: hidden;
+  transition: transform var(--t-move) var(--ease), visibility 0s linear var(--t-move),
+              background-color var(--t-quick) var(--ease), border-color var(--t-quick) var(--ease);
 }
-.rest[hidden] { display: none; }
-body.has-rest { padding-bottom: 104px; }
-.rest__row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.rest.is-on {
+  transform: none;
+  visibility: visible;
+  transition: transform var(--t-move) var(--ease), visibility 0s linear 0s,
+              background-color var(--t-quick) var(--ease), border-color var(--t-quick) var(--ease);
+}
+body.has-rest { padding-bottom: var(--rest-h, 132px); }
+.rest__row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 30px; }
 .rest__cap {
   font-family: var(--font-display); font-size: 11px; font-weight: 600;
   letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2);
 }
-.rest__time { font-family: var(--font-num); font-size: 22px; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
-.rest__next { margin-top: 2px; color: var(--ink); }
-.rest__note { margin-top: 2px; color: var(--down); }
-.rest__note:empty { display: none; }
-.rest__track { margin-top: 8px; height: 3px; border-radius: 2px; background: var(--surface-3); overflow: hidden; }
+.rest__time { font-family: var(--font-num); font-size: 24px; font-weight: 600; line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; }
+.rest__done {
+  font-family: var(--font-display); font-size: 17px; font-weight: 700; letter-spacing: -0.01em;
+  line-height: 1.2; color: var(--accent-ink);
+}
+.rest__done[hidden], .rest__cap[hidden], .rest__time[hidden] { display: none; }
+.rest__track { margin-top: 9px; height: 3px; border-radius: 2px; background: var(--surface-3); overflow: hidden; }
 .rest__fill { height: 100%; width: 0; background: var(--ink-2); }
+.rest__next { margin-top: 11px; }
+.rest__step {
+  display: block;
+  font-family: var(--font-display); font-size: 11px; font-weight: 600;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2);
+}
+.rest__name {
+  display: block; margin-top: 3px;
+  font-size: 14.5px; line-height: 1.35; color: var(--ink);
+  text-wrap: balance;
+}
+.rest__note { margin-top: 6px; color: var(--down); }
+.rest__note:empty { display: none; }
+.rest__cap, .rest__time, .rest__step, .rest__name, .rest__note { transition: color var(--t-quick) var(--ease); }
 .rest.is-over { background: var(--accent); border-top-color: var(--accent); }
-.rest.is-over .rest__cap, .rest.is-over .rest__time, .rest.is-over .rest__next { color: var(--accent-ink); }
+.rest.is-over .rest__step, .rest.is-over .rest__name, .rest.is-over .rest__note { color: var(--accent-ink); }
+.rest.is-over .rest__step { opacity: .72; }
 .rest.is-over .rest__track { background: rgba(14, 14, 14, .18); }
 .rest.is-over .rest__fill { background: var(--accent-ink); }
 
@@ -1273,6 +1328,9 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
      там кнопки полного размера. */
   .stepper__btn { min-width: 16px; }
   .live-done { width: 38px; }
+  /* Строке под названием на 320px тесно: у замены остаётся только значок. */
+  .swap__open { padding: 0 7px; }
+  .swap__open-text { display: none; }
   .stats--4 { grid-template-columns: 1fr 1fr; }
   .stat { padding: 10px 9px; }
   .stat__value { font-size: 17px; }
@@ -1325,7 +1383,6 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <div style="min-width:0">
           <span class="ex__role">Основное</span>
           <h3 class="ex__name" data-plan-name>Жим ногами</h3>
-          <div class="ex__meta" data-plan-meta>4 подхода по 6–9 повторов, отдых 3 минуты</div>
         </div>
       </div>
       <div class="plan">
@@ -1339,13 +1396,12 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         </div>
       </div>
     </div><div class="pair" data-pair>
-      <div class="pair__head"><span class="pair__cap">Суперсет</span>По очереди, отдых 1 минута 15 секунд после каждого подхода</div>
+      <div class="pair__head"><span class="pair__cap">Суперсет</span></div>
       <div class="ex" data-pos="1">
       <div class="ex__head">
         <div style="min-width:0">
-          <span class="ex__role ex__role--acc">Добивка</span>
+          
           <h3 class="ex__name" data-plan-name>Разгибание ног сидя</h3>
-          <div class="ex__meta" data-plan-meta>4 подхода по 6–9 повторов</div>
         </div>
       </div>
       <div class="plan">
@@ -1361,9 +1417,8 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     </div><div class="ex" data-pos="2">
       <div class="ex__head">
         <div style="min-width:0">
-          <span class="ex__role ex__role--acc">Добивка</span>
+          
           <h3 class="ex__name" data-plan-name>Сгибание ног сидя</h3>
-          <div class="ex__meta" data-plan-meta>4 подхода по 6–9 повторов</div>
         </div>
       </div>
       <div class="plan">
@@ -1378,13 +1433,12 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       </div>
     </div>
     </div><div class="pair" data-pair>
-      <div class="pair__head"><span class="pair__cap">Суперсет</span>По очереди, отдых 1 минута после каждого подхода</div>
+      <div class="pair__head"><span class="pair__cap">Суперсет</span></div>
       <div class="ex" data-pos="3">
       <div class="ex__head">
         <div style="min-width:0">
-          <span class="ex__role ex__role--acc">Добивка</span>
+          
           <h3 class="ex__name" data-plan-name>Подъём на бицепс в тренажёре сидя</h3>
-          <div class="ex__meta" data-plan-meta>3 подхода по 6–9 повторов</div>
         </div>
       </div>
       <div class="plan">
@@ -1400,9 +1454,8 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     </div><div class="ex" data-pos="4">
       <div class="ex__head">
         <div style="min-width:0">
-          <span class="ex__role ex__role--acc">Добивка</span>
+          
           <h3 class="ex__name" data-plan-name>Разведение гантелей в стороны</h3>
-          <div class="ex__meta" data-plan-meta>3 подхода по 6–9 повторов</div>
         </div>
       </div>
       <div class="plan">
@@ -1417,13 +1470,12 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       </div>
     </div>
     </div><div class="pair" data-pair>
-      <div class="pair__head"><span class="pair__cap">Суперсет</span>По очереди, отдых 1 минута после каждого подхода</div>
+      <div class="pair__head"><span class="pair__cap">Суперсет</span></div>
       <div class="ex" data-pos="5">
       <div class="ex__head">
         <div style="min-width:0">
-          <span class="ex__role ex__role--acc">Добивка</span>
+          
           <h3 class="ex__name" data-plan-name>Икры в гакк-машине</h3>
-          <div class="ex__meta" data-plan-meta>3 подхода</div>
         </div>
       </div>
       <div class="plan">
@@ -1439,9 +1491,8 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     </div><div class="ex" data-pos="6">
       <div class="ex__head">
         <div style="min-width:0">
-          <span class="ex__role ex__role--acc">Добивка</span>
+          
           <h3 class="ex__name" data-plan-name>Скручивания на наклонной скамье с гантелью</h3>
-          <div class="ex__meta" data-plan-meta>3 подхода по 10–15 повторов</div>
         </div>
       </div>
       <div class="plan">
@@ -8041,13 +8092,13 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
   </section>
 
 <footer class="foot">
-  <p>Сборка 15 октября · версия 9b2c180f</p>
+  <p>Сборка 15 октября · версия 217b37e3</p>
 </footer>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script>window.__PROGRAM__={"day":"legs","dayTitle":"ноги","planDate":"2026-10-10","bodyweight":80.2,"signal":{"topic":"nk-otdyh-1a64fadfa4","message":"Отдых закончился"},"items":[{"role":"main","slot":"quads-compound","pick":0,"shared":false,"rest":180,"pair":null,"pairHead":"","meta":"4 подхода по 6–9 повторов, отдых 3 минуты","options":[{"id":"leg-press","name":"Жим ногами","kind":"machine","weight":330,"sets":4,"stepWeight":2.5,"targetText":"Поднять вес выше 330 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">200\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">15\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">300\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">330\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">330\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">330\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>","chipCols":3,"warmup":"140 × 8, 200 × 4"}]},{"role":"accessory","slot":"quads","pick":0,"shared":false,"rest":75,"pair":"ext-curl","pairHead":"По очереди, отдых 1 минута 15 секунд после каждого подхода","meta":"4 подхода по 6–9 повторов","options":[{"id":"leg-extension","name":"Разгибание ног сидя","kind":"machine","weight":64,"sets":4,"stepWeight":2.5,"targetText":"Поднять вес выше 64 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">64\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">64\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">64\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"hams","pick":0,"shared":false,"rest":75,"pair":"ext-curl","pairHead":"","meta":"4 подхода по 6–9 повторов","options":[{"id":"leg-curl-seated","name":"Сгибание ног сидя","kind":"machine","weight":"","sets":4,"stepWeight":2.5,"targetText":"Подбор веса на 6–9 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""},{"id":"leg-curl","name":"Сгибание ног лёжа","kind":"machine","weight":68,"sets":4,"stepWeight":2.5,"targetText":"68 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">64\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">64\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">68\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":3,"warmup":"35 × 8"}]},{"role":"accessory","slot":"biceps","pick":0,"shared":false,"rest":60,"pair":"biceps-side","pairHead":"По очереди, отдых 1 минута после каждого подхода","meta":"3 подхода по 6–9 повторов","options":[{"id":"biceps-machine","name":"Подъём на бицепс в тренажёре сидя","kind":"machine","weight":54,"sets":3,"stepWeight":2.5,"targetText":"54 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">50\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":2,"warmup":"25 × 8"},{"id":"db-curl-standing","name":"Подъём гантелей на бицепс стоя","kind":"dumbbell","weight":15,"sets":3,"stepWeight":1,"targetText":"15 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">15\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">5\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">14\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":2,"warmup":"8 × 8"},{"id":"barbell-curl","name":"Подъём штанги на бицепс стоя","kind":"barbell","weight":37.5,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 37,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":"20 × 8"}]},{"role":"accessory","slot":"delts-side","pick":0,"shared":false,"rest":60,"pair":"biceps-side","pairHead":"","meta":"3 подхода по 6–9 повторов","options":[{"id":"db-lateral-raise","name":"Разведение гантелей в стороны","kind":"dumbbell","weight":17.5,"sets":3,"stepWeight":1,"targetText":"17,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">17,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">17,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">17,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>","chipCols":3,"warmup":"8 × 8"}]},{"role":"accessory","slot":"calves","pick":0,"shared":false,"rest":60,"pair":"calves-abs","pairHead":"По очереди, отдых 1 минута после каждого подхода","meta":"3 подхода","options":[{"id":"calf-raise-hack","name":"Икры в гакк-машине","kind":"bodyweight-plus","weight":120,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 120 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">+110\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">15\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">+120\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">+120\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">14\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">+120\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">13\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">+120\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>","chipCols":3,"warmup":"+55 × 8"},{"id":"calf-raise-seated","name":"Икры в тренажёре сидя","kind":"bodyweight-plus","weight":40,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 40 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">+40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">11\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">+40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">11\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">+40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">11\u003c/span>\u003c/span>","chipCols":3,"warmup":"+20 × 8"}]},{"role":"accessory","slot":"abs","pick":0,"shared":false,"rest":60,"pair":"calves-abs","pairHead":"","meta":"3 подхода по 10–15 повторов","options":[{"id":"abs-crunch-db","name":"Скручивания на наклонной скамье с гантелью","kind":"dumbbell","weight":10,"sets":3,"stepWeight":1,"targetText":"Подбор веса: начни с 10 кг","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""},{"id":"abs-crunch-cable","name":"Скручивания на верхнем блоке стоя на коленях","kind":"machine","weight":"","sets":3,"stepWeight":2.5,"targetText":"Подбор веса на 10–15 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""}]}]};</script>
+<script>window.__PROGRAM__={"day":"legs","dayTitle":"ноги","planDate":"2026-10-10","bodyweight":80.2,"signal":{"topic":"nk-otdyh-1a64fadfa4","message":"Отдых закончился"},"items":[{"role":"main","slot":"quads-compound","pick":0,"shared":false,"rest":180,"pair":null,"pairStart":false,"pairHead":"","meta":"отдых 3 мин","options":[{"id":"leg-press","name":"Жим ногами","kind":"machine","weight":330,"sets":4,"stepWeight":2.5,"targetText":"Поднять вес выше 330 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">200\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">15\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">300\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">330\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">330\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">330\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>","chipCols":3,"warmup":"140 × 8, 200 × 4 — потом 2 мин"}]},{"role":"accessory","slot":"quads","pick":0,"shared":false,"rest":75,"pair":"ext-curl","pairStart":true,"pairHead":"отдых 1 мин 15 сек","meta":"","options":[{"id":"leg-extension","name":"Разгибание ног сидя","kind":"machine","weight":64,"sets":4,"stepWeight":2.5,"targetText":"Поднять вес выше 64 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">64\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">64\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">64\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"hams","pick":0,"shared":false,"rest":75,"pair":"ext-curl","pairStart":false,"pairHead":"","meta":"","options":[{"id":"leg-curl-seated","name":"Сгибание ног сидя","kind":"machine","weight":"","sets":4,"stepWeight":2.5,"targetText":"Подбор веса на 6–9 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""},{"id":"leg-curl","name":"Сгибание ног лёжа","kind":"machine","weight":68,"sets":4,"stepWeight":2.5,"targetText":"68 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">64\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">64\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">68\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":3,"warmup":"35 × 8 — потом 2 мин"}]},{"role":"accessory","slot":"biceps","pick":0,"shared":false,"rest":60,"pair":"biceps-side","pairStart":true,"pairHead":"отдых 1 мин","meta":"","options":[{"id":"biceps-machine","name":"Подъём на бицепс в тренажёре сидя","kind":"machine","weight":54,"sets":3,"stepWeight":2.5,"targetText":"54 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">50\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":2,"warmup":"25 × 8 — потом 2 мин"},{"id":"db-curl-standing","name":"Подъём гантелей на бицепс стоя","kind":"dumbbell","weight":15,"sets":3,"stepWeight":1,"targetText":"15 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">15\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">5\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">14\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":2,"warmup":"8 × 8 — потом 2 мин"},{"id":"barbell-curl","name":"Подъём штанги на бицепс стоя","kind":"barbell","weight":37.5,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 37,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":"20 × 8 — потом 2 мин"}]},{"role":"accessory","slot":"delts-side","pick":0,"shared":false,"rest":60,"pair":"biceps-side","pairStart":false,"pairHead":"","meta":"","options":[{"id":"db-lateral-raise","name":"Разведение гантелей в стороны","kind":"dumbbell","weight":17.5,"sets":3,"stepWeight":1,"targetText":"17,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">17,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">17,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">17,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>","chipCols":3,"warmup":"8 × 8 — потом 2 мин"}]},{"role":"accessory","slot":"calves","pick":0,"shared":false,"rest":60,"pair":"calves-abs","pairStart":true,"pairHead":"отдых 1 мин","meta":"","options":[{"id":"calf-raise-hack","name":"Икры в гакк-машине","kind":"bodyweight-plus","weight":120,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 120 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">+110\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">15\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">+120\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">+120\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">14\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">+120\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">13\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">+120\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>","chipCols":3,"warmup":"+55 × 8 — потом 2 мин"},{"id":"calf-raise-seated","name":"Икры в тренажёре сидя","kind":"bodyweight-plus","weight":40,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 40 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">+40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">11\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">+40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">11\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">+40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">11\u003c/span>\u003c/span>","chipCols":3,"warmup":"+20 × 8 — потом 2 мин"}]},{"role":"accessory","slot":"abs","pick":0,"shared":false,"rest":60,"pair":"calves-abs","pairStart":false,"pairHead":"","meta":"","options":[{"id":"abs-crunch-db","name":"Скручивания на наклонной скамье с гантелью","kind":"dumbbell","weight":10,"sets":3,"stepWeight":1,"targetText":"Подбор веса: начни с 10 кг","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""},{"id":"abs-crunch-cable","name":"Скручивания на верхнем блоке стоя на коленях","kind":"machine","weight":"","sets":3,"stepWeight":2.5,"targetText":"Подбор веса на 10–15 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""}]}]};</script>
 <script>
 (function () {
   'use strict';
@@ -8071,7 +8122,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     '<path class="live-done__tick" d="M7.2 12.6l3.2 3.2 6.4-6.9"/></svg>';
   var ICO_CHECK_FLAT = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">' +
     '<path d="M7.2 12.6l3.2 3.2 6.4-6.9"/></svg>';
-  var ICO_CHEV = '<svg class="ico ico--chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>';
+  var ICO_SWAP = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12m-3.5-3.5L18 8l-3.5 3.5M18 16H6m3.5-3.5L6 16l3.5 3.5"/></svg>';
 
   /* ───────────────────────── движение ─────────────────────────
 
@@ -8364,33 +8415,40 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         if (!st || !o) return;
         var doneCount = st.sets.filter(function (s) { return s.done; }).length;
 
-        // Пара суперсета — общей рамкой с отдыхом в шапке: отдых у пары один,
-        // после каждого подхода.
-        if (it.pairHead) {
+        // Пара суперсета — общей полосой слева и шапкой с отдыхом: отдых
+        // у пары один, после каждого подхода.
+        if (it.pairStart) {
           html += '<div class="pair pair--live" data-livepair><div class="pair__head"><span class="pair__cap">Суперсет</span>' +
-            esc(it.pairHead) + '</div>';
+            (it.pairHead ? '<span class="pair__rest">' + esc(it.pairHead) + '</span>' : '') + '</div>';
         }
 
+        // Шапка: название во всю ширину карточки, под ним одна строка —
+        // отдых слева, замена и счётчик справа. Цель, «Добивка» и «3 подхода
+        // по 6–9» убраны (Никита, 15.10.2026): цель уже стоит в полях веса
+        // и в «Прошлом разе», остальное он знает.
+        var swappable = it.options.length > 1;
+        var open = swappable && openSwap === pos;
         html += '<div class="live-ex" data-ex="' + pos + '">';
         html += '<div class="live-ex__head">';
-        html += '<div style="min-width:0">';
-        html += '<span class="ex__role' + (it.role === 'main' ? '' : ' ex__role--acc') + '">' + (it.role === 'main' ? 'Основное' : 'Добивка') + '</span>';
+        if (it.role === 'main') html += '<span class="ex__role">Основное</span>';
         html += '<h3 class="ex__name">' + esc(o.name) + '</h3>';
-        html += '<div class="live-target">Цель: ' + esc(o.targetText) + '</div>';
-        if (it.meta) html += '<div class="live-target live-meta">' + esc(it.meta) + '</div>';
-        html += '</div>';
+        html += '<div class="live-ex__bar">';
+        html += '<span class="live-meta">' + esc(it.meta || '') + '</span>';
+        html += '<span class="live-ex__tools">';
+        // Замена — маленькой кнопкой: нужна раз в тренировку, когда тренажёр
+        // занят, и строкой на всю ширину отрезала шапку от подходов.
+        if (swappable) {
+          html += '<button type="button" class="swap__open' + (open ? ' is-open' : '') + '" data-swapopen="' + pos +
+            '" aria-expanded="' + (open ? 'true' : 'false') + '" aria-label="Сменить упражнение">' + ICO_SWAP +
+            '<span class="swap__open-text">Сменить</span></button>';
+        }
         var allDone = st.sets.length > 0 && doneCount === st.sets.length;
         html += '<span class="pill' + (allDone ? ' is-done' : '') + '" data-count="' + pos + '">' + doneCount + ' / ' + st.sets.length + '</span>';
-        html += '</div>';
+        html += '</span></div></div>';
         html += '<div class="live-ex__body">';
 
-        // Замена внутри слота. Список закрыт по умолчанию: в зале нужен
-        // не выбор, а цифры — выбор нужен раз в тренировку.
-        if (it.options.length > 1) {
-          var open = openSwap === pos;
-          html += '<button type="button" class="swap__open' + (open ? ' is-open' : '') + '" data-swapopen="' + pos +
-            '" aria-expanded="' + (open ? 'true' : 'false') + '">';
-          html += '<span>Сменить упражнение</span>' + ICO_CHEV + '</button>';
+        // Список замен закрыт по умолчанию: в зале нужен не выбор, а цифры.
+        if (swappable) {
           html += '<div class="swap"' + (open ? '' : ' hidden') + ' data-swap="' + pos + '">';
           it.options.forEach(function (opt, k) {
             html += '<button type="button" class="swap__opt' + (k === st.pick ? ' is-on' : '') +
@@ -8436,7 +8494,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         var next = PROGRAM.items[pos + 1];
         if (it.pair && !(next && next.pair === it.pair)) {
           // Рамка пары закрывается за её последним движением.
-          if (PROGRAM.items.some(function (x, k) { return k <= pos && x.pairHead && x.pair === it.pair; })) html += '</div>';
+          if (PROGRAM.items.some(function (x, k) { return k <= pos && x.pairStart && x.pair === it.pair; })) html += '</div>';
         }
       });
 
@@ -8504,10 +8562,8 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       live.querySelectorAll('[data-field]').forEach(function (el) {
         el.addEventListener('input', function () {
           var key = el.getAttribute('data-field');
-          var was = getValue(key);
           setValue(key, el.value === '' ? '' : +el.value);
           save();
-          restOnReps(key, was);
         });
       });
 
@@ -8522,9 +8578,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
           if (cur === '' && key === 'bw' && PROGRAM.bodyweight) cur = PROGRAM.bodyweight;
           var next = Math.round(((cur === '' ? 0 : +cur) + dir * step) * 100) / 100;
           if (next < 0) next = 0;
-          var was = getValue(key);
           setValue(key, next);
-          restOnReps(key, was);
           var field = live.querySelector('[data-field="' + key + '"]');
           if (field) {
             field.value = next;
@@ -8548,6 +8602,10 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
           save();
           el.classList.toggle('is-done', s.done);
           el.setAttribute('aria-pressed', s.done ? 'true' : 'false');
+          // Отдых идёт от галочки и только от неё: цифры вписываются и до,
+          // и после подхода, а «Готово» на клавиатуре айфона — не конец
+          // подхода. Снятая галочка гасит отдых, который от неё пошёл.
+          if (s.done) startRest(+p[0], +p[1]); else undoRest(+p[0], +p[1]);
           var pill = live.querySelector('[data-count="' + p[0] + '"]');
           if (pill) {
             var done = st.sets.filter(function (x) { return x.done; }).length;
@@ -8712,9 +8770,10 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
 
     /* ───────────────────────── отдых между подходами ───────────────────────── */
 
-    // Вписал повторы подхода — пошёл отдых этого места программы: полоса
+    // Поставил галочку подхода — пошёл отдых этого места программы: полоса
     // внизу экрана, что делать дальше, и сигнал в ntfy на заблокированный
-    // экран. Страница при заблокированном экране заморожена и сама подать
+    // экран. До 15.10.2026 отдых шёл от первой цифры повторов и стартовал
+    // посреди набора и от «Готово» на клавиатуре — Никита попросил галочку. Страница при заблокированном экране заморожена и сама подать
     // сигнал не может (решение Никиты 15.10.2026). В ntfy всегда ОДИН
     // отложенный заказ: следующий подход заменяет его по тому же номеру,
     // и прерванный отдых не догоняет уведомлением. Снимать пришедшее
@@ -8724,6 +8783,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     var restState = loadRest();
     var restEl = null;
     var restTimer = null;
+    var slideTimer = null;
 
     function loadRest() {
       try {
@@ -8736,13 +8796,17 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       try { localStorage.setItem(REST_STORE, JSON.stringify(restState)); } catch (e) {}
     }
 
-    function isEmpty(v) { return v === '' || v === null || v === undefined; }
+    // Последний подход дня отдыха не даёт, но и его галочку могут поставить
+    // по ошибке посреди отдыха — тогда снятая галочка вернёт тот отдых.
+    var lastTick = null;
 
-    /** Повторы подхода появились впервые — отдых пошёл. Правка вписанного не перезапускает. */
-    function restOnReps(key, was) {
-      var p = String(key).split('|');
-      if (p[0] !== 'r' || !isEmpty(was) || isEmpty(getValue(key))) return;
-      startRest(+p[1], +p[2]);
+    /** Отдых ещё на экране: идёт или кончился меньше двух минут назад. */
+    function alive(r) { return !!(r && r.ends && r.ends + 120000 > Date.now()); }
+
+    /** Копия отдыха без вложенного прошлого: возврат — на один шаг, не цепочкой. */
+    function bare(r) {
+      return { ends: r.ends, total: r.total, step: r.step, name: r.name, next: r.next,
+               signal: r.signal, pos: r.pos, set: r.set };
     }
 
     function setsOf(pos) { var st = itemState(pos); return st ? st.sets.length : 0; }
@@ -8773,23 +8837,60 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       return after(b);
     }
 
-    function nextText(t) {
+    /**
+     * Что дальше — двумя строками: «Дальше · подход 2» и название. Одной
+     * фразой номер подхода повисал один на второй строке под длинным
+     * названием (Никита, 15.10.2026).
+     */
+    function nextOf(t) {
       var o = chosen(t.pos);
-      if (!o) return '';
+      if (!o) return { step: '', name: '' };
       var warm = t.set === 0 && o.warmup ? ', сначала разминка' : '';
-      return 'Дальше — ' + o.name + ', подход ' + (t.set + 1) + warm;
+      return { step: 'Дальше · подход ' + (t.set + 1) + warm, name: o.name };
     }
 
+    /**
+     * Галочка подхода поставлена — пошёл отдых этого места. Отдых, который
+     * шёл до неё, запоминается: если галочка случайная, её снятие вернёт его.
+     */
     function startRest(pos, idx) {
       var it = programItem(pos);
       if (!it || !it.rest) return;
+      var prev = alive(restState) ? bare(restState) : null;
       var t = nextStep(pos, idx);
       // Последний подход дня: отдыхать не перед чем, сигнал не нужен.
-      if (!t) { stopRest(); return; }
-      restState = { ends: Date.now() + it.rest * 1000, total: it.rest, next: nextText(t), signal: 'wait' };
+      if (!t) { stopRest(); lastTick = { pos: pos, set: idx, prev: prev }; return; }
+      var n = nextOf(t);
+      lastTick = null;
+      restState = { ends: Date.now() + it.rest * 1000, total: it.rest, step: n.step, name: n.name,
+                    signal: 'wait', pos: pos, set: idx, prev: prev };
       saveRest();
       showRest();
       sendSignal(restState);
+    }
+
+    /**
+     * Галочку сняли. Отдых, который пошёл от неё, сразу гаснет, а тот, что шёл
+     * до случайного нажатия, возвращается с того же места — как будто нажатия
+     * не было. Чужой отдых снятие не трогает.
+     *
+     * Заказ сигнала удалять нельзя: ntfy рассылает удаление подписчикам сразу,
+     * событием, а айфон показывает такое пустой записью (тестовая тема,
+     * 15.10.2026). Поэтому вернувшийся отдых заказывает сигнал заново — заказ
+     * с тем же номером заменяет случайный. Если возвращать нечего, случайный
+     * заказ заменит следующая галочка.
+     */
+    function undoRest(pos, idx) {
+      var mine = function (r) { return r && r.pos === pos && r.set === idx; };
+      var from = mine(restState) ? restState : mine(lastTick) ? lastTick : null;
+      if (!from) return;
+      lastTick = null;
+      var prev = alive(from.prev) ? from.prev : null;
+      if (!prev) { stopRest(); return; }
+      restState = prev;
+      saveRest();
+      showRest();
+      if (prev.ends > Date.now()) { prev.signal = 'wait'; sendSignal(prev); }
     }
 
     function sendSignal(st) {
@@ -8830,42 +8931,69 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         restEl.className = 'rest';
         restEl.id = 'rest';
         restEl.setAttribute('role', 'timer');
-        restEl.innerHTML = '<div class="rest__row"><span class="rest__cap">Отдых</span>' +
-          '<span class="rest__time" data-rest-time></span></div>' +
-          '<div class="rest__next" data-rest-next></div>' +
-          '<div class="rest__note" data-rest-note></div>' +
-          '<div class="rest__track"><div class="rest__fill" data-rest-fill></div></div>';
+        restEl.innerHTML = '<div class="rest__row"><span class="rest__cap" data-rest-cap>Отдых</span>' +
+          '<span class="rest__time" data-rest-time></span>' +
+          '<span class="rest__done" data-rest-done hidden>Отдых закончился</span></div>' +
+          '<div class="rest__track"><div class="rest__fill" data-rest-fill></div></div>' +
+          '<div class="rest__next"><span class="rest__step" data-rest-step></span>' +
+          '<span class="rest__name" data-rest-name></span></div>' +
+          '<div class="rest__note" data-rest-note></div>';
         // Тап по полосе убирает её. Заказ в ntfy остаётся: следующий подход
         // всё равно его заменит.
         restEl.addEventListener('click', stopRest);
         document.body.appendChild(restEl);
+        // Положение за краем экрана фиксируется до выезда: без замера браузер
+        // склеивает оба состояния в один кадр, и полоса возникает рывком.
+        void restEl.offsetHeight;
       }
-      restEl.hidden = false;
-      document.body.classList.add('has-rest');
+      clearTimeout(slideTimer);
       tickRest();
+      restEl.classList.add('is-on');
+      document.body.classList.add('has-rest');
       if (!restTimer) restTimer = setInterval(tickRest, 250);
+    }
+
+    /** Текст меняется, только если стал другим: так не дёргается раскладка. */
+    function put(sel, text) {
+      var el = restEl.querySelector(sel);
+      if (el.textContent !== text) el.textContent = text;
     }
 
     function tickRest() {
       if (!restState || !restEl) return;
+      if (!alive(restState)) { stopRest(); return; }
       var left = Math.max(0, Math.ceil((restState.ends - Date.now()) / 1000));
-      if (restState.ends + 120000 < Date.now()) { stopRest(); return; }
       var over = left === 0;
       restEl.classList.toggle('is-over', over);
-      restEl.querySelector('[data-rest-time]').textContent = over ? 'закончился' : mmss(left);
-      restEl.querySelector('[data-rest-next]').textContent = restState.next;
-      restEl.querySelector('[data-rest-note]').textContent = restState.signal === 'fail'
-        ? 'Сигнал на заблокированный экран не отправлен — нет сети' : '';
+      restEl.querySelector('[data-rest-cap]').hidden = over;
+      restEl.querySelector('[data-rest-time]').hidden = over;
+      restEl.querySelector('[data-rest-done]').hidden = !over;
+      put('[data-rest-time]', mmss(left));
+      // Отдых, сохранённый прошлой версией страницы, нёс одну строку «next».
+      put('[data-rest-step]', restState.step || restState.next || '');
+      put('[data-rest-name]', restState.name || '');
+      put('[data-rest-note]', restState.signal === 'fail'
+        ? 'Сигнал на заблокированный экран не отправлен — нет сети' : '');
       restEl.querySelector('[data-rest-fill]').style.width =
         Math.min(100, (1 - left / restState.total) * 100).toFixed(1) + '%';
+      // Отступ под полосой — по её высоте: название бывает в одну строку и в две.
+      document.body.style.setProperty('--rest-h', restEl.offsetHeight + 'px');
     }
 
     function stopRest() {
       restState = null;
       saveRest();
       if (restTimer) { clearInterval(restTimer); restTimer = null; }
-      if (restEl) restEl.hidden = true;
-      document.body.classList.remove('has-rest');
+      if (!restEl) return;
+      restEl.classList.remove('is-on');
+      // Отступ под полосой уходит, когда она уже уехала: иначе низ страницы
+      // прыгает, пока полоса ещё на экране. Длительность — из стилей, чтобы
+      // темп жил в одном месте; при «уменьшить движение» она нулевая.
+      var dur = parseFloat(getComputedStyle(restEl).transitionDuration) || 0;
+      clearTimeout(slideTimer);
+      slideTimer = setTimeout(function () {
+        if (!restState) document.body.classList.remove('has-rest');
+      }, dur * 1000 + 30);
     }
 
     render();
@@ -8911,7 +9039,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
 
   if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
     window.addEventListener('load', function () {
-      Promise.reject().catch(function () {});
+      navigator.serviceWorker.register('sw.js').catch(function () {});
     });
   }
 })();

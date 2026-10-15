@@ -32,6 +32,7 @@
   --line:        #2A2A2D;
   --line-soft:   #1F1F22;
   --grid:        #232326;
+  --pair-line:   #6A6A6F;   /* скобка суперсета: заметнее рамок, тише текста */
 
   --ink:         #FFFFFF;
   --ink-2:       #ABABAB;
@@ -408,31 +409,36 @@ body.js .section.is-active { display: block; }
   color: var(--accent);
   margin-bottom: 3px;
 }
-.ex__role--acc { color: var(--ink-2); }
 .ex__note { font-size: 12.5px; color: var(--ink-2); margin-top: 5px; line-height: 1.4; }
-/* Программа места: подходы и отдых — строкой под названием. */
-.ex__meta { font-size: 12.5px; color: var(--ink-2); margin-top: 3px; line-height: 1.4; }
 
-/* Пара суперсета: рельс слева и шапка с общим отдыхом. Не рамка — рамки
-   у упражнений уже есть, вторая вокруг них делала бы блок тяжёлым. */
-.pair { margin-bottom: 10px; padding-left: 10px; border-left: 2px solid var(--surface-3); }
+/* Пара суперсета: скобка слева на высоту обоих упражнений и шапка
+   «Суперсет». Никита 15.10.2026: пару было видно только по подписи —
+   «хочется больше понятности». Скобка стоит в поле внешней карточки,
+   а не отступом: отступ отнимал у регуляторов формы 12 пикселей, и на
+   320–393 пикселях число вылезало из колонки (поймала проверка «число
+   в поле с запасом»). Рамки вокруг пары нет — рамки у упражнений уже
+   есть, вторая делала бы блок тяжёлым. Внутри пары зазор меньше, чем
+   между парами: близость читается раньше подписи. */
+.pair { position: relative; margin: 0 0 16px; }
+.pair::before {
+  content: '';
+  position: absolute; left: -10px; top: 8px; bottom: 0; width: 6px;
+  border: 2px solid var(--pair-line); border-right: 0;
+  border-radius: 6px 0 0 6px;
+  pointer-events: none;
+}
+.pair > .ex, .pair > .live-ex { margin-bottom: 6px; }
 .pair > .ex:last-child, .pair > .live-ex:last-child { margin-bottom: 0; }
-/* В форме ввода рельс не ставится: отступ слева отнимал у регуляторов
-   12 пикселей, и на 320–393 пикселях число вылезало из колонки (поймала
-   проверка «число в поле с запасом»). Пару держат шапка и узкий зазор. */
-.pair--live { padding-left: 0; border-left: 0; margin-bottom: 14px; }
-.pair--live > .live-ex { margin-bottom: 6px; }
-.pair__head { font-size: 12.5px; color: var(--ink-2); line-height: 1.4; margin: 0 0 8px; }
+.pair__head { display: flex; align-items: baseline; gap: 8px; margin: 0 0 7px; line-height: 1.4; }
 .pair__cap {
-  display: block;
   font-family: var(--font-display);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: .06em;
   text-transform: uppercase;
   color: var(--ink);
-  margin-bottom: 2px;
 }
+.pair__rest { font-size: 12.5px; color: var(--ink-2); }
 .plan__first { font-size: 13px; color: var(--ink-2); }
 
 /* Программа на тренировку: две строки — что было в прошлый раз и цель.
@@ -818,7 +824,15 @@ tr:last-child td { border-bottom: 0; }
 .live-bar__inner { max-width: 720px; margin: 0 auto; display: flex; gap: 8px; align-items: center; }
 
 .live-ex { border: 1px solid var(--line); border-radius: var(--r-m); background: var(--surface-1); margin-bottom: 10px; overflow: hidden; }
-.live-ex__head { padding: 13px 14px 11px; display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+/* Шапка формы: название во всю ширину — рядом со счётчиком «Подъём на бицепс
+   в тренажёре сидя» на 414 пикселях рвался на две строки. Под названием одна
+   строка: отдых слева, замена и счётчик справа. Две строки у названия —
+   только у длинных, и тогда ровные. */
+.live-ex__head { padding: 13px 14px 11px; }
+.live-ex__head .ex__name { text-wrap: balance; }
+.live-ex__bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 6px; min-height: 24px; }
+.live-meta { font-size: 13px; color: var(--ink-2); line-height: 1.3; white-space: nowrap; }
+.live-ex__tools { display: inline-flex; align-items: center; gap: 6px; flex: none; }
 .live-ex__body { padding: 0 14px 13px; }
 
 /* Форма отделяется от заголовка карточки: иначе подзаголовок слипается
@@ -958,20 +972,27 @@ tr:last-child td { border-bottom: 0; }
 /* Замена упражнения внутри слота — то, что раньше приходилось держать
    в голове: икры идут то сидя, то в гакк-машине, на груди жим лёжа
    и жим гантелей меняются местами. Список закрыт по умолчанию: в зале
-   нужны цифры, а выбор делается раз за тренировку. */
+   нужны цифры, а выбор делается раз за тренировку. Кнопка — маленькая,
+   контуром, рядом со счётчиком (Никита 15.10.2026: строка «Сменить
+   упражнение» на всю ширину отрезала шапку от подходов). Видимая высота
+   как у счётчика, а палец ловит поле в 44 пикселя — его даёт ::after. */
 .swap__open {
-  display: flex; align-items: center; justify-content: space-between; gap: 8px;
-  width: 100%; min-height: var(--tap);
-  margin-bottom: 2px;
-  padding: 0;
-  border: 0; background: none;
+  position: relative;
+  display: inline-flex; align-items: center; gap: 4px;
+  height: 24px; padding: 0 9px 0 7px;
+  border: 1px solid #3A3A3F; border-radius: 999px;
+  background: transparent;
   color: var(--ink-2);
-  font-family: var(--font-body); font-size: 13px; font-weight: 400;
+  font-family: var(--font-body); font-size: 12px; font-weight: 500; line-height: 1;
   cursor: pointer;
   -webkit-appearance: none; appearance: none;
+  transition: background var(--t-quick) var(--ease), color var(--t-quick) var(--ease),
+              border-color var(--t-quick) var(--ease), transform var(--t-tap) var(--ease);
 }
-.swap__open .ico { width: 18px; height: 18px; transition: transform var(--t-quick) var(--ease); }
-.swap__open.is-open .ico { transform: rotate(180deg); }
+.swap__open::after { content: ''; position: absolute; left: -4px; right: -4px; top: -10px; bottom: -10px; }
+.swap__open:active { transform: scale(.96); }
+.swap__open .ico { width: 14px; height: 14px; flex: none; }
+.swap__open.is-open { background: var(--surface-3); border-color: var(--surface-3); color: var(--ink); }
 
 .swap { display: grid; gap: 6px; margin-bottom: 10px; }
 /* Свой display перебивает браузерное правило для атрибута hidden:
@@ -1052,33 +1073,67 @@ tr:last-child td { border-bottom: 0; }
 .live-done.is-done .live-done__ring { opacity: 0; }
 .live-done.is-done .live-done__tick { stroke-dashoffset: 0; }
 
-.live-target { font-size: 12.5px; color: var(--ink-2); margin-top: 2px; }
 /* Отдых между подходами — полоса внизу экрана. Пока идёт — серая, кончился —
    жёлтая: это сигнал к действию, единственное, ради чего тратится акцент.
-   На жёлтом — только чёрный. Атрибут hidden проигрывает display блока,
-   поэтому скрытие задано отдельно. */
+   На жёлтом — только чёрный.
+   Полоса выезжает снизу и уезжает вниз на темпе появления раздела (--t-move,
+   мягкий старт), а не возникает рывком — просьба Никиты 15.10.2026. Скрытие —
+   через visibility с задержкой на время выезда: display и атрибут hidden
+   анимацию обрывают.
+   Сверху «Отдых» и цифры по центру строки (по базовой линии мелкая подпись
+   садилась вниз и липла к тексту под ней), под полосой отсчёта — «Дальше ·
+   подход 2» и отдельной строкой название: так «подход 2» не повисает один
+   на второй строке, а длинное название рвётся на две ровные. */
 .rest {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
-  padding: 10px calc(var(--pad) + var(--safe-right)) calc(12px + var(--safe-bottom)) calc(var(--pad) + var(--safe-left));
+  padding: 12px calc(var(--pad) + var(--safe-right)) calc(14px + var(--safe-bottom)) calc(var(--pad) + var(--safe-left));
   background: var(--surface-2);
   border-top: 1px solid var(--line);
   font-size: 13px; line-height: 1.4; color: var(--ink-2);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transform: translateY(calc(100% + 2px));
+  visibility: hidden;
+  transition: transform var(--t-move) var(--ease), visibility 0s linear var(--t-move),
+              background-color var(--t-quick) var(--ease), border-color var(--t-quick) var(--ease);
 }
-.rest[hidden] { display: none; }
-body.has-rest { padding-bottom: 104px; }
-.rest__row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.rest.is-on {
+  transform: none;
+  visibility: visible;
+  transition: transform var(--t-move) var(--ease), visibility 0s linear 0s,
+              background-color var(--t-quick) var(--ease), border-color var(--t-quick) var(--ease);
+}
+body.has-rest { padding-bottom: var(--rest-h, 132px); }
+.rest__row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 30px; }
 .rest__cap {
   font-family: var(--font-display); font-size: 11px; font-weight: 600;
   letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2);
 }
-.rest__time { font-family: var(--font-num); font-size: 22px; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
-.rest__next { margin-top: 2px; color: var(--ink); }
-.rest__note { margin-top: 2px; color: var(--down); }
-.rest__note:empty { display: none; }
-.rest__track { margin-top: 8px; height: 3px; border-radius: 2px; background: var(--surface-3); overflow: hidden; }
+.rest__time { font-family: var(--font-num); font-size: 24px; font-weight: 600; line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; }
+.rest__done {
+  font-family: var(--font-display); font-size: 17px; font-weight: 700; letter-spacing: -0.01em;
+  line-height: 1.2; color: var(--accent-ink);
+}
+.rest__done[hidden], .rest__cap[hidden], .rest__time[hidden] { display: none; }
+.rest__track { margin-top: 9px; height: 3px; border-radius: 2px; background: var(--surface-3); overflow: hidden; }
 .rest__fill { height: 100%; width: 0; background: var(--ink-2); }
+.rest__next { margin-top: 11px; }
+.rest__step {
+  display: block;
+  font-family: var(--font-display); font-size: 11px; font-weight: 600;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2);
+}
+.rest__name {
+  display: block; margin-top: 3px;
+  font-size: 14.5px; line-height: 1.35; color: var(--ink);
+  text-wrap: balance;
+}
+.rest__note { margin-top: 6px; color: var(--down); }
+.rest__note:empty { display: none; }
+.rest__cap, .rest__time, .rest__step, .rest__name, .rest__note { transition: color var(--t-quick) var(--ease); }
 .rest.is-over { background: var(--accent); border-top-color: var(--accent); }
-.rest.is-over .rest__cap, .rest.is-over .rest__time, .rest.is-over .rest__next { color: var(--accent-ink); }
+.rest.is-over .rest__step, .rest.is-over .rest__name, .rest.is-over .rest__note { color: var(--accent-ink); }
+.rest.is-over .rest__step { opacity: .72; }
 .rest.is-over .rest__track { background: rgba(14, 14, 14, .18); }
 .rest.is-over .rest__fill { background: var(--accent-ink); }
 
@@ -1273,6 +1328,9 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
      там кнопки полного размера. */
   .stepper__btn { min-width: 16px; }
   .live-done { width: 38px; }
+  /* Строке под названием на 320px тесно: у замены остаётся только значок. */
+  .swap__open { padding: 0 7px; }
+  .swap__open-text { display: none; }
   .stats--4 { grid-template-columns: 1fr 1fr; }
   .stat { padding: 10px 9px; }
   .stat__value { font-size: 17px; }
@@ -1325,7 +1383,6 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <div style="min-width:0">
           <span class="ex__role">Основное</span>
           <h3 class="ex__name" data-plan-name>Жим гантелями лёжа</h3>
-          <div class="ex__meta" data-plan-meta>3 подхода по 6–9 повторов, отдых 3 минуты</div>
         </div>
       </div>
       <div class="plan">
@@ -1341,9 +1398,8 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     </div><div class="ex" data-pos="1">
       <div class="ex__head">
         <div style="min-width:0">
-          <span class="ex__role ex__role--acc">Добивка</span>
+          
           <h3 class="ex__name" data-plan-name>Жим лёжа на наклонной скамье</h3>
-          <div class="ex__meta" data-plan-meta>3 подхода по 6–9 повторов, отдых 2 минуты 30 секунд</div>
         </div>
       </div>
       <div class="plan">
@@ -1357,13 +1413,12 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         </div>
       </div>
     </div><div class="pair" data-pair>
-      <div class="pair__head"><span class="pair__cap">Суперсет</span>По очереди, отдых 1 минута 15 секунд после каждого подхода</div>
+      <div class="pair__head"><span class="pair__cap">Суперсет</span></div>
       <div class="ex" data-pos="2">
       <div class="ex__head">
         <div style="min-width:0">
-          <span class="ex__role ex__role--acc">Добивка</span>
+          
           <h3 class="ex__name" data-plan-name>Жим от груди сидя</h3>
-          <div class="ex__meta" data-plan-meta>3 подхода по 6–9 повторов</div>
         </div>
       </div>
       <div class="plan">
@@ -1379,9 +1434,8 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     </div><div class="ex" data-pos="3">
       <div class="ex__head">
         <div style="min-width:0">
-          <span class="ex__role ex__role--acc">Добивка</span>
+          
           <h3 class="ex__name" data-plan-name>Скручивания на наклонной скамье с гантелью</h3>
-          <div class="ex__meta" data-plan-meta>3 подхода по 10–15 повторов</div>
         </div>
       </div>
       <div class="plan">
@@ -1396,13 +1450,12 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       </div>
     </div>
     </div><div class="pair" data-pair>
-      <div class="pair__head"><span class="pair__cap">Суперсет</span>По очереди, отдых 1 минута после каждого подхода</div>
+      <div class="pair__head"><span class="pair__cap">Суперсет</span></div>
       <div class="ex" data-pos="4">
       <div class="ex__head">
         <div style="min-width:0">
-          <span class="ex__role ex__role--acc">Добивка</span>
+          
           <h3 class="ex__name" data-plan-name>Разводка от груди в кроссовере</h3>
-          <div class="ex__meta" data-plan-meta>3 подхода по 6–9 повторов</div>
         </div>
       </div>
       <div class="plan">
@@ -1418,9 +1471,8 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     </div><div class="ex" data-pos="5">
       <div class="ex__head">
         <div style="min-width:0">
-          <span class="ex__role ex__role--acc">Добивка</span>
+          
           <h3 class="ex__name" data-plan-name>Подъём на бицепс в тренажёре сидя</h3>
-          <div class="ex__meta" data-plan-meta>3 подхода по 6–9 повторов</div>
         </div>
       </div>
       <div class="plan">
@@ -1435,13 +1487,12 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       </div>
     </div>
     </div><div class="pair" data-pair>
-      <div class="pair__head"><span class="pair__cap">Суперсет</span>По очереди, отдых 1 минута после каждого подхода</div>
+      <div class="pair__head"><span class="pair__cap">Суперсет</span></div>
       <div class="ex" data-pos="6">
       <div class="ex__head">
         <div style="min-width:0">
-          <span class="ex__role ex__role--acc">Добивка</span>
+          
           <h3 class="ex__name" data-plan-name>Подъём гантелей на бицепс стоя</h3>
-          <div class="ex__meta" data-plan-meta>3 подхода по 6–9 повторов</div>
         </div>
       </div>
       <div class="plan">
@@ -1457,9 +1508,8 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     </div><div class="ex" data-pos="7">
       <div class="ex__head">
         <div style="min-width:0">
-          <span class="ex__role ex__role--acc">Добивка</span>
+          
           <h3 class="ex__name" data-plan-name>Трицепс из-за головы с канатом</h3>
-          <div class="ex__meta" data-plan-meta>3 подхода по 6–9 повторов</div>
         </div>
       </div>
       <div class="plan">
@@ -2940,12 +2990,12 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       <svg class="chart__svg" viewBox="0 0 100 100" preserveAspectRatio="none" role="img"
            aria-label="Изменение рабочего веса, Трицепс с прямой рукоятью">
         <defs>
-          <linearGradient id="cp99e9q-fill" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="cp98ra7-fill" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/>
             <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
           </linearGradient>
         </defs>
-        <path class="ch-area" d="M0.00,100.00 L25.00,100.00 L50.00,0.00 L75.00,0.00 L100.00,0.00 L100,100 L0,100 Z" fill="url(#cp99e9q-fill)"/>
+        <path class="ch-area" d="M0.00,100.00 L25.00,100.00 L50.00,0.00 L75.00,0.00 L100.00,0.00 L100,100 L0,100 Z" fill="url(#cp98ra7-fill)"/>
         <!-- Прочерчивание сделано срезом кадра (clip-path в CSS), а НЕ штрихом
              по длине пути: при non-scaling-stroke браузер отмеряет
              stroke-dasharray в экранных пикселях и нормализацию через
@@ -2954,8 +3004,8 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <path class="ch-line" d="M0.00,100.00 L25.00,100.00 L50.00,0.00 L75.00,0.00 L100.00,0.00"/>
       </svg>
       <span class="ch-grid" style="top:100%"></span><span class="ch-y" style="top:100%">60</span><span class="ch-grid" style="top:50%"></span><span class="ch-y" style="top:50%">65</span><span class="ch-grid" style="top:0%"></span><span class="ch-y" style="top:0%">70</span>
-      <span class="ch-dot" style="left:0%;top:100%" title="22.08 — 60 кг, 7 повторов"></span><span class="ch-dot" style="left:25%;top:100%" title="06.09 — 60 кг, 9 повторов"></span><span class="ch-dot" style="left:50%;top:0%" title="22.09 — 70 кг, 7 повторов"></span><span class="ch-dot" style="left:75%;top:0%" title="10.10 — 70 кг, 8 повторов"></span><span class="ch-dot" style="left:100%;top:0%" title="16.10 — 70 кг, 8 повторов"></span>
-      <span class="ch-x" style="left:0%">22.08</span><span class="ch-x" style="left:25%">06.09</span><span class="ch-x" style="left:50%">22.09</span><span class="ch-x" style="left:75%">10.10</span><span class="ch-x" style="left:100%">16.10</span>
+      <span class="ch-dot" style="left:0%;top:100%" title="22.08 — 60 кг, 7 повторов"></span><span class="ch-dot" style="left:25%;top:100%" title="06.09 — 60 кг, 9 повторов"></span><span class="ch-dot" style="left:50%;top:0%" title="22.09 — 70 кг, 7 повторов"></span><span class="ch-dot" style="left:75%;top:0%" title="10.10 — 70 кг, 8 повторов"></span><span class="ch-dot" style="left:100%;top:0%" title="15.10 — 70 кг, 8 повторов"></span>
+      <span class="ch-x" style="left:0%">22.08</span><span class="ch-x" style="left:25%">06.09</span><span class="ch-x" style="left:50%">22.09</span><span class="ch-x" style="left:75%">10.10</span><span class="ch-x" style="left:100%">15.10</span>
       <span class="ch-value ch-value--below" style="top:0%">70 кг</span>
     </div>
   </div><div class="chart-legend">
@@ -2966,7 +3016,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <table>
           <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
           <tbody><tr>
-      <td>16.10</td>
+      <td>15.10</td>
       <td>добивка</td>
       <td class="num">70 кг</td>
       <td class="num">8</td>
@@ -3006,7 +3056,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
       <div class="card__label">Все подходы</div>
       <div style="margin-bottom:12px">
-      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">16 октября · добивка</div>
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">15 октября · добивка</div>
       <div class="sets"><span class="set"><span class="set__w">60 кг</span><span class="set__x">×</span><span class="set__r">12</span></span><span class="set"><span class="set__w">65 кг</span><span class="set__x">×</span><span class="set__r">10</span></span><span class="set set--best"><span class="set__w">70 кг</span><span class="set__x">×</span><span class="set__r">8</span></span></div>
     </div><div style="margin-bottom:12px">
       <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">10 октября · добивка · свежим, не в свой день</div>
@@ -3059,12 +3109,12 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       <svg class="chart__svg" viewBox="0 0 100 100" preserveAspectRatio="none" role="img"
            aria-label="Изменение рабочего веса, Тяга горизонтального блока">
         <defs>
-          <linearGradient id="cq5jpgx-fill" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="cq5j2he-fill" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/>
             <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
           </linearGradient>
         </defs>
-        <path class="ch-area" d="M0.00,100.00 L11.11,100.00 L22.22,100.00 L33.33,100.00 L44.44,100.00 L55.56,100.00 L66.67,100.00 L77.78,50.00 L88.89,0.00 L100.00,0.00 L100,100 L0,100 Z" fill="url(#cq5jpgx-fill)"/>
+        <path class="ch-area" d="M0.00,100.00 L11.11,100.00 L22.22,100.00 L33.33,100.00 L44.44,100.00 L55.56,100.00 L66.67,100.00 L77.78,50.00 L88.89,0.00 L100.00,0.00 L100,100 L0,100 Z" fill="url(#cq5j2he-fill)"/>
         <!-- Прочерчивание сделано срезом кадра (clip-path в CSS), а НЕ штрихом
              по длине пути: при non-scaling-stroke браузер отмеряет
              stroke-dasharray в экранных пикселях и нормализацию через
@@ -3073,8 +3123,8 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <path class="ch-line" d="M0.00,100.00 L11.11,100.00 L22.22,100.00 L33.33,100.00 L44.44,100.00 L55.56,100.00 L66.67,100.00 L77.78,50.00 L88.89,0.00 L100.00,0.00"/>
       </svg>
       <span class="ch-grid" style="top:100%"></span><span class="ch-y" style="top:100%">60</span><span class="ch-grid" style="top:50%"></span><span class="ch-y" style="top:50%">65</span><span class="ch-grid" style="top:0%"></span><span class="ch-y" style="top:0%">70</span>
-      <span class="ch-dot ch-dot--calib" style="left:0%;top:100%" title="23.07 — 60 кг (калибровка), 6 повторов"></span><span class="ch-dot" style="left:11.11%;top:100%" title="31.07 — 60 кг, 7 повторов"></span><span class="ch-dot" style="left:22.22%;top:100%" title="22.08 — 60 кг, 7 повторов"></span><span class="ch-dot" style="left:33.33%;top:100%" title="30.08 — 60 кг, 7 повторов"></span><span class="ch-dot" style="left:44.44%;top:100%" title="06.09 — 60 кг, 8 повторов"></span><span class="ch-dot" style="left:55.56%;top:100%" title="12.09 — 60 кг, 10 повторов"></span><span class="ch-dot" style="left:66.67%;top:100%" title="20.09 — 60 кг, 8 повторов"></span><span class="ch-dot" style="left:77.78%;top:50%" title="27.09 — 65 кг, 8 повторов"></span><span class="ch-dot" style="left:88.89%;top:0%" title="10.10 — 70 кг, 8 повторов"></span><span class="ch-dot" style="left:100%;top:0%" title="16.10 — 70 кг, 8 повторов"></span>
-      <span class="ch-x" style="left:0%">23.07</span><span class="ch-x" style="left:22.22%">22.08</span><span class="ch-x" style="left:44.44%">06.09</span><span class="ch-x" style="left:66.67%">20.09</span><span class="ch-x" style="left:100%">16.10</span>
+      <span class="ch-dot ch-dot--calib" style="left:0%;top:100%" title="23.07 — 60 кг (калибровка), 6 повторов"></span><span class="ch-dot" style="left:11.11%;top:100%" title="31.07 — 60 кг, 7 повторов"></span><span class="ch-dot" style="left:22.22%;top:100%" title="22.08 — 60 кг, 7 повторов"></span><span class="ch-dot" style="left:33.33%;top:100%" title="30.08 — 60 кг, 7 повторов"></span><span class="ch-dot" style="left:44.44%;top:100%" title="06.09 — 60 кг, 8 повторов"></span><span class="ch-dot" style="left:55.56%;top:100%" title="12.09 — 60 кг, 10 повторов"></span><span class="ch-dot" style="left:66.67%;top:100%" title="20.09 — 60 кг, 8 повторов"></span><span class="ch-dot" style="left:77.78%;top:50%" title="27.09 — 65 кг, 8 повторов"></span><span class="ch-dot" style="left:88.89%;top:0%" title="10.10 — 70 кг, 8 повторов"></span><span class="ch-dot" style="left:100%;top:0%" title="15.10 — 70 кг, 8 повторов"></span>
+      <span class="ch-x" style="left:0%">23.07</span><span class="ch-x" style="left:22.22%">22.08</span><span class="ch-x" style="left:44.44%">06.09</span><span class="ch-x" style="left:66.67%">20.09</span><span class="ch-x" style="left:100%">15.10</span>
       <span class="ch-value ch-value--below" style="top:0%">70 кг</span>
     </div>
   </div><div class="chart-legend">
@@ -3085,7 +3135,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <table>
           <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
           <tbody><tr>
-      <td>16.10</td>
+      <td>15.10</td>
       <td>добивка</td>
       <td class="num">70 кг</td>
       <td class="num">8</td>
@@ -3160,7 +3210,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
       <div class="card__label">Все подходы</div>
       <div style="margin-bottom:12px">
-      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">16 октября · добивка</div>
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">15 октября · добивка</div>
       <div class="sets"><span class="set"><span class="set__w">65 кг</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set"><span class="set__w">65 кг</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set set--best"><span class="set__w">70 кг</span><span class="set__x">×</span><span class="set__r">8</span></span></div>
     </div><div style="margin-bottom:12px">
       <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">10 октября · добивка · свежим, не в свой день</div>
@@ -4683,12 +4733,12 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       <svg class="chart__svg" viewBox="0 0 100 100" preserveAspectRatio="none" role="img"
            aria-label="Изменение рабочего веса, Жим ногами">
         <defs>
-          <linearGradient id="c1xi7r3t-fill" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="c1xhnyig-fill" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/>
             <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
           </linearGradient>
         </defs>
-        <path class="ch-area" d="M0.00,13.33 L11.11,66.67 L22.22,13.33 L33.33,13.33 L44.44,13.33 L55.56,73.33 L66.67,100.00 L77.78,80.00 L88.89,53.33 L100.00,53.33 L100,100 L0,100 Z" fill="url(#c1xi7r3t-fill)"/>
+        <path class="ch-area" d="M0.00,13.33 L11.11,66.67 L22.22,13.33 L33.33,13.33 L44.44,13.33 L55.56,73.33 L66.67,100.00 L77.78,80.00 L88.89,53.33 L100.00,53.33 L100,100 L0,100 Z" fill="url(#c1xhnyig-fill)"/>
         <!-- Прочерчивание сделано срезом кадра (clip-path в CSS), а НЕ штрихом
              по длине пути: при non-scaling-stroke браузер отмеряет
              stroke-dasharray в экранных пикселях и нормализацию через
@@ -4697,8 +4747,8 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <path class="ch-line" d="M0.00,13.33 L11.11,66.67 L22.22,13.33 L33.33,13.33 L44.44,13.33 L55.56,73.33 L66.67,100.00 L77.78,80.00 L88.89,53.33 L100.00,53.33"/>
       </svg>
       <span class="ch-grid" style="top:100%"></span><span class="ch-y" style="top:100%">200</span><span class="ch-grid" style="top:66.67%"></span><span class="ch-y" style="top:66.67%">250</span><span class="ch-grid" style="top:33.33%"></span><span class="ch-y" style="top:33.33%">300</span><span class="ch-grid" style="top:0%"></span><span class="ch-y" style="top:0%">350</span>
-      <span class="ch-dot ch-dot--calib" style="left:0%;top:13.33%" title="25.07 — 330 кг (калибровка), 11 повторов"></span><span class="ch-dot" style="left:11.11%;top:66.67%" title="02.08 — 250 кг, 16 повторов"></span><span class="ch-dot" style="left:22.22%;top:13.33%" title="10.08 — 330 кг, 9 повторов"></span><span class="ch-dot" style="left:33.33%;top:13.33%" title="18.08 — 330 кг, 9 повторов"></span><span class="ch-dot" style="left:44.44%;top:13.33%" title="25.08 — 330 кг, 9 повторов"></span><span class="ch-dot" style="left:55.56%;top:73.33%" title="08.09 — 240 кг, 10 повторов"></span><span class="ch-dot" style="left:66.67%;top:100%" title="22.09 — 200 кг, 15 повторов"></span><span class="ch-dot" style="left:77.78%;top:80%" title="29.09 — 230 кг, 11 повторов"></span><span class="ch-dot" style="left:88.89%;top:53.33%" title="10.10 — 270 кг, 9 повторов"></span><span class="ch-dot" style="left:100%;top:53.33%" title="16.10 — 270 кг, 9 повторов"></span>
-      <span class="ch-x" style="left:0%">25.07</span><span class="ch-x" style="left:22.22%">10.08</span><span class="ch-x" style="left:44.44%">25.08</span><span class="ch-x" style="left:66.67%">22.09</span><span class="ch-x" style="left:100%">16.10</span>
+      <span class="ch-dot ch-dot--calib" style="left:0%;top:13.33%" title="25.07 — 330 кг (калибровка), 11 повторов"></span><span class="ch-dot" style="left:11.11%;top:66.67%" title="02.08 — 250 кг, 16 повторов"></span><span class="ch-dot" style="left:22.22%;top:13.33%" title="10.08 — 330 кг, 9 повторов"></span><span class="ch-dot" style="left:33.33%;top:13.33%" title="18.08 — 330 кг, 9 повторов"></span><span class="ch-dot" style="left:44.44%;top:13.33%" title="25.08 — 330 кг, 9 повторов"></span><span class="ch-dot" style="left:55.56%;top:73.33%" title="08.09 — 240 кг, 10 повторов"></span><span class="ch-dot" style="left:66.67%;top:100%" title="22.09 — 200 кг, 15 повторов"></span><span class="ch-dot" style="left:77.78%;top:80%" title="29.09 — 230 кг, 11 повторов"></span><span class="ch-dot" style="left:88.89%;top:53.33%" title="10.10 — 270 кг, 9 повторов"></span><span class="ch-dot" style="left:100%;top:53.33%" title="15.10 — 270 кг, 9 повторов"></span>
+      <span class="ch-x" style="left:0%">25.07</span><span class="ch-x" style="left:22.22%">10.08</span><span class="ch-x" style="left:44.44%">25.08</span><span class="ch-x" style="left:66.67%">22.09</span><span class="ch-x" style="left:100%">15.10</span>
       <span class="ch-value" style="top:53.33%">270 кг</span>
     </div>
   </div><div class="chart-legend">
@@ -4709,7 +4759,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <table>
           <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
           <tbody><tr>
-      <td>16.10 <span class="pill pill--calib">разгрузка</span></td>
+      <td>15.10 <span class="pill pill--calib">разгрузка</span></td>
       <td>основное</td>
       <td class="num">270 кг</td>
       <td class="num">9</td>
@@ -4784,7 +4834,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
       <div class="card__label">Все подходы</div>
       <div style="margin-bottom:12px">
-      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">16 октября · основное · разгрузка</div>
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">15 октября · основное · разгрузка</div>
       <div class="sets"><span class="set"><span class="set__w">200 кг</span><span class="set__x">×</span><span class="set__r">13</span></span><span class="set"><span class="set__w">230 кг</span><span class="set__x">×</span><span class="set__r">12</span></span><span class="set"><span class="set__w">250 кг</span><span class="set__x">×</span><span class="set__r">10</span></span><span class="set set--best"><span class="set__w">270 кг</span><span class="set__x">×</span><span class="set__r">9</span></span></div>
     </div><div style="margin-bottom:12px">
       <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">10 октября · основное · разгрузка</div>
@@ -4852,12 +4902,12 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       <svg class="chart__svg" viewBox="0 0 100 100" preserveAspectRatio="none" role="img"
            aria-label="Изменение рабочего веса, Икры в тренажёре сидя">
         <defs>
-          <linearGradient id="cyr3v3b-fill" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="cyr383s-fill" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/>
             <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
           </linearGradient>
         </defs>
-        <path class="ch-area" d="M0.00,16.67 L16.67,16.67 L33.33,16.67 L50.00,100.00 L66.67,100.00 L83.33,100.00 L100.00,100.00 L100,100 L0,100 Z" fill="url(#cyr3v3b-fill)"/>
+        <path class="ch-area" d="M0.00,16.67 L16.67,16.67 L33.33,16.67 L50.00,100.00 L66.67,100.00 L83.33,100.00 L100.00,100.00 L100,100 L0,100 Z" fill="url(#cyr383s-fill)"/>
         <!-- Прочерчивание сделано срезом кадра (clip-path в CSS), а НЕ штрихом
              по длине пути: при non-scaling-stroke браузер отмеряет
              stroke-dasharray в экранных пикселях и нормализацию через
@@ -4866,8 +4916,8 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <path class="ch-line" d="M0.00,16.67 L16.67,16.67 L33.33,16.67 L50.00,100.00 L66.67,100.00 L83.33,100.00 L100.00,100.00"/>
       </svg>
       <span class="ch-grid" style="top:100%"></span><span class="ch-y" style="top:100%">40</span><span class="ch-grid" style="top:66.67%"></span><span class="ch-y" style="top:66.67%">42</span><span class="ch-grid" style="top:33.33%"></span><span class="ch-y" style="top:33.33%">44</span><span class="ch-grid" style="top:0%"></span><span class="ch-y" style="top:0%">46</span>
-      <span class="ch-dot ch-dot--calib" style="left:0%;top:16.67%" title="25.07 — 45 кг (калибровка), 7 повторов"></span><span class="ch-dot" style="left:16.67%;top:16.67%" title="10.08 — 45 кг, 8 повторов"></span><span class="ch-dot" style="left:33.33%;top:16.67%" title="25.08 — 45 кг, 9 повторов"></span><span class="ch-dot" style="left:50%;top:100%" title="08.09 — 40 кг, 16 повторов"></span><span class="ch-dot" style="left:66.67%;top:100%" title="16.09 — 40 кг, 12 повторов"></span><span class="ch-dot" style="left:83.33%;top:100%" title="10.10 — 40 кг, 11 повторов"></span><span class="ch-dot" style="left:100%;top:100%" title="16.10 — 40 кг, 11 повторов"></span>
-      <span class="ch-x" style="left:0%">25.07</span><span class="ch-x" style="left:33.33%">25.08</span><span class="ch-x" style="left:66.67%">16.09</span><span class="ch-x" style="left:100%">16.10</span>
+      <span class="ch-dot ch-dot--calib" style="left:0%;top:16.67%" title="25.07 — 45 кг (калибровка), 7 повторов"></span><span class="ch-dot" style="left:16.67%;top:16.67%" title="10.08 — 45 кг, 8 повторов"></span><span class="ch-dot" style="left:33.33%;top:16.67%" title="25.08 — 45 кг, 9 повторов"></span><span class="ch-dot" style="left:50%;top:100%" title="08.09 — 40 кг, 16 повторов"></span><span class="ch-dot" style="left:66.67%;top:100%" title="16.09 — 40 кг, 12 повторов"></span><span class="ch-dot" style="left:83.33%;top:100%" title="10.10 — 40 кг, 11 повторов"></span><span class="ch-dot" style="left:100%;top:100%" title="15.10 — 40 кг, 11 повторов"></span>
+      <span class="ch-x" style="left:0%">25.07</span><span class="ch-x" style="left:33.33%">25.08</span><span class="ch-x" style="left:66.67%">16.09</span><span class="ch-x" style="left:100%">15.10</span>
       <span class="ch-value" style="top:100%">40 кг</span>
     </div>
   </div><div class="chart-legend">
@@ -4878,7 +4928,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <table>
           <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
           <tbody><tr>
-      <td>16.10</td>
+      <td>15.10</td>
       <td>добивка</td>
       <td class="num">40 кг</td>
       <td class="num">11</td>
@@ -4932,7 +4982,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
       <div class="card__label">Все подходы</div>
       <div style="margin-bottom:12px">
-      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">16 октября · добивка</div>
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">15 октября · добивка</div>
       <div class="sets"><span class="set set--best"><span class="set__w">+40 кг</span><span class="set__x">×</span><span class="set__r">11</span></span><span class="set"><span class="set__w">+40 кг</span><span class="set__x">×</span><span class="set__r">11</span></span><span class="set"><span class="set__w">+40 кг</span><span class="set__x">×</span><span class="set__r">11</span></span></div>
     </div><div style="margin-bottom:12px">
       <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">10 октября · добивка</div>
@@ -4991,12 +5041,12 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       <svg class="chart__svg" viewBox="0 0 100 100" preserveAspectRatio="none" role="img"
            aria-label="Изменение рабочего веса, Разгибание ног сидя">
         <defs>
-          <linearGradient id="c6xhl6k-fill" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="c6xgy71-fill" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/>
             <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
           </linearGradient>
         </defs>
-        <path class="ch-area" d="M0.00,40.00 L10.00,40.00 L20.00,23.33 L30.00,23.33 L40.00,23.33 L50.00,23.33 L60.00,86.67 L70.00,86.67 L80.00,53.33 L90.00,86.67 L100.00,86.67 L100,100 L0,100 Z" fill="url(#c6xhl6k-fill)"/>
+        <path class="ch-area" d="M0.00,40.00 L10.00,40.00 L20.00,23.33 L30.00,23.33 L40.00,23.33 L50.00,23.33 L60.00,86.67 L70.00,86.67 L80.00,53.33 L90.00,86.67 L100.00,86.67 L100,100 L0,100 Z" fill="url(#c6xgy71-fill)"/>
         <!-- Прочерчивание сделано срезом кадра (clip-path в CSS), а НЕ штрихом
              по длине пути: при non-scaling-stroke браузер отмеряет
              stroke-dasharray в экранных пикселях и нормализацию через
@@ -5005,8 +5055,8 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <path class="ch-line" d="M0.00,40.00 L10.00,40.00 L20.00,23.33 L30.00,23.33 L40.00,23.33 L50.00,23.33 L60.00,86.67 L70.00,86.67 L80.00,53.33 L90.00,86.67 L100.00,86.67"/>
       </svg>
       <span class="ch-grid" style="top:100%"></span><span class="ch-y" style="top:100%">50</span><span class="ch-grid" style="top:66.67%"></span><span class="ch-y" style="top:66.67%">60</span><span class="ch-grid" style="top:33.33%"></span><span class="ch-y" style="top:33.33%">70</span><span class="ch-grid" style="top:0%"></span><span class="ch-y" style="top:0%">80</span>
-      <span class="ch-dot ch-dot--calib" style="left:0%;top:40%" title="25.07 — 68 кг (калибровка), 7 повторов"></span><span class="ch-dot" style="left:10%;top:40%" title="02.08 — 68 кг, 9 повторов"></span><span class="ch-dot" style="left:20%;top:23.33%" title="10.08 — 73 кг, 7 повторов"></span><span class="ch-dot" style="left:30%;top:23.33%" title="18.08 — 73 кг, 7 повторов"></span><span class="ch-dot" style="left:40%;top:23.33%" title="25.08 — 73 кг, 8 повторов"></span><span class="ch-dot" style="left:50%;top:23.33%" title="08.09 — 73 кг, 8 повторов"></span><span class="ch-dot" style="left:60%;top:86.67%" title="16.09 — 54 кг, 12 повторов"></span><span class="ch-dot" style="left:70%;top:86.67%" title="22.09 — 54 кг, 12 повторов"></span><span class="ch-dot" style="left:80%;top:53.33%" title="29.09 — 64 кг, 9 повторов"></span><span class="ch-dot" style="left:90%;top:86.67%" title="10.10 — 54 кг, 12 повторов"></span><span class="ch-dot" style="left:100%;top:86.67%" title="16.10 — 54 кг, 12 повторов"></span>
-      <span class="ch-x" style="left:0%">25.07</span><span class="ch-x" style="left:20%">10.08</span><span class="ch-x" style="left:40%">25.08</span><span class="ch-x" style="left:60%">16.09</span><span class="ch-x" style="left:80%">29.09</span><span class="ch-x" style="left:100%">16.10</span>
+      <span class="ch-dot ch-dot--calib" style="left:0%;top:40%" title="25.07 — 68 кг (калибровка), 7 повторов"></span><span class="ch-dot" style="left:10%;top:40%" title="02.08 — 68 кг, 9 повторов"></span><span class="ch-dot" style="left:20%;top:23.33%" title="10.08 — 73 кг, 7 повторов"></span><span class="ch-dot" style="left:30%;top:23.33%" title="18.08 — 73 кг, 7 повторов"></span><span class="ch-dot" style="left:40%;top:23.33%" title="25.08 — 73 кг, 8 повторов"></span><span class="ch-dot" style="left:50%;top:23.33%" title="08.09 — 73 кг, 8 повторов"></span><span class="ch-dot" style="left:60%;top:86.67%" title="16.09 — 54 кг, 12 повторов"></span><span class="ch-dot" style="left:70%;top:86.67%" title="22.09 — 54 кг, 12 повторов"></span><span class="ch-dot" style="left:80%;top:53.33%" title="29.09 — 64 кг, 9 повторов"></span><span class="ch-dot" style="left:90%;top:86.67%" title="10.10 — 54 кг, 12 повторов"></span><span class="ch-dot" style="left:100%;top:86.67%" title="15.10 — 54 кг, 12 повторов"></span>
+      <span class="ch-x" style="left:0%">25.07</span><span class="ch-x" style="left:20%">10.08</span><span class="ch-x" style="left:40%">25.08</span><span class="ch-x" style="left:60%">16.09</span><span class="ch-x" style="left:80%">29.09</span><span class="ch-x" style="left:100%">15.10</span>
       <span class="ch-value" style="top:86.67%">54 кг</span>
     </div>
   </div><div class="chart-legend">
@@ -5017,7 +5067,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <table>
           <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
           <tbody><tr>
-      <td>16.10 <span class="pill pill--calib">разгрузка</span></td>
+      <td>15.10 <span class="pill pill--calib">разгрузка</span></td>
       <td>добивка</td>
       <td class="num">54 кг</td>
       <td class="num">12</td>
@@ -5099,7 +5149,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
       <div class="card__label">Все подходы</div>
       <div style="margin-bottom:12px">
-      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">16 октября · добивка · разгрузка</div>
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">15 октября · добивка · разгрузка</div>
       <div class="sets"><span class="set set--best"><span class="set__w">54 кг</span><span class="set__x">×</span><span class="set__r">12</span></span><span class="set"><span class="set__w">54 кг</span><span class="set__x">×</span><span class="set__r">12</span></span><span class="set"><span class="set__w">54 кг</span><span class="set__x">×</span><span class="set__r">12</span></span></div><div class="set-note"><span class="set-note__mark" aria-hidden="true">✱</span><span>Вес снижен: после футбола 07.10 снова потянул спину</span></div>
     </div><div style="margin-bottom:12px">
       <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">10 октября · добивка · разгрузка</div>
@@ -5170,12 +5220,12 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       <svg class="chart__svg" viewBox="0 0 100 100" preserveAspectRatio="none" role="img"
            aria-label="Изменение рабочего веса, Сгибание ног лёжа">
         <defs>
-          <linearGradient id="c1sgfnd6-fill" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="c1sgf0dn-fill" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/>
             <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
           </linearGradient>
         </defs>
-        <path class="ch-area" d="M0.00,100.00 L9.09,100.00 L18.18,100.00 L27.27,100.00 L36.36,100.00 L45.45,100.00 L54.55,100.00 L63.64,100.00 L72.73,100.00 L81.82,100.00 L90.91,0.00 L100.00,0.00 L100,100 L0,100 Z" fill="url(#c1sgfnd6-fill)"/>
+        <path class="ch-area" d="M0.00,100.00 L9.09,100.00 L18.18,100.00 L27.27,100.00 L36.36,100.00 L45.45,100.00 L54.55,100.00 L63.64,100.00 L72.73,100.00 L81.82,100.00 L90.91,0.00 L100.00,0.00 L100,100 L0,100 Z" fill="url(#c1sgf0dn-fill)"/>
         <!-- Прочерчивание сделано срезом кадра (clip-path в CSS), а НЕ штрихом
              по длине пути: при non-scaling-stroke браузер отмеряет
              stroke-dasharray в экранных пикселях и нормализацию через
@@ -5184,8 +5234,8 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <path class="ch-line" d="M0.00,100.00 L9.09,100.00 L18.18,100.00 L27.27,100.00 L36.36,100.00 L45.45,100.00 L54.55,100.00 L63.64,100.00 L72.73,100.00 L81.82,100.00 L90.91,0.00 L100.00,0.00"/>
       </svg>
       <span class="ch-grid" style="top:100%"></span><span class="ch-y" style="top:100%">64</span><span class="ch-grid" style="top:50%"></span><span class="ch-y" style="top:50%">66</span><span class="ch-grid" style="top:0%"></span><span class="ch-y" style="top:0%">68</span>
-      <span class="ch-dot ch-dot--calib" style="left:0%;top:100%" title="25.07 — 64 кг (калибровка), 6 повторов"></span><span class="ch-dot" style="left:9.09%;top:100%" title="02.08 — 64 кг, 8 повторов"></span><span class="ch-dot" style="left:18.18%;top:100%" title="10.08 — 64 кг, 8 повторов"></span><span class="ch-dot" style="left:27.27%;top:100%" title="18.08 — 64 кг, 8 повторов"></span><span class="ch-dot" style="left:36.36%;top:100%" title="25.08 — 64 кг, 8 повторов"></span><span class="ch-dot" style="left:45.45%;top:100%" title="01.09 — 64 кг, 8 повторов"></span><span class="ch-dot" style="left:54.55%;top:100%" title="08.09 — 64 кг, 8 повторов"></span><span class="ch-dot" style="left:63.64%;top:100%" title="16.09 — 64 кг, 8 повторов"></span><span class="ch-dot" style="left:72.73%;top:100%" title="22.09 — 64 кг, 9 повторов"></span><span class="ch-dot" style="left:81.82%;top:100%" title="29.09 — 64 кг, 9 повторов"></span><span class="ch-dot" style="left:90.91%;top:0%" title="10.10 — 68 кг, 6 повторов"></span><span class="ch-dot" style="left:100%;top:0%" title="16.10 — 68 кг, 6 повторов"></span>
-      <span class="ch-x" style="left:0%">25.07</span><span class="ch-x" style="left:18.18%">10.08</span><span class="ch-x" style="left:36.36%">25.08</span><span class="ch-x" style="left:54.55%">08.09</span><span class="ch-x" style="left:72.73%">22.09</span><span class="ch-x" style="left:100%">16.10</span>
+      <span class="ch-dot ch-dot--calib" style="left:0%;top:100%" title="25.07 — 64 кг (калибровка), 6 повторов"></span><span class="ch-dot" style="left:9.09%;top:100%" title="02.08 — 64 кг, 8 повторов"></span><span class="ch-dot" style="left:18.18%;top:100%" title="10.08 — 64 кг, 8 повторов"></span><span class="ch-dot" style="left:27.27%;top:100%" title="18.08 — 64 кг, 8 повторов"></span><span class="ch-dot" style="left:36.36%;top:100%" title="25.08 — 64 кг, 8 повторов"></span><span class="ch-dot" style="left:45.45%;top:100%" title="01.09 — 64 кг, 8 повторов"></span><span class="ch-dot" style="left:54.55%;top:100%" title="08.09 — 64 кг, 8 повторов"></span><span class="ch-dot" style="left:63.64%;top:100%" title="16.09 — 64 кг, 8 повторов"></span><span class="ch-dot" style="left:72.73%;top:100%" title="22.09 — 64 кг, 9 повторов"></span><span class="ch-dot" style="left:81.82%;top:100%" title="29.09 — 64 кг, 9 повторов"></span><span class="ch-dot" style="left:90.91%;top:0%" title="10.10 — 68 кг, 6 повторов"></span><span class="ch-dot" style="left:100%;top:0%" title="15.10 — 68 кг, 6 повторов"></span>
+      <span class="ch-x" style="left:0%">25.07</span><span class="ch-x" style="left:18.18%">10.08</span><span class="ch-x" style="left:36.36%">25.08</span><span class="ch-x" style="left:54.55%">08.09</span><span class="ch-x" style="left:72.73%">22.09</span><span class="ch-x" style="left:100%">15.10</span>
       <span class="ch-value ch-value--below" style="top:0%">68 кг</span>
     </div>
   </div><div class="chart-legend">
@@ -5196,7 +5246,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <table>
           <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
           <tbody><tr>
-      <td>16.10</td>
+      <td>15.10</td>
       <td>добивка</td>
       <td class="num">68 кг</td>
       <td class="num">6</td>
@@ -5285,7 +5335,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
       <div class="card__label">Все подходы</div>
       <div style="margin-bottom:12px">
-      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">16 октября · добивка</div>
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">15 октября · добивка</div>
       <div class="sets"><span class="set"><span class="set__w">64 кг</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set"><span class="set__w">64 кг</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set set--best"><span class="set__w">68 кг</span><span class="set__x">×</span><span class="set__r">6</span></span></div>
     </div><div style="margin-bottom:12px">
       <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">10 октября · добивка</div>
@@ -5354,12 +5404,12 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       <svg class="chart__svg" viewBox="0 0 100 100" preserveAspectRatio="none" role="img"
            aria-label="Изменение рабочего веса, Скручивания, верхняя часть">
         <defs>
-          <linearGradient id="coq60oj-fill" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="coq5dp0-fill" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/>
             <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
           </linearGradient>
         </defs>
-        <path class="ch-area" d="M0.00,100.00 L12.50,33.33 L25.00,0.00 L37.50,33.33 L50.00,33.33 L62.50,33.33 L75.00,33.33 L87.50,66.67 L100.00,66.67 L100,100 L0,100 Z" fill="url(#coq60oj-fill)"/>
+        <path class="ch-area" d="M0.00,100.00 L12.50,33.33 L25.00,0.00 L37.50,33.33 L50.00,33.33 L62.50,33.33 L75.00,33.33 L87.50,66.67 L100.00,66.67 L100,100 L0,100 Z" fill="url(#coq5dp0-fill)"/>
         <!-- Прочерчивание сделано срезом кадра (clip-path в CSS), а НЕ штрихом
              по длине пути: при non-scaling-stroke браузер отмеряет
              stroke-dasharray в экранных пикселях и нормализацию через
@@ -5368,8 +5418,8 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <path class="ch-line" d="M0.00,100.00 L12.50,33.33 L25.00,0.00 L37.50,33.33 L50.00,33.33 L62.50,33.33 L75.00,33.33 L87.50,66.67 L100.00,66.67"/>
       </svg>
       <span class="ch-grid" style="top:100%"></span><span class="ch-y" style="top:100%">40</span><span class="ch-grid" style="top:66.67%"></span><span class="ch-y" style="top:66.67%">45</span><span class="ch-grid" style="top:33.33%"></span><span class="ch-y" style="top:33.33%">50</span><span class="ch-grid" style="top:0%"></span><span class="ch-y" style="top:0%">55</span>
-      <span class="ch-dot ch-dot--calib" style="left:0%;top:100%" title="25.07 — 40 повт. (калибровка), 40 повторов"></span><span class="ch-dot" style="left:12.5%;top:33.33%" title="02.08 — 50 повт., 50 повторов"></span><span class="ch-dot" style="left:25%;top:0%" title="10.08 — 55 повт., 55 повторов"></span><span class="ch-dot" style="left:37.5%;top:33.33%" title="18.08 — 50 повт., 50 повторов"></span><span class="ch-dot" style="left:50%;top:33.33%" title="25.08 — 50 повт., 50 повторов"></span><span class="ch-dot" style="left:62.5%;top:33.33%" title="22.09 — 50 повт., 50 повторов"></span><span class="ch-dot" style="left:75%;top:33.33%" title="29.09 — 50 повт., 50 повторов"></span><span class="ch-dot" style="left:87.5%;top:66.67%" title="10.10 — 45 повт., 45 повторов"></span><span class="ch-dot" style="left:100%;top:66.67%" title="16.10 — 45 повт., 45 повторов"></span>
-      <span class="ch-x" style="left:0%">25.07</span><span class="ch-x" style="left:25%">10.08</span><span class="ch-x" style="left:50%">25.08</span><span class="ch-x" style="left:75%">29.09</span><span class="ch-x" style="left:100%">16.10</span>
+      <span class="ch-dot ch-dot--calib" style="left:0%;top:100%" title="25.07 — 40 повт. (калибровка), 40 повторов"></span><span class="ch-dot" style="left:12.5%;top:33.33%" title="02.08 — 50 повт., 50 повторов"></span><span class="ch-dot" style="left:25%;top:0%" title="10.08 — 55 повт., 55 повторов"></span><span class="ch-dot" style="left:37.5%;top:33.33%" title="18.08 — 50 повт., 50 повторов"></span><span class="ch-dot" style="left:50%;top:33.33%" title="25.08 — 50 повт., 50 повторов"></span><span class="ch-dot" style="left:62.5%;top:33.33%" title="22.09 — 50 повт., 50 повторов"></span><span class="ch-dot" style="left:75%;top:33.33%" title="29.09 — 50 повт., 50 повторов"></span><span class="ch-dot" style="left:87.5%;top:66.67%" title="10.10 — 45 повт., 45 повторов"></span><span class="ch-dot" style="left:100%;top:66.67%" title="15.10 — 45 повт., 45 повторов"></span>
+      <span class="ch-x" style="left:0%">25.07</span><span class="ch-x" style="left:25%">10.08</span><span class="ch-x" style="left:50%">25.08</span><span class="ch-x" style="left:75%">29.09</span><span class="ch-x" style="left:100%">15.10</span>
       <span class="ch-value" style="top:66.67%">45 повт.</span>
     </div>
   </div><div class="chart-legend">
@@ -5380,7 +5430,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <table>
           <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
           <tbody><tr>
-      <td>16.10 <span class="pill pill--calib">разгрузка</span></td>
+      <td>15.10 <span class="pill pill--calib">разгрузка</span></td>
       <td>добивка</td>
       <td class="num">—</td>
       <td class="num">45</td>
@@ -5448,7 +5498,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
       <div class="card__label">Все подходы</div>
       <div style="margin-bottom:12px">
-      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">16 октября · добивка · разгрузка</div>
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">15 октября · добивка · разгрузка</div>
       <div class="sets"><span class="set set--best"><span class="set__r">45</span><span class="set__x">повт.</span></span></div><div class="set-note"><span class="set-note__mark" aria-hidden="true">✱</span><span>Один подход: после футбола 07.10 снова потянул спину, дальше было некомфортно</span></div>
     </div><div style="margin-bottom:12px">
       <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">10 октября · добивка · разгрузка</div>
@@ -5508,12 +5558,12 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       <svg class="chart__svg" viewBox="0 0 100 100" preserveAspectRatio="none" role="img"
            aria-label="Изменение рабочего веса, Скручивания, нижняя часть">
         <defs>
-          <linearGradient id="c3rttzc-fill" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="c3rt6zt-fill" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/>
             <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
           </linearGradient>
         </defs>
-        <path class="ch-area" d="M0.00,100.00 L12.50,100.00 L25.00,50.00 L37.50,0.00 L50.00,0.00 L62.50,0.00 L75.00,0.00 L87.50,50.00 L100.00,50.00 L100,100 L0,100 Z" fill="url(#c3rttzc-fill)"/>
+        <path class="ch-area" d="M0.00,100.00 L12.50,100.00 L25.00,50.00 L37.50,0.00 L50.00,0.00 L62.50,0.00 L75.00,0.00 L87.50,50.00 L100.00,50.00 L100,100 L0,100 Z" fill="url(#c3rt6zt-fill)"/>
         <!-- Прочерчивание сделано срезом кадра (clip-path в CSS), а НЕ штрихом
              по длине пути: при non-scaling-stroke браузер отмеряет
              stroke-dasharray в экранных пикселях и нормализацию через
@@ -5522,8 +5572,8 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <path class="ch-line" d="M0.00,100.00 L12.50,100.00 L25.00,50.00 L37.50,0.00 L50.00,0.00 L62.50,0.00 L75.00,0.00 L87.50,50.00 L100.00,50.00"/>
       </svg>
       <span class="ch-grid" style="top:100%"></span><span class="ch-y" style="top:100%">40</span><span class="ch-grid" style="top:50%"></span><span class="ch-y" style="top:50%">45</span><span class="ch-grid" style="top:0%"></span><span class="ch-y" style="top:0%">50</span>
-      <span class="ch-dot ch-dot--calib" style="left:0%;top:100%" title="25.07 — 40 повт. (калибровка), 40 повторов"></span><span class="ch-dot" style="left:12.5%;top:100%" title="02.08 — 40 повт., 40 повторов"></span><span class="ch-dot" style="left:25%;top:50%" title="10.08 — 45 повт., 45 повторов"></span><span class="ch-dot" style="left:37.5%;top:0%" title="18.08 — 50 повт., 50 повторов"></span><span class="ch-dot" style="left:50%;top:0%" title="25.08 — 50 повт., 50 повторов"></span><span class="ch-dot" style="left:62.5%;top:0%" title="22.09 — 50 повт., 50 повторов"></span><span class="ch-dot" style="left:75%;top:0%" title="29.09 — 50 повт., 50 повторов"></span><span class="ch-dot" style="left:87.5%;top:50%" title="10.10 — 45 повт., 45 повторов"></span><span class="ch-dot" style="left:100%;top:50%" title="16.10 — 45 повт., 45 повторов"></span>
-      <span class="ch-x" style="left:0%">25.07</span><span class="ch-x" style="left:25%">10.08</span><span class="ch-x" style="left:50%">25.08</span><span class="ch-x" style="left:75%">29.09</span><span class="ch-x" style="left:100%">16.10</span>
+      <span class="ch-dot ch-dot--calib" style="left:0%;top:100%" title="25.07 — 40 повт. (калибровка), 40 повторов"></span><span class="ch-dot" style="left:12.5%;top:100%" title="02.08 — 40 повт., 40 повторов"></span><span class="ch-dot" style="left:25%;top:50%" title="10.08 — 45 повт., 45 повторов"></span><span class="ch-dot" style="left:37.5%;top:0%" title="18.08 — 50 повт., 50 повторов"></span><span class="ch-dot" style="left:50%;top:0%" title="25.08 — 50 повт., 50 повторов"></span><span class="ch-dot" style="left:62.5%;top:0%" title="22.09 — 50 повт., 50 повторов"></span><span class="ch-dot" style="left:75%;top:0%" title="29.09 — 50 повт., 50 повторов"></span><span class="ch-dot" style="left:87.5%;top:50%" title="10.10 — 45 повт., 45 повторов"></span><span class="ch-dot" style="left:100%;top:50%" title="15.10 — 45 повт., 45 повторов"></span>
+      <span class="ch-x" style="left:0%">25.07</span><span class="ch-x" style="left:25%">10.08</span><span class="ch-x" style="left:50%">25.08</span><span class="ch-x" style="left:75%">29.09</span><span class="ch-x" style="left:100%">15.10</span>
       <span class="ch-value" style="top:50%">45 повт.</span>
     </div>
   </div><div class="chart-legend">
@@ -5534,7 +5584,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <table>
           <thead><tr><th>Дата</th><th>Роль</th><th class="num">Вес</th><th class="num">Повт.</th><th class="num">Разовый*</th><th>К прошлому</th></tr></thead>
           <tbody><tr>
-      <td>16.10 <span class="pill pill--calib">разгрузка</span></td>
+      <td>15.10 <span class="pill pill--calib">разгрузка</span></td>
       <td>добивка</td>
       <td class="num">—</td>
       <td class="num">45</td>
@@ -5602,7 +5652,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       <p style="font-size:12px;color:var(--ink-3);margin:8px 0 16px">* Оценка разового максимума по формуле Эпли — нужна, чтобы сравнивать подходы с разным весом между собой. Это расчёт, а не то, что ты поднимал.</p>
       <div class="card__label">Все подходы</div>
       <div style="margin-bottom:12px">
-      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">16 октября · добивка · разгрузка</div>
+      <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">15 октября · добивка · разгрузка</div>
       <div class="sets"><span class="set set--best"><span class="set__r">45</span><span class="set__x">повт.</span></span></div><div class="set-note"><span class="set-note__mark" aria-hidden="true">✱</span><span>Один подход: после футбола 07.10 снова потянул спину, дальше было некомфортно</span></div>
     </div><div style="margin-bottom:12px">
       <div style="font-size:12.5px;color:var(--ink-3);margin-bottom:5px">10 октября · добивка · разгрузка</div>
@@ -5766,7 +5816,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <div class="details__body"><details>
     <summary>
       <div class="sum__main">
-        <div class="sum__title">Ноги · 16 октября</div>
+        <div class="sum__title">Ноги · 15 октября</div>
         <div class="sum__sub">21 подход · 21,4 т</div>
       </div>
       <div class="sum__right">
@@ -7909,7 +7959,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
             title="14.10 — 11,4 т"></span>
     </span><span class="ch-col">
       <span class="ch-bar" style="height:71.33%;animation-delay:420ms"
-            title="16.10 — 21,4 т"></span><span class="ch-bar__label">16.10</span>
+            title="15.10 — 21,4 т"></span><span class="ch-bar__label">15.10</span>
     </span></span>
     </div>
   </div>
@@ -8202,13 +8252,13 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
   </section>
 
 <footer class="foot">
-  <p>Сборка 15 октября · версия ce621b64</p>
+  <p>Сборка 15 октября · версия b06f9480</p>
 </footer>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script>window.__PROGRAM__={"day":"chest","dayTitle":"грудь","planDate":"2026-10-12","bodyweight":80.2,"signal":{"topic":"nk-otdyh-1a64fadfa4","message":"Отдых закончился"},"items":[{"role":"main","slot":"chest-press","pick":1,"shared":false,"rest":180,"pair":null,"pairHead":"","meta":"3 подхода по 6–9 повторов, отдых 3 минуты","options":[{"id":"bench-press","name":"Жим лёжа","kind":"barbell","weight":77.5,"sets":3,"stepWeight":2.5,"targetText":"77,5 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">60\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">13\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">70\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":"40 × 8, 60 × 4"},{"id":"db-bench-press","name":"Жим гантелями лёжа","kind":"dumbbell","weight":30,"sets":3,"stepWeight":1,"targetText":"30 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">24\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">28\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":2,"warmup":"16 × 8, 22 × 4"}]},{"role":"accessory","slot":"chest-press","pick":0,"shared":false,"rest":150,"pair":null,"pairHead":"","meta":"3 подхода по 6–9 повторов, отдых 2 минуты 30 секунд","options":[{"id":"incline-bench-press","name":"Жим лёжа на наклонной скамье","kind":"barbell","weight":65,"sets":3,"stepWeight":2.5,"targetText":"65 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">62,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">65\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">65\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"chest-machine","pick":0,"shared":false,"rest":75,"pair":"press-abs","pairHead":"По очереди, отдых 1 минута 15 секунд после каждого подхода","meta":"3 подхода по 6–9 повторов","options":[{"id":"chest-press-machine","name":"Жим от груди сидя","kind":"machine","weight":100,"sets":3,"stepWeight":2.5,"targetText":"100 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">100\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">100\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">100\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"abs","pick":0,"shared":false,"rest":75,"pair":"press-abs","pairHead":"","meta":"3 подхода по 10–15 повторов","options":[{"id":"abs-crunch-db","name":"Скручивания на наклонной скамье с гантелью","kind":"dumbbell","weight":10,"sets":3,"stepWeight":1,"targetText":"Подбор веса: начни с 10 кг","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""},{"id":"abs-crunch-cable","name":"Скручивания на верхнем блоке стоя на коленях","kind":"machine","weight":"","sets":3,"stepWeight":2.5,"targetText":"Подбор веса на 10–15 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""}]},{"role":"accessory","slot":"chest-fly","pick":1,"shared":false,"rest":60,"pair":"fly-biceps","pairHead":"По очереди, отдых 1 минута после каждого подхода","meta":"3 подхода по 6–9 повторов","options":[{"id":"pec-deck","name":"Бабочка","kind":"machine","weight":72,"sets":3,"stepWeight":2.5,"targetText":"72 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">72\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">72\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">72\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":""},{"id":"cable-fly","name":"Разводка от груди в кроссовере","kind":"machine","weight":35,"sets":3,"stepWeight":2.5,"targetText":"35 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">11\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">35\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">35\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"biceps","pick":0,"shared":false,"rest":60,"pair":"fly-biceps","pairHead":"","meta":"3 подхода по 6–9 повторов","options":[{"id":"biceps-machine","name":"Подъём на бицепс в тренажёре сидя","kind":"machine","weight":54,"sets":3,"stepWeight":2.5,"targetText":"54 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">50\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":2,"warmup":"25 × 8"},{"id":"barbell-curl","name":"Подъём штанги на бицепс стоя","kind":"barbell","weight":37.5,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 37,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":"20 × 8"},{"id":"barbell-curl-seated","name":"Подъём штанги на бицепс сидя","kind":"barbell","weight":40,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 40 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">14\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>","chipCols":3,"warmup":"20 × 8"},{"id":"db-curl","name":"Подъём гантели на бицепс сидя","kind":"dumbbell","weight":12.5,"sets":3,"stepWeight":1,"targetText":"12,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">12,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":1,"warmup":"6 × 8"}]},{"role":"accessory","slot":"biceps","pick":0,"shared":false,"rest":60,"pair":"arms","pairHead":"По очереди, отдых 1 минута после каждого подхода","meta":"3 подхода по 6–9 повторов","options":[{"id":"db-curl-standing","name":"Подъём гантелей на бицепс стоя","kind":"dumbbell","weight":15,"sets":3,"stepWeight":1,"targetText":"15 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">15\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">5\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">14\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":2,"warmup":""},{"id":"db-curl","name":"Подъём гантели на бицепс сидя","kind":"dumbbell","weight":12.5,"sets":3,"stepWeight":1,"targetText":"12,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">12,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":1,"warmup":""},{"id":"barbell-curl","name":"Подъём штанги на бицепс стоя","kind":"barbell","weight":37.5,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 37,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":""},{"id":"barbell-curl-seated","name":"Подъём штанги на бицепс сидя","kind":"barbell","weight":40,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 40 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">14\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"triceps","pick":0,"shared":false,"rest":60,"pair":"arms","pairHead":"","meta":"3 подхода по 6–9 повторов","options":[{"id":"triceps-overhead-rope","name":"Трицепс из-за головы с канатом","kind":"machine","weight":"","sets":3,"stepWeight":2.5,"targetText":"Подбор веса на 6–9 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""},{"id":"triceps-overhead-db","name":"Разгибание одной гантели из-за головы сидя","kind":"dumbbell","weight":"","sets":3,"stepWeight":1,"targetText":"Подбор веса на 6–9 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""}]}]};</script>
+<script>window.__PROGRAM__={"day":"chest","dayTitle":"грудь","planDate":"2026-10-12","bodyweight":80.2,"signal":{"topic":"nk-otdyh-1a64fadfa4","message":"Отдых закончился"},"items":[{"role":"main","slot":"chest-press","pick":1,"shared":false,"rest":180,"pair":null,"pairStart":false,"pairHead":"","meta":"отдых 3 мин","options":[{"id":"bench-press","name":"Жим лёжа","kind":"barbell","weight":77.5,"sets":3,"stepWeight":2.5,"targetText":"77,5 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">60\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">13\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">70\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">77,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":"40 × 8, 60 × 4 — потом 2 мин"},{"id":"db-bench-press","name":"Жим гантелями лёжа","kind":"dumbbell","weight":30,"sets":3,"stepWeight":1,"targetText":"30 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">24\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">28\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":2,"warmup":"16 × 8, 22 × 4 — потом 2 мин"}]},{"role":"accessory","slot":"chest-press","pick":0,"shared":false,"rest":150,"pair":null,"pairStart":false,"pairHead":"","meta":"отдых 2 мин 30 сек","options":[{"id":"incline-bench-press","name":"Жим лёжа на наклонной скамье","kind":"barbell","weight":65,"sets":3,"stepWeight":2.5,"targetText":"65 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">62,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">65\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">65\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"chest-machine","pick":0,"shared":false,"rest":75,"pair":"press-abs","pairStart":true,"pairHead":"отдых 1 мин 15 сек","meta":"","options":[{"id":"chest-press-machine","name":"Жим от груди сидя","kind":"machine","weight":100,"sets":3,"stepWeight":2.5,"targetText":"100 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">100\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">100\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">100\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"abs","pick":0,"shared":false,"rest":75,"pair":"press-abs","pairStart":false,"pairHead":"","meta":"","options":[{"id":"abs-crunch-db","name":"Скручивания на наклонной скамье с гантелью","kind":"dumbbell","weight":10,"sets":3,"stepWeight":1,"targetText":"Подбор веса: начни с 10 кг","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""},{"id":"abs-crunch-cable","name":"Скручивания на верхнем блоке стоя на коленях","kind":"machine","weight":"","sets":3,"stepWeight":2.5,"targetText":"Подбор веса на 10–15 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""}]},{"role":"accessory","slot":"chest-fly","pick":1,"shared":false,"rest":60,"pair":"fly-biceps","pairStart":true,"pairHead":"отдых 1 мин","meta":"","options":[{"id":"pec-deck","name":"Бабочка","kind":"machine","weight":72,"sets":3,"stepWeight":2.5,"targetText":"72 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">72\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">72\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">72\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":""},{"id":"cable-fly","name":"Разводка от груди в кроссовере","kind":"machine","weight":35,"sets":3,"stepWeight":2.5,"targetText":"35 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">11\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">35\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">35\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"biceps","pick":0,"shared":false,"rest":60,"pair":"fly-biceps","pairStart":false,"pairHead":"","meta":"","options":[{"id":"biceps-machine","name":"Подъём на бицепс в тренажёре сидя","kind":"machine","weight":54,"sets":3,"stepWeight":2.5,"targetText":"54 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">50\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":2,"warmup":"25 × 8 — потом 2 мин"},{"id":"barbell-curl","name":"Подъём штанги на бицепс стоя","kind":"barbell","weight":37.5,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 37,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":"20 × 8 — потом 2 мин"},{"id":"barbell-curl-seated","name":"Подъём штанги на бицепс сидя","kind":"barbell","weight":40,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 40 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">14\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>","chipCols":3,"warmup":"20 × 8 — потом 2 мин"},{"id":"db-curl","name":"Подъём гантели на бицепс сидя","kind":"dumbbell","weight":12.5,"sets":3,"stepWeight":1,"targetText":"12,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">12,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":1,"warmup":"6 × 8 — потом 2 мин"}]},{"role":"accessory","slot":"biceps","pick":0,"shared":false,"rest":60,"pair":"arms","pairStart":true,"pairHead":"отдых 1 мин","meta":"","options":[{"id":"db-curl-standing","name":"Подъём гантелей на бицепс стоя","kind":"dumbbell","weight":15,"sets":3,"stepWeight":1,"targetText":"15 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">15\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">5\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">14\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":2,"warmup":""},{"id":"db-curl","name":"Подъём гантели на бицепс сидя","kind":"dumbbell","weight":12.5,"sets":3,"stepWeight":1,"targetText":"12,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">12,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":1,"warmup":""},{"id":"barbell-curl","name":"Подъём штанги на бицепс стоя","kind":"barbell","weight":37.5,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 37,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":""},{"id":"barbell-curl-seated","name":"Подъём штанги на бицепс сидя","kind":"barbell","weight":40,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 40 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">30\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">14\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>","chipCols":3,"warmup":""}]},{"role":"accessory","slot":"triceps","pick":0,"shared":false,"rest":60,"pair":"arms","pairStart":false,"pairHead":"","meta":"","options":[{"id":"triceps-overhead-rope","name":"Трицепс из-за головы с канатом","kind":"machine","weight":"","sets":3,"stepWeight":2.5,"targetText":"Подбор веса на 6–9 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""},{"id":"triceps-overhead-db","name":"Разгибание одной гантели из-за головы сидя","kind":"dumbbell","weight":"","sets":3,"stepWeight":1,"targetText":"Подбор веса на 6–9 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":""}]}]};</script>
 <script>
 (function () {
   'use strict';
@@ -8232,7 +8282,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     '<path class="live-done__tick" d="M7.2 12.6l3.2 3.2 6.4-6.9"/></svg>';
   var ICO_CHECK_FLAT = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">' +
     '<path d="M7.2 12.6l3.2 3.2 6.4-6.9"/></svg>';
-  var ICO_CHEV = '<svg class="ico ico--chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>';
+  var ICO_SWAP = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12m-3.5-3.5L18 8l-3.5 3.5M18 16H6m3.5-3.5L6 16l3.5 3.5"/></svg>';
 
   /* ───────────────────────── движение ─────────────────────────
 
@@ -8525,33 +8575,40 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         if (!st || !o) return;
         var doneCount = st.sets.filter(function (s) { return s.done; }).length;
 
-        // Пара суперсета — общей рамкой с отдыхом в шапке: отдых у пары один,
-        // после каждого подхода.
-        if (it.pairHead) {
+        // Пара суперсета — общей полосой слева и шапкой с отдыхом: отдых
+        // у пары один, после каждого подхода.
+        if (it.pairStart) {
           html += '<div class="pair pair--live" data-livepair><div class="pair__head"><span class="pair__cap">Суперсет</span>' +
-            esc(it.pairHead) + '</div>';
+            (it.pairHead ? '<span class="pair__rest">' + esc(it.pairHead) + '</span>' : '') + '</div>';
         }
 
+        // Шапка: название во всю ширину карточки, под ним одна строка —
+        // отдых слева, замена и счётчик справа. Цель, «Добивка» и «3 подхода
+        // по 6–9» убраны (Никита, 15.10.2026): цель уже стоит в полях веса
+        // и в «Прошлом разе», остальное он знает.
+        var swappable = it.options.length > 1;
+        var open = swappable && openSwap === pos;
         html += '<div class="live-ex" data-ex="' + pos + '">';
         html += '<div class="live-ex__head">';
-        html += '<div style="min-width:0">';
-        html += '<span class="ex__role' + (it.role === 'main' ? '' : ' ex__role--acc') + '">' + (it.role === 'main' ? 'Основное' : 'Добивка') + '</span>';
+        if (it.role === 'main') html += '<span class="ex__role">Основное</span>';
         html += '<h3 class="ex__name">' + esc(o.name) + '</h3>';
-        html += '<div class="live-target">Цель: ' + esc(o.targetText) + '</div>';
-        if (it.meta) html += '<div class="live-target live-meta">' + esc(it.meta) + '</div>';
-        html += '</div>';
+        html += '<div class="live-ex__bar">';
+        html += '<span class="live-meta">' + esc(it.meta || '') + '</span>';
+        html += '<span class="live-ex__tools">';
+        // Замена — маленькой кнопкой: нужна раз в тренировку, когда тренажёр
+        // занят, и строкой на всю ширину отрезала шапку от подходов.
+        if (swappable) {
+          html += '<button type="button" class="swap__open' + (open ? ' is-open' : '') + '" data-swapopen="' + pos +
+            '" aria-expanded="' + (open ? 'true' : 'false') + '" aria-label="Сменить упражнение">' + ICO_SWAP +
+            '<span class="swap__open-text">Сменить</span></button>';
+        }
         var allDone = st.sets.length > 0 && doneCount === st.sets.length;
         html += '<span class="pill' + (allDone ? ' is-done' : '') + '" data-count="' + pos + '">' + doneCount + ' / ' + st.sets.length + '</span>';
-        html += '</div>';
+        html += '</span></div></div>';
         html += '<div class="live-ex__body">';
 
-        // Замена внутри слота. Список закрыт по умолчанию: в зале нужен
-        // не выбор, а цифры — выбор нужен раз в тренировку.
-        if (it.options.length > 1) {
-          var open = openSwap === pos;
-          html += '<button type="button" class="swap__open' + (open ? ' is-open' : '') + '" data-swapopen="' + pos +
-            '" aria-expanded="' + (open ? 'true' : 'false') + '">';
-          html += '<span>Сменить упражнение</span>' + ICO_CHEV + '</button>';
+        // Список замен закрыт по умолчанию: в зале нужен не выбор, а цифры.
+        if (swappable) {
           html += '<div class="swap"' + (open ? '' : ' hidden') + ' data-swap="' + pos + '">';
           it.options.forEach(function (opt, k) {
             html += '<button type="button" class="swap__opt' + (k === st.pick ? ' is-on' : '') +
@@ -8597,7 +8654,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         var next = PROGRAM.items[pos + 1];
         if (it.pair && !(next && next.pair === it.pair)) {
           // Рамка пары закрывается за её последним движением.
-          if (PROGRAM.items.some(function (x, k) { return k <= pos && x.pairHead && x.pair === it.pair; })) html += '</div>';
+          if (PROGRAM.items.some(function (x, k) { return k <= pos && x.pairStart && x.pair === it.pair; })) html += '</div>';
         }
       });
 
@@ -8665,10 +8722,8 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       live.querySelectorAll('[data-field]').forEach(function (el) {
         el.addEventListener('input', function () {
           var key = el.getAttribute('data-field');
-          var was = getValue(key);
           setValue(key, el.value === '' ? '' : +el.value);
           save();
-          restOnReps(key, was);
         });
       });
 
@@ -8683,9 +8738,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
           if (cur === '' && key === 'bw' && PROGRAM.bodyweight) cur = PROGRAM.bodyweight;
           var next = Math.round(((cur === '' ? 0 : +cur) + dir * step) * 100) / 100;
           if (next < 0) next = 0;
-          var was = getValue(key);
           setValue(key, next);
-          restOnReps(key, was);
           var field = live.querySelector('[data-field="' + key + '"]');
           if (field) {
             field.value = next;
@@ -8709,6 +8762,10 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
           save();
           el.classList.toggle('is-done', s.done);
           el.setAttribute('aria-pressed', s.done ? 'true' : 'false');
+          // Отдых идёт от галочки и только от неё: цифры вписываются и до,
+          // и после подхода, а «Готово» на клавиатуре айфона — не конец
+          // подхода. Снятая галочка гасит отдых, который от неё пошёл.
+          if (s.done) startRest(+p[0], +p[1]); else undoRest(+p[0], +p[1]);
           var pill = live.querySelector('[data-count="' + p[0] + '"]');
           if (pill) {
             var done = st.sets.filter(function (x) { return x.done; }).length;
@@ -8873,9 +8930,10 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
 
     /* ───────────────────────── отдых между подходами ───────────────────────── */
 
-    // Вписал повторы подхода — пошёл отдых этого места программы: полоса
+    // Поставил галочку подхода — пошёл отдых этого места программы: полоса
     // внизу экрана, что делать дальше, и сигнал в ntfy на заблокированный
-    // экран. Страница при заблокированном экране заморожена и сама подать
+    // экран. До 15.10.2026 отдых шёл от первой цифры повторов и стартовал
+    // посреди набора и от «Готово» на клавиатуре — Никита попросил галочку. Страница при заблокированном экране заморожена и сама подать
     // сигнал не может (решение Никиты 15.10.2026). В ntfy всегда ОДИН
     // отложенный заказ: следующий подход заменяет его по тому же номеру,
     // и прерванный отдых не догоняет уведомлением. Снимать пришедшее
@@ -8885,6 +8943,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     var restState = loadRest();
     var restEl = null;
     var restTimer = null;
+    var slideTimer = null;
 
     function loadRest() {
       try {
@@ -8897,13 +8956,17 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       try { localStorage.setItem(REST_STORE, JSON.stringify(restState)); } catch (e) {}
     }
 
-    function isEmpty(v) { return v === '' || v === null || v === undefined; }
+    // Последний подход дня отдыха не даёт, но и его галочку могут поставить
+    // по ошибке посреди отдыха — тогда снятая галочка вернёт тот отдых.
+    var lastTick = null;
 
-    /** Повторы подхода появились впервые — отдых пошёл. Правка вписанного не перезапускает. */
-    function restOnReps(key, was) {
-      var p = String(key).split('|');
-      if (p[0] !== 'r' || !isEmpty(was) || isEmpty(getValue(key))) return;
-      startRest(+p[1], +p[2]);
+    /** Отдых ещё на экране: идёт или кончился меньше двух минут назад. */
+    function alive(r) { return !!(r && r.ends && r.ends + 120000 > Date.now()); }
+
+    /** Копия отдыха без вложенного прошлого: возврат — на один шаг, не цепочкой. */
+    function bare(r) {
+      return { ends: r.ends, total: r.total, step: r.step, name: r.name, next: r.next,
+               signal: r.signal, pos: r.pos, set: r.set };
     }
 
     function setsOf(pos) { var st = itemState(pos); return st ? st.sets.length : 0; }
@@ -8934,23 +8997,60 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       return after(b);
     }
 
-    function nextText(t) {
+    /**
+     * Что дальше — двумя строками: «Дальше · подход 2» и название. Одной
+     * фразой номер подхода повисал один на второй строке под длинным
+     * названием (Никита, 15.10.2026).
+     */
+    function nextOf(t) {
       var o = chosen(t.pos);
-      if (!o) return '';
+      if (!o) return { step: '', name: '' };
       var warm = t.set === 0 && o.warmup ? ', сначала разминка' : '';
-      return 'Дальше — ' + o.name + ', подход ' + (t.set + 1) + warm;
+      return { step: 'Дальше · подход ' + (t.set + 1) + warm, name: o.name };
     }
 
+    /**
+     * Галочка подхода поставлена — пошёл отдых этого места. Отдых, который
+     * шёл до неё, запоминается: если галочка случайная, её снятие вернёт его.
+     */
     function startRest(pos, idx) {
       var it = programItem(pos);
       if (!it || !it.rest) return;
+      var prev = alive(restState) ? bare(restState) : null;
       var t = nextStep(pos, idx);
       // Последний подход дня: отдыхать не перед чем, сигнал не нужен.
-      if (!t) { stopRest(); return; }
-      restState = { ends: Date.now() + it.rest * 1000, total: it.rest, next: nextText(t), signal: 'wait' };
+      if (!t) { stopRest(); lastTick = { pos: pos, set: idx, prev: prev }; return; }
+      var n = nextOf(t);
+      lastTick = null;
+      restState = { ends: Date.now() + it.rest * 1000, total: it.rest, step: n.step, name: n.name,
+                    signal: 'wait', pos: pos, set: idx, prev: prev };
       saveRest();
       showRest();
       sendSignal(restState);
+    }
+
+    /**
+     * Галочку сняли. Отдых, который пошёл от неё, сразу гаснет, а тот, что шёл
+     * до случайного нажатия, возвращается с того же места — как будто нажатия
+     * не было. Чужой отдых снятие не трогает.
+     *
+     * Заказ сигнала удалять нельзя: ntfy рассылает удаление подписчикам сразу,
+     * событием, а айфон показывает такое пустой записью (тестовая тема,
+     * 15.10.2026). Поэтому вернувшийся отдых заказывает сигнал заново — заказ
+     * с тем же номером заменяет случайный. Если возвращать нечего, случайный
+     * заказ заменит следующая галочка.
+     */
+    function undoRest(pos, idx) {
+      var mine = function (r) { return r && r.pos === pos && r.set === idx; };
+      var from = mine(restState) ? restState : mine(lastTick) ? lastTick : null;
+      if (!from) return;
+      lastTick = null;
+      var prev = alive(from.prev) ? from.prev : null;
+      if (!prev) { stopRest(); return; }
+      restState = prev;
+      saveRest();
+      showRest();
+      if (prev.ends > Date.now()) { prev.signal = 'wait'; sendSignal(prev); }
     }
 
     function sendSignal(st) {
@@ -8991,42 +9091,69 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         restEl.className = 'rest';
         restEl.id = 'rest';
         restEl.setAttribute('role', 'timer');
-        restEl.innerHTML = '<div class="rest__row"><span class="rest__cap">Отдых</span>' +
-          '<span class="rest__time" data-rest-time></span></div>' +
-          '<div class="rest__next" data-rest-next></div>' +
-          '<div class="rest__note" data-rest-note></div>' +
-          '<div class="rest__track"><div class="rest__fill" data-rest-fill></div></div>';
+        restEl.innerHTML = '<div class="rest__row"><span class="rest__cap" data-rest-cap>Отдых</span>' +
+          '<span class="rest__time" data-rest-time></span>' +
+          '<span class="rest__done" data-rest-done hidden>Отдых закончился</span></div>' +
+          '<div class="rest__track"><div class="rest__fill" data-rest-fill></div></div>' +
+          '<div class="rest__next"><span class="rest__step" data-rest-step></span>' +
+          '<span class="rest__name" data-rest-name></span></div>' +
+          '<div class="rest__note" data-rest-note></div>';
         // Тап по полосе убирает её. Заказ в ntfy остаётся: следующий подход
         // всё равно его заменит.
         restEl.addEventListener('click', stopRest);
         document.body.appendChild(restEl);
+        // Положение за краем экрана фиксируется до выезда: без замера браузер
+        // склеивает оба состояния в один кадр, и полоса возникает рывком.
+        void restEl.offsetHeight;
       }
-      restEl.hidden = false;
-      document.body.classList.add('has-rest');
+      clearTimeout(slideTimer);
       tickRest();
+      restEl.classList.add('is-on');
+      document.body.classList.add('has-rest');
       if (!restTimer) restTimer = setInterval(tickRest, 250);
+    }
+
+    /** Текст меняется, только если стал другим: так не дёргается раскладка. */
+    function put(sel, text) {
+      var el = restEl.querySelector(sel);
+      if (el.textContent !== text) el.textContent = text;
     }
 
     function tickRest() {
       if (!restState || !restEl) return;
+      if (!alive(restState)) { stopRest(); return; }
       var left = Math.max(0, Math.ceil((restState.ends - Date.now()) / 1000));
-      if (restState.ends + 120000 < Date.now()) { stopRest(); return; }
       var over = left === 0;
       restEl.classList.toggle('is-over', over);
-      restEl.querySelector('[data-rest-time]').textContent = over ? 'закончился' : mmss(left);
-      restEl.querySelector('[data-rest-next]').textContent = restState.next;
-      restEl.querySelector('[data-rest-note]').textContent = restState.signal === 'fail'
-        ? 'Сигнал на заблокированный экран не отправлен — нет сети' : '';
+      restEl.querySelector('[data-rest-cap]').hidden = over;
+      restEl.querySelector('[data-rest-time]').hidden = over;
+      restEl.querySelector('[data-rest-done]').hidden = !over;
+      put('[data-rest-time]', mmss(left));
+      // Отдых, сохранённый прошлой версией страницы, нёс одну строку «next».
+      put('[data-rest-step]', restState.step || restState.next || '');
+      put('[data-rest-name]', restState.name || '');
+      put('[data-rest-note]', restState.signal === 'fail'
+        ? 'Сигнал на заблокированный экран не отправлен — нет сети' : '');
       restEl.querySelector('[data-rest-fill]').style.width =
         Math.min(100, (1 - left / restState.total) * 100).toFixed(1) + '%';
+      // Отступ под полосой — по её высоте: название бывает в одну строку и в две.
+      document.body.style.setProperty('--rest-h', restEl.offsetHeight + 'px');
     }
 
     function stopRest() {
       restState = null;
       saveRest();
       if (restTimer) { clearInterval(restTimer); restTimer = null; }
-      if (restEl) restEl.hidden = true;
-      document.body.classList.remove('has-rest');
+      if (!restEl) return;
+      restEl.classList.remove('is-on');
+      // Отступ под полосой уходит, когда она уже уехала: иначе низ страницы
+      // прыгает, пока полоса ещё на экране. Длительность — из стилей, чтобы
+      // темп жил в одном месте; при «уменьшить движение» она нулевая.
+      var dur = parseFloat(getComputedStyle(restEl).transitionDuration) || 0;
+      clearTimeout(slideTimer);
+      slideTimer = setTimeout(function () {
+        if (!restState) document.body.classList.remove('has-rest');
+      }, dur * 1000 + 30);
     }
 
     render();
@@ -9072,7 +9199,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
 
   if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
     window.addEventListener('load', function () {
-      Promise.reject().catch(function () {});
+      navigator.serviceWorker.register('sw.js').catch(function () {});
     });
   }
 })();
