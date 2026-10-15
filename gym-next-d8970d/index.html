@@ -828,18 +828,12 @@ tr:last-child td { border-bottom: 0; }
 
 .live-ex { border: 1px solid var(--line); border-radius: var(--r-m); background: var(--surface-1); margin-bottom: 10px; overflow: hidden; }
 /* Шапка формы — две колонки (Никита, 15.10.2026). Слева название и под ним
-   отдых; справа счётчик в правом верхнем углу, в одной точке у всех карточек,
-   и прямо под ним «Сменить». Название в одну строку, если не задевает
-   счётчик, иначе в две ровные. «Сменить» висит под счётчиком абсолютно:
-   в потоке она задала бы колонке свою ширину (86 пикселей против 47
-   у счётчика), и названия, которые помещаются рядом со счётчиком, рвались бы
-   из-за кнопки строкой ниже. Обтекание тут не годится: Chromium при нём
-   не выравнивает строки, и «сидя» повисало одно на второй строке.
-   Ритм строк: счётчик и «Сменить» по 22 пикселя через 4, строка названия 24,
-   отдых — 18 через 4, «Основное» — 22 через 2. Тогда при названии в строку
-   отдых встаёт ровно напротив «Сменить», при двух строках «Сменить» —
-   напротив второй, у главного — напротив названия под «Основное»
-   (расхождение центров не больше пикселя). */
+   отдых; справа только счётчик — в правом верхнем углу, в одной точке у всех
+   карточек. Название в одну строку, если не задевает счётчик, иначе в две
+   ровные. «Сменить» здесь стояла под счётчиком и слипалась с ним и с концом
+   длинного названия — теперь она внизу, рядом с «+ подход».
+   Ритм строк: счётчик 22 пикселя, строка названия 24, отдых — 18 через 4,
+   «Основное» — 22 через 2; первая строка — по центру счётчика. */
 .live-ex__head {
   display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 10px; align-items: start;
   padding: 13px 14px 11px;
@@ -847,12 +841,8 @@ tr:last-child td { border-bottom: 0; }
 .live-ex__main { min-width: 0; }
 .live-ex__main .ex__name { line-height: 24px; text-wrap: balance; }
 .live-ex__main .ex__role { display: block; line-height: 22px; margin-bottom: 2px; }
-.live-ex__side { position: relative; display: flex; flex-direction: column; align-items: flex-end; }
+.live-ex__side { display: flex; flex-direction: column; align-items: flex-end; }
 .live-ex__side .pill { height: 22px; padding: 0 9px; }
-.has-swap .live-ex__side { min-height: 48px; }
-.live-ex__side .swap__open { position: absolute; right: 0; top: 26px; height: 22px; }
-/* Палец ловит по-прежнему 44 пикселя: кнопка стала на 2 ниже — поле шире на 1 сверху и снизу. */
-.live-ex__side .swap__open::after { top: -11px; bottom: -11px; }
 .live-meta { display: block; margin-top: 4px; font-size: 13px; color: var(--ink-2); line-height: 18px; white-space: nowrap; }
 .live-meta:empty { display: none; }
 .live-ex__body { padding: 0 14px 13px; }
@@ -994,29 +984,22 @@ tr:last-child td { border-bottom: 0; }
 /* Замена упражнения внутри слота — то, что раньше приходилось держать
    в голове: икры идут то сидя, то в гакк-машине, на груди жим лёжа
    и жим гантелей меняются местами. Список закрыт по умолчанию: в зале
-   нужны цифры, а выбор делается раз за тренировку. Кнопка — маленькая,
-   контуром, рядом со счётчиком (Никита 15.10.2026: строка «Сменить
-   упражнение» на всю ширину отрезала шапку от подходов). Видимая высота
-   как у счётчика, а палец ловит поле в 44 пикселя — его даёт ::after. */
-.swap__open {
-  position: relative;
-  display: inline-flex; align-items: center; gap: 4px;
-  height: 24px; padding: 0 9px 0 7px;
-  border: 1px solid #3A3A3F; border-radius: 999px;
-  background: transparent;
-  color: var(--ink-2);
-  font-family: var(--font-body); font-size: 12px; font-weight: 500; line-height: 1;
-  cursor: pointer;
-  -webkit-appearance: none; appearance: none;
-  transition: background var(--t-quick) var(--ease), color var(--t-quick) var(--ease),
-              border-color var(--t-quick) var(--ease), transform var(--t-tap) var(--ease);
+   нужны цифры, а выбор делается раз за тренировку. Кнопка — внизу карточки,
+   рядом с «+ подход», того же размера и вида, у правого края: снизу две
+   возможности — добавить подход или сменить упражнение (Никита 15.10.2026:
+   строка на всю ширину отрезала шапку от подходов, а маленькая кнопка
+   под счётчиком слипалась с ним и с концом длинного названия). Список
+   раскрывается под кнопкой. */
+.live-ex__btn { padding: 8px 14px; font-size: 13.5px; }
+.live-ex__foot .swap__open {
+  margin-left: auto; gap: 6px;
+  transition: background var(--t-quick) var(--ease), border-color var(--t-quick) var(--ease),
+              transform var(--t-tap) var(--ease), filter var(--t-quick) var(--ease);
 }
-.swap__open::after { content: ''; position: absolute; left: -4px; right: -4px; top: -10px; bottom: -10px; }
-.swap__open:active { transform: scale(.96); }
-.swap__open .ico { width: 14px; height: 14px; flex: none; }
-.swap__open.is-open { background: var(--surface-3); border-color: var(--surface-3); color: var(--ink); }
+.swap__open .ico { width: 15px; height: 15px; flex: none; }
+.swap__open.is-open { background: var(--surface-3); border-color: var(--surface-3); }
 
-.swap { display: grid; gap: 6px; margin-bottom: 10px; }
+.swap { display: grid; gap: 6px; margin-top: 10px; }
 /* Свой display перебивает браузерное правило для атрибута hidden:
    у таблицы страницы специфичность выше. Без этой строки список замен
    стоит раскрытым с самого открытия, хотя атрибут на месте. Поймал
@@ -1159,41 +1142,12 @@ body.has-rest { padding-bottom: var(--rest-h, 132px); }
 .rest.is-over .rest__track { background: rgba(14, 14, 14, .18); }
 .rest.is-over .rest__fill { background: var(--accent-ink); }
 
-/* Разминка не вписывается, поэтому без полей. Строкой над подходами она
-   утяжеляла шапку и вставала невпопад (Никита, 15.10.2026) — два варианта
-   на выбор, переключатель WARM_VIEW в app.js.
-   «Плашка»: справа от «+ подход», в свободном углу карточки. Высота кнопки,
-   две строки: сверху подпись и что после разминки, снизу цифры. Без рамки,
-   чтобы не читалась кнопкой рядом с настоящей. Плашка занимает весь остаток
-   строки; где остатка меньше 165 пикселей (у упражнения на 4 подхода рядом
-   стоит и «− подход», на 320 пикселях — у всех), она уходит под кнопки
-   во всю ширину. Сделанная разминка тает и уходит из строки. */
 .live-ex__foot { margin-top: 8px; align-items: center; }
-.live-warm {
-  display: flex; flex-direction: column; justify-content: center;
-  flex: 1 1 165px; min-height: var(--tap);
-  padding: 5px 11px;
-  border-radius: var(--r-s);
-  background: var(--surface-2);
-  font-size: 12.5px; line-height: 16px; color: var(--ink);
-  transition: opacity var(--t-quick) var(--ease);
-}
-.live-warm__cap {
-  font-family: var(--font-display);
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: var(--ink-2);
-}
-.live-warm__top { display: flex; align-items: baseline; gap: 6px; white-space: nowrap; }
-.live-warm__top .live-warm__tail { font-size: 12px; color: var(--ink-2); }
-.live-warm__top .live-warm__tail::before { content: '·'; margin-right: 6px; }
-.live-warm.is-fading { opacity: 0; }
-.live-warm.is-gone { display: none; }
-/* «Строки»: бледные цифры в колонках веса и повторов над первым подходом,
-   справа — «разминка» и у последней строки хвост. Сделанная бледнеет ещё
-   сильнее, но остаётся: иначе таблица сдвинулась бы под пальцем. */
+/* Разминка не вписывается, поэтому без полей и галочки: бледные цифры
+   в колонках веса и повторов над первым подходом, справа — «разминка»
+   и у последней строки хвост (Никита выбрал этот вид из двух, 15.10.2026).
+   Сделанная бледнеет ещё сильнее, но остаётся: иначе таблица сдвинулась бы
+   под пальцем. */
 .live-set--warm { padding: 4px 0; min-height: 34px; transition: opacity var(--t-quick) var(--ease); }
 .live-warm__num { text-align: center; font-size: 14px; color: var(--ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .live-warm__tag {
@@ -1381,9 +1335,12 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
      там кнопки полного размера. */
   .stepper__btn { min-width: 16px; }
   .live-done { width: 38px; }
-  /* Узкой шапке тесно: у замены под счётчиком остаётся только значок. */
-  .swap__open { padding: 0 7px; }
-  .swap__open-text { display: none; }
+  /* Три кнопки с подписями — «+ подход», «− подход», «Сменить» — занимают
+     300 пикселей, а нижней строке здесь остаётся 287 и меньше. У «− подход»
+     остаётся знак: рядом с «+ подход» он читается сразу, а подпись «Сменить»
+     остаётся целой. */
+  .live-ex__del { min-width: var(--tap); padding-left: 0; padding-right: 0; }
+  .live-ex__btn-word { display: none; }
   /* «до суперсета» в строке разминки на 320 пикселях вставало в 4 пикселях
      от числа повторов. */
   .live-warm__tag { font-size: 10px; line-height: 12px; }
@@ -1393,6 +1350,13 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
   .stat__label { font-size: 11px; }
   .sum__title { font-size: 14px; }
   .delta { font-size: 12px; padding: 3px 7px; }
+}
+
+/* Уже 350 пикселей рядом с «− подход» не помещается и подпись «Сменить»:
+   остаётся значок, подпись слышит экранный чтец. */
+@media (max-width: 349px) {
+  .has-del .swap__open { min-width: var(--tap); padding-left: 0; padding-right: 0; }
+  .has-del .swap__open-text { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -8308,7 +8272,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
   </section>
 
 <footer class="foot">
-  <p>Сборка 15 октября · версия f6332871</p>
+  <p>Сборка 15 октября · версия ff1a060c</p>
 </footer>
 </main>
 
@@ -8329,11 +8293,6 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
   // Меньше трёх подходов на упражнение не бывает — удалять можно только то,
   // что добавлено сверху. Иначе одно случайное нажатие сносит программу.
   var MIN_SETS = 3;
-
-  // Где стоит разминка: 'plate' — плашкой справа от «+ подход», 'rows' —
-  // бледными строками над первым подходом. Два варианта на выбор Никите
-  // (15.10.2026): копия для показа собирает второй заменой этой строки.
-  var WARM_VIEW = 'plate';
 
   // Знаки нарисованы фигурами: глифы шрифта стоят в кнопке вкось.
   var ICO_MINUS = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12"/></svg>';
@@ -8643,43 +8602,36 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         }
 
         // Шапка — две колонки (Никита, 15.10.2026). Слева название и под ним
-        // отдых. Справа счётчик в правом верхнем углу, в одной точке у всех
-        // карточек, и прямо под ним «Сменить». Название ложится в одну строку,
-        // если не задевает счётчик, иначе — в две ровные. «Сменить» висит под
-        // счётчиком и ширину колонки не задаёт: иначе названия, которые
-        // помещаются рядом со счётчиком, рвались бы из-за кнопки ниже.
+        // отдых, справа только счётчик — в правом верхнем углу, в одной точке
+        // у всех карточек. Название ложится в одну строку, если не задевает
+        // счётчик, иначе — в две ровные.
         var swappable = it.options.length > 1;
         var open = swappable && openSwap === pos;
         var allDone = st.sets.length > 0 && doneCount === st.sets.length;
         html += '<div class="live-ex" data-ex="' + pos + '">';
-        html += '<div class="live-ex__head' + (swappable ? ' has-swap' : '') + '">';
+        html += '<div class="live-ex__head">';
         html += '<div class="live-ex__main">';
         if (it.role === 'main') html += '<span class="ex__role">Основное</span>';
         html += '<h3 class="ex__name">' + esc(o.name) + '</h3>';
         html += '<span class="live-meta">' + esc(it.meta || '') + '</span>';
         html += '</div><div class="live-ex__side">';
         html += '<span class="pill' + (allDone ? ' is-done' : '') + '" data-count="' + pos + '">' + doneCount + ' / ' + st.sets.length + '</span>';
-        // Замена — маленькой кнопкой: нужна раз в тренировку, когда тренажёр
-        // занят, и строкой на всю ширину отрезала шапку от подходов.
-        if (swappable) {
-          html += '<button type="button" class="swap__open' + (open ? ' is-open' : '') + '" data-swapopen="' + pos +
-            '" aria-expanded="' + (open ? 'true' : 'false') + '" aria-label="Сменить упражнение">' + ICO_SWAP +
-            '<span class="swap__open-text">Сменить</span></button>';
-        }
         html += '</div></div>';
         html += '<div class="live-ex__body">';
 
         // Список замен закрыт по умолчанию: в зале нужен не выбор, а цифры.
+        // Стоит под кнопкой «Сменить» — раскрывается там, где палец.
+        var swapList = '';
         if (swappable) {
-          html += '<div class="swap"' + (open ? '' : ' hidden') + ' data-swap="' + pos + '">';
+          swapList += '<div class="swap"' + (open ? '' : ' hidden') + ' data-swap="' + pos + '">';
           it.options.forEach(function (opt, k) {
-            html += '<button type="button" class="swap__opt' + (k === st.pick ? ' is-on' : '') +
+            swapList += '<button type="button" class="swap__opt' + (k === st.pick ? ' is-on' : '') +
               '" data-swappick="' + pos + '|' + k + '" aria-pressed="' + (k === st.pick ? 'true' : 'false') + '">' +
               '<span class="swap__opt-name">' + esc(opt.name) + '</span>' +
               (k === st.pick ? '<span class="swap__opt-tick" aria-hidden="true">' + ICO_CHECK_FLAT + '</span>' : '') +
               '</button>';
           });
-          html += '</div>';
+          swapList += '</div>';
         }
 
         var noWeight = (o.kind === 'bodyweight' || o.kind === 'reps');
@@ -8694,11 +8646,11 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         if (!noWeight) html += '<span>' + weightCap + '</span>';
         html += '<span>повторов</span><span></span></div>';
 
-        // Вариант «строки»: разминка — бледными строками над первым подходом,
-        // в тех же колонках веса и повторов, без полей и галочки. Сделанная
-        // не исчезает, а бледнеет ещё сильнее: убранные строки сдвинули бы
-        // таблицу вверх прямо под пальцем.
-        if (WARM_VIEW === 'rows' && o.warmText) {
+        // Разминка — бледными строками над первым подходом, в тех же колонках
+        // веса и повторов, без полей и галочки (Никита выбрал из двух
+        // вариантов, 15.10.2026). Сделанная не исчезает, а бледнеет ещё
+        // сильнее: убранные строки сдвинули бы таблицу вверх прямо под пальцем.
+        if (o.warmText) {
           o.warmSets.forEach(function (s, k) {
             var last = k === o.warmSets.length - 1;
             html += '<div class="live-set live-set--warm' + wide + warmGone + '" data-warm="' + pos + '">';
@@ -8721,22 +8673,26 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
           html += '</div>';
         });
 
-        html += '<div class="btn-row live-ex__foot">';
-        html += '<button type="button" class="btn btn--ghost" data-addset="' + pos + '" style="padding:8px 14px;font-size:13.5px">+ подход</button>';
-        if (st.sets.length > minSets(o)) {
-          html += '<button type="button" class="btn btn--ghost" data-delset="' + pos + '" style="padding:8px 14px;font-size:13.5px">− подход</button>';
+        // Внизу — две возможности: добавить подход или сменить упражнение.
+        // «Сменить» того же размера, что «+ подход», у правого края (Никита,
+        // 15.10.2026: в шапке она слипалась со счётчиком и названием, а справа
+        // от «+ подход» пустовало).
+        var canDel = st.sets.length > minSets(o);
+        html += '<div class="btn-row live-ex__foot' + (canDel ? ' has-del' : '') + '">';
+        html += '<button type="button" class="btn btn--ghost live-ex__btn" data-addset="' + pos + '">+ подход</button>';
+        // Слово «подход» — отдельно: на узком экране у «− подход» остаётся
+        // знак, и подпись «Сменить» помещается рядом.
+        if (canDel) {
+          html += '<button type="button" class="btn btn--ghost live-ex__btn live-ex__del" data-delset="' + pos +
+            '" aria-label="Убрать подход"><span>−<span class="live-ex__btn-word"> подход</span></span></button>';
         }
-        // Вариант «плашка»: разминка — справа от «+ подход», в свободном углу
-        // карточки, а не строкой над подходами: там она утяжеляла шапку
-        // (Никита, 15.10.2026). Две строки по высоте кнопки: сверху подпись
-        // и что после разминки, снизу цифры.
-        if (WARM_VIEW === 'plate' && o.warmText) {
-          html += '<span class="live-warm' + warmGone + '" data-warm="' + pos + '">' +
-            '<span class="live-warm__top"><span class="live-warm__cap">Разминка</span>' +
-            (o.warmTail ? '<span class="live-warm__tail">' + esc(o.warmTail) + '</span>' : '') + '</span>' +
-            '<span class="live-warm__val">' + esc(o.warmText) + '</span></span>';
+        if (swappable) {
+          html += '<button type="button" class="btn btn--ghost live-ex__btn swap__open' + (open ? ' is-open' : '') + '" data-swapopen="' + pos +
+            '" aria-expanded="' + (open ? 'true' : 'false') + '" aria-label="Сменить упражнение">' + ICO_SWAP +
+            '<span class="swap__open-text">Сменить</span></button>';
         }
         html += '</div>';
+        html += swapList;
         html += '</div></div>';
 
         var next = PROGRAM.items[pos + 1];
@@ -9091,28 +9047,14 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
 
     /**
      * Галочку поставили или сняли — разминка места и его пары гаснет или
-     * возвращается. Плашка сперва тает и только потом уходит из строки;
-     * строки разминки только бледнеют — таблица не сдвигается под пальцем.
+     * возвращается. Строки разминки только бледнеют — таблица не сдвигается
+     * под пальцем.
      */
     function syncWarm(pos) {
       var gone = warmDone(pos);
       warmSpan(pos).forEach(function (p) {
         live.querySelectorAll('[data-warm="' + p + '"]').forEach(function (el) {
-          var want = gone ? 'gone' : 'shown';
-          var now = el.getAttribute('data-warm-state') || (el.classList.contains('is-gone') ? 'gone' : 'shown');
-          if (now === want) return;
-          el.setAttribute('data-warm-state', want);
-          clearTimeout(el._warmTimer);
-          if (WARM_VIEW !== 'plate') { el.classList.toggle('is-gone', gone); return; }
-          el.classList.add('is-fading');
-          if (gone) {
-            var ms = parseFloat(getComputedStyle(el).transitionDuration) * 1000 || 0;
-            el._warmTimer = setTimeout(function () { el.classList.add('is-gone'); el.classList.remove('is-fading'); }, ms);
-          } else {
-            el.classList.remove('is-gone');
-            void el.offsetWidth;   // кадр с прозрачной плашкой — иначе она не проявится, а мигнёт
-            el.classList.remove('is-fading');
-          }
+          el.classList.toggle('is-gone', gone);
         });
       });
     }
