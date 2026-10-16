@@ -991,6 +991,10 @@ tr:last-child td { border-bottom: 0; }
    под счётчиком слипалась с ним и с концом длинного названия). Список
    раскрывается под кнопкой. */
 .live-ex__btn { padding: 8px 14px; font-size: 13.5px; }
+/* Знак «−» фигурой — только там, где слово «подход» спрятано (до 380 px):
+   16 пикселей дают черту в 8 и толщину в полтора, как у «+» соседней кнопки. */
+.live-ex__del-ico { display: none; }
+.live-ex__del-ico .ico { width: 16px; height: 16px; }
 .live-ex__foot .swap__open {
   margin-left: auto; gap: 6px;
   transition: background var(--t-quick) var(--ease), border-color var(--t-quick) var(--ease),
@@ -1339,6 +1343,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
      остаётся целой. */
   .live-ex__del { min-width: var(--tap); padding-left: 0; padding-right: 0; }
   .live-ex__btn-word { display: none; }
+  .live-ex__del-ico { display: block; }
   /* «до суперсета» в строке разминки на 320 пикселях вставало в 4 пикселях
      от числа повторов. */
   .live-warm__tag { font-size: 10px; line-height: 12px; }
@@ -1355,6 +1360,9 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
 @media (max-width: 349px) {
   .has-del .swap__open { min-width: var(--tap); padding-left: 0; padding-right: 0; }
   .has-del .swap__open-text { display: none; }
+  /* Подпись разминки на 320 стояла в 5,4 пикселя от числа повторов
+     (гиперэкстензия: «10» и «потом 2 мин»): кегль на полпикселя меньше. */
+  .live-warm__tag { font-size: 9.5px; line-height: 11.5px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1374,7 +1382,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         <span class="brand__sub">Грудь · спина · ноги</span>
       </span>
     </div>
-    <span class="updated">обновлён<br>15 октября</span>
+    <span class="updated">обновлён<br>16 октября</span>
   </div>
   <nav class="tabs" aria-label="Разделы">
     <div class="tabs__scroll">
@@ -1406,11 +1414,11 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       <div class="plan">
         <div class="plan__row">
           <span class="plan__cap">Было</span>
-          <div class="sets plan__sets plan__sets--c3" data-plan-sets><span class="set"><span class="set__w">200</span><span class="set__x">×</span><span class="set__r">15</span></span><span class="set"><span class="set__w">300</span><span class="set__x">×</span><span class="set__r">10</span></span><span class="set"><span class="set__w">330</span><span class="set__x">×</span><span class="set__r">8</span></span><span class="set set--best"><span class="set__w">330</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set"><span class="set__w">330</span><span class="set__x">×</span><span class="set__r">9</span></span></div>
+          <div class="sets plan__sets plan__sets--c2" data-plan-sets><span class="set"><span class="set__w">200</span><span class="set__x">×</span><span class="set__r">13</span></span><span class="set"><span class="set__w">230</span><span class="set__x">×</span><span class="set__r">12</span></span><span class="set"><span class="set__w">250</span><span class="set__x">×</span><span class="set__r">10</span></span><span class="set set--best"><span class="set__w">270</span><span class="set__x">×</span><span class="set__r">9</span></span></div>
         </div>
         <div class="plan__row">
           <span class="plan__cap">Цель</span>
-          <span class="plan__goal" data-plan-goal>Поднять вес выше 330 кг</span>
+          <span class="plan__goal" data-plan-goal>250 кг</span>
         </div>
       </div>
     </div><div class="pair" data-pair>
@@ -1425,11 +1433,11 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       <div class="plan">
         <div class="plan__row">
           <span class="plan__cap">Было</span>
-          <div class="sets plan__sets plan__sets--c3" data-plan-sets><span class="set set--best"><span class="set__w">64</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set"><span class="set__w">64</span><span class="set__x">×</span><span class="set__r">9</span></span><span class="set"><span class="set__w">64</span><span class="set__x">×</span><span class="set__r">8</span></span></div>
+          <div class="sets plan__sets plan__sets--c3" data-plan-sets><span class="set set--best"><span class="set__w">54</span><span class="set__x">×</span><span class="set__r">12</span></span><span class="set"><span class="set__w">54</span><span class="set__x">×</span><span class="set__r">12</span></span><span class="set"><span class="set__w">54</span><span class="set__x">×</span><span class="set__r">12</span></span></div>
         </div>
         <div class="plan__row">
           <span class="plan__cap">Цель</span>
-          <span class="plan__goal" data-plan-goal>Поднять вес выше 64 кг</span>
+          <span class="plan__goal" data-plan-goal>54 кг</span>
         </div>
       </div>
     </div><div class="ex" data-pos="2">
@@ -1446,7 +1454,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         </div>
         <div class="plan__row">
           <span class="plan__cap">Цель</span>
-          <span class="plan__goal" data-plan-goal>Подбор веса на 6–9 повторов</span>
+          <span class="plan__goal" data-plan-goal>Подбор веса на 10–15 повторов</span>
         </div>
       </div>
     </div>
@@ -1503,7 +1511,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         </div>
         <div class="plan__row">
           <span class="plan__cap">Цель</span>
-          <span class="plan__goal" data-plan-goal>Поднять вес выше 120 кг</span>
+          <span class="plan__goal" data-plan-goal>120 кг</span>
         </div>
       </div>
     </div><div class="ex" data-pos="6">
@@ -1569,6 +1577,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     </div>
   </div>
       <div class="delta-note">Как в прошлый раз</div>
+      
       
       
       
@@ -1708,6 +1717,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     </div>
   </div>
       <div class="delta-note">Было 8</div>
+      
       
       
       
@@ -1900,6 +1910,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       
       
       
+      
       <div class="ex__note">Вес общий, вместе с грифом 20 кг</div>
       <div class="chart">
     <div class="chart__plot" style="--ch-h:200px">
@@ -2026,6 +2037,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     </div>
   </div>
       <div class="delta-note">Было 95 кг × 9</div>
+      
       
       
       
@@ -2208,6 +2220,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       
       
       
+      
       <div class="ex__note">Вес одной гантели. Чередуется через неделю с подъёмом гантели сидя</div>
       <div class="chart">
     <div class="chart__plot" style="--ch-h:200px">
@@ -2334,6 +2347,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     </div>
   </div>
       <div class="delta-note">Было 50 кг × 9</div>
+      
       
       
       
@@ -2466,6 +2480,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       
       
       
+      
       <div class="ex__note">Вес общий, вместе с грифом</div>
       <div class="chart">
     <div class="chart__plot" style="--ch-h:200px">
@@ -2592,6 +2607,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     </div>
   </div>
       <div class="delta-note">Было 8</div>
+      
       
       
       
@@ -2724,6 +2740,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       
       
       
+      
       <div class="ex__note">Стоя по центру, руки под 90°</div>
       <div class="chart">
     <div class="chart__plot" style="--ch-h:200px">
@@ -2843,6 +2860,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       
       
       
+      
       <div class="ex__note">Вес общий, вместе с грифом 10 кг. Чередуется через неделю с подъёмом штанги стоя</div>
       <div class="chart">
     <div class="chart__plot" style="--ch-h:200px">
@@ -2929,6 +2947,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       
       
       
+      
       <div class="ex__note">Вес одной гантели</div>
       
       <div class="table-wrap">
@@ -2980,6 +2999,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       
       
       <div class="ex__note">Потолок 25 кг: Блин 25 кг в зале самый тяжёлый, накинуть сверху обычно некому. Прогрессия идёт повторами.</div>
+      
       <div class="ex__note">Дополнительный вес в руках</div>
       <div class="chart">
     <div class="chart__plot" style="--ch-h:200px">
@@ -3169,6 +3189,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       
       
       
+      
       <div class="ex__note">Вес одной гантели</div>
       <div class="chart">
     <div class="chart__plot" style="--ch-h:200px">
@@ -3345,6 +3366,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     </div>
   </div>
       <div class="delta-note">Как в прошлый раз</div>
+      
       
       
       
@@ -3529,6 +3551,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       </div>
     </div>
       <div class="delta-note">Как в прошлый раз</div>
+      
       
       
       
@@ -3721,6 +3744,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       
       
       
+      
       <div class="ex__note">Локти согнуты под 90°, работают плечи, спина не включается</div>
       <div class="chart">
     <div class="chart__plot" style="--ch-h:200px">
@@ -3910,6 +3934,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       <div class="ex__note" data-fresh-line>Свежим, на ногах: 60 кг × 7 · лучший подход — 7. На ногах трицепс нетронутый и сильнее, чем после тяг в день спины, — эта линия с днём спины не сравнивается.</div>
       
       
+      
       <div class="ex__note">Следить за техникой: плечи не уводить вперёд</div>
       <div class="chart">
     <div class="chart__plot" style="--ch-h:200px">
@@ -4056,6 +4081,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     </div>
   </div>
       <div class="delta-note">Было 9</div>
+      
       
       
       
@@ -4248,6 +4274,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       
       
       
+      
       <div class="ex__note">Тяга снизу</div>
       <div class="chart">
     <div class="chart__plot" style="--ch-h:200px">
@@ -4437,6 +4464,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       <div class="ex__note" data-fresh-line>Свежим, на ногах: 70 кг × 8 · лучший подход — 8. На ногах трицепс нетронутый и сильнее, чем после тяг в день спины, — эта линия с днём спины не сравнивается.</div>
       
       
+      
       <div class="ex__note">Разгибания на верхнем блоке: короткий прямой гриф вместо канатика. Чередуется с канатом через день спины</div>
       <div class="chart">
     <div class="chart__plot" style="--ch-h:200px">
@@ -4544,6 +4572,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
   </div>
       <div class="delta-note">Было 65 кг × 8, тоже свежим</div>
       <div class="ex__note" data-fresh-line>Свежим, на ногах: 70 кг × 8 · лучший подход — 8. На ногах спина нетронутая, и тяга идёт сильнее, чем последней в день спины, — эта линия с днём спины не сравнивается.</div>
+      
       
       
       <div class="ex__note">Сидя, тяга к себе по горизонтали</div>
@@ -4681,7 +4710,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     <summary>
       <div class="sum__main">
         <div class="sum__title">Жим ногами</div>
-        <div class="sum__sub">330 кг · Пора добавлять вес · ноги, базовое</div>
+        <div class="sum__sub">330 кг · Старт — 250 кг, потолок — 270 кг · ноги, базовое</div>
       </div>
       <div class="sum__right">
         <svg class="spark" viewBox="0 0 120 32" aria-hidden="true">
@@ -4693,21 +4722,17 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       </div>
     </summary>
     <div class="details__body">
-      <div class="ladder ladder--ready">
-    <div class="ladder__top">
-      <span class="ladder__label">Пора добавлять вес</span>
-      <span class="ladder__hint">2 подхода по 9 — цель взята</span>
+      <div class="ladder ladder--reps">
+      <div class="ladder__top">
+        <span class="ladder__label">Старт — 250 кг, потолок — 270 кг</span>
+        <span class="ladder__hint">Цель — от 10 до 15 повторений с 250 кг</span>
+      </div>
     </div>
-    <div class="ladder__track"><div class="ladder__fill" style="width:100%"></div></div>
-    <div class="ladder__scale">
-      <span>6 повторений</span>
-      <span>2 из 2 подходов по 9</span>
-    </div>
-  </div>
       <div class="delta-note">Осознанно лёгкие подходы — в рабочий вес и в сравнение не идут</div>
       
       
       
+      <div class="ex__note">Старт 250 кг, потолок 270 кг: бережём поясницу — на ногах больше повторов с меньшим весом, спина не перегружается; решение Никиты 16.10.2026.</div>
       <div class="ex__note">Вес только навешенный, без веса самой установки</div>
       <div class="chart">
     <div class="chart__plot" style="--ch-h:200px">
@@ -4840,7 +4865,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     <summary>
       <div class="sum__main">
         <div class="sum__title">Икры в тренажёре сидя</div>
-        <div class="sum__sub">40 кг · Пора добавлять вес · икры</div>
+        <div class="sum__sub">40 кг · Лучший подход — 11 · икры</div>
       </div>
       <div class="sum__right">
         <svg class="spark" viewBox="0 0 120 32" aria-hidden="true">
@@ -4852,20 +4877,21 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       </div>
     </summary>
     <div class="details__body">
-      <div class="ladder ladder--ready">
+      <div class="ladder ladder--grow">
     <div class="ladder__top">
-      <span class="ladder__label">Пора добавлять вес</span>
-      <span class="ladder__hint">3 подхода по 9 — цель взята</span>
+      <span class="ladder__label">Лучший подход — 11</span>
+      <span class="ladder__hint">Нужно 2 подхода по 15</span>
     </div>
-    <div class="ladder__track"><div class="ladder__fill" style="width:100%"></div></div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:14%"></div></div>
     <div class="ladder__scale">
-      <span>6 повторений</span>
-      <span>3 из 2 подходов по 9</span>
+      <span>10 повторений</span>
+      <span>0 из 2 подходов по 15</span>
     </div>
   </div>
       <div class="delta-note">Было 12</div>
       
       <div class="ex__note">Общая нагрузка 120,6 кг: вес тела 80,6 + накинуто 40. Растёт вес тела — растёт и нагрузка, поэтому силу считаем по накинутому.</div>
+      
       
       <div class="ex__note">Поднимаешь собственный вес плюс блины. Нагрузка = вес тела + накинутое</div>
       <div class="chart">
@@ -4969,7 +4995,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     <summary>
       <div class="sum__main">
         <div class="sum__title">Разгибание ног сидя</div>
-        <div class="sum__sub">64 кг · Пора добавлять вес · передняя поверхность бедра</div>
+        <div class="sum__sub">64 кг · Потолок — 54 кг · передняя поверхность бедра</div>
       </div>
       <div class="sum__right">
         <svg class="spark" viewBox="0 0 120 32" aria-hidden="true">
@@ -4981,21 +5007,17 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       </div>
     </summary>
     <div class="details__body">
-      <div class="ladder ladder--ready">
-    <div class="ladder__top">
-      <span class="ladder__label">Пора добавлять вес</span>
-      <span class="ladder__hint">2 подхода по 9 — цель взята</span>
+      <div class="ladder ladder--reps">
+      <div class="ladder__top">
+        <span class="ladder__label">Потолок — 54 кг</span>
+        <span class="ladder__hint">Цель — от 10 до 15 повторений с 54 кг</span>
+      </div>
     </div>
-    <div class="ladder__track"><div class="ladder__fill" style="width:100%"></div></div>
-    <div class="ladder__scale">
-      <span>6 повторений</span>
-      <span>2 из 2 подходов по 9</span>
-    </div>
-  </div>
       <div class="delta-note">Осознанно лёгкие подходы — в рабочий вес и в сравнение не идут</div>
       
       
       
+      <div class="ex__note">Потолок 54 кг: бережём поясницу — на ногах больше повторов с меньшим весом, спина не перегружается; решение Никиты 16.10.2026.</div>
       <div class="ex__note">Передняя поверхность бедра</div>
       <div class="chart">
     <div class="chart__plot" style="--ch-h:200px">
@@ -5138,7 +5160,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     <summary>
       <div class="sum__main">
         <div class="sum__title">Сгибание ног лёжа</div>
-        <div class="sum__sub">68 кг · Лучший подход — 6 · задняя поверхность бедра</div>
+        <div class="sum__sub">68 кг · Вес на пределе · задняя поверхность бедра</div>
       </div>
       <div class="sum__right">
         <svg class="spark" viewBox="0 0 120 32" aria-hidden="true">
@@ -5150,18 +5172,19 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       </div>
     </summary>
     <div class="details__body">
-      <div class="ladder ladder--grow">
+      <div class="ladder ladder--heavy">
     <div class="ladder__top">
-      <span class="ladder__label">Лучший подход — 6</span>
-      <span class="ladder__hint">Нужно 2 подхода по 9</span>
+      <span class="ladder__label">Вес на пределе</span>
+      <span class="ladder__hint">Пока меньше 10 повторений</span>
     </div>
-    <div class="ladder__track"><div class="ladder__fill" style="width:0%"></div></div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:6%"></div></div>
     <div class="ladder__scale">
-      <span>6 повторений</span>
-      <span>0 из 2 подходов по 9</span>
+      <span>10 повторений</span>
+      <span>0 из 2 подходов по 15</span>
     </div>
   </div>
       <div class="delta-note">Было 64 кг × 9</div>
+      
       
       
       
@@ -5339,6 +5362,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       
       
       
+      
       <div class="ex__note">На наклонной скамье, без веса</div>
       <div class="chart">
     <div class="chart__plot" style="--ch-h:200px">
@@ -5483,6 +5507,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       
       
       
+      
       <div class="ex__note">На наклонной скамье, без веса</div>
       <div class="chart">
     <div class="chart__plot" style="--ch-h:200px">
@@ -5605,7 +5630,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
     <summary>
       <div class="sum__main">
         <div class="sum__title">Икры в гакк-машине</div>
-        <div class="sum__sub">120 кг · Вес мал · икры</div>
+        <div class="sum__sub">120 кг · Лучший подход — 14 · икры</div>
       </div>
       <div class="sum__right">
         <svg class="spark" viewBox="0 0 120 32" aria-hidden="true">
@@ -5617,20 +5642,21 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
       </div>
     </summary>
     <div class="details__body">
-      <div class="ladder ladder--light">
+      <div class="ladder ladder--grow">
     <div class="ladder__top">
-      <span class="ladder__label">Вес мал</span>
-      <span class="ladder__hint">4 подхода по 9 — цель взята</span>
+      <span class="ladder__label">Лучший подход — 14</span>
+      <span class="ladder__hint">Нужно 2 подхода по 15</span>
     </div>
-    <div class="ladder__track"><div class="ladder__fill" style="width:100%"></div></div>
+    <div class="ladder__track"><div class="ladder__fill" style="width:56%"></div></div>
     <div class="ladder__scale">
-      <span>6 повторений</span>
-      <span>4 из 2 подходов по 9</span>
+      <span>10 повторений</span>
+      <span>0 из 2 подходов по 15</span>
     </div>
   </div>
       <div class="delta-note">Осознанно лёгкие подходы — в рабочий вес и в сравнение не идут</div>
       
       <div class="ex__note">Общая нагрузка 199,4 кг: вес тела 79,4 + накинуто 120. Растёт вес тела — растёт и нагрузка, поэтому силу считаем по накинутому.</div>
+      
       
       <div class="ex__note">Носками на платформу гакк-машины, блины накидываются на станок. Нагрузка = вес тела + накинутое. Чередуется через неделю с икрами в тренажёре сидя</div>
       <div class="chart">
@@ -7702,7 +7728,7 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
 
     <div class="hint hint--warm">
       <strong>Лесенка сработала.</strong> Упражнения, где ты дошёл до девяти повторений и пора добавлять вес:
-      Подъём штанги на бицепс стоя, Подъём штанги на бицепс сидя, Тяга нижнего блока, Жим ногами, Разгибание ног сидя, Икры в тренажёре сидя, Икры в гакк-машине.
+      Подъём штанги на бицепс стоя, Подъём штанги на бицепс сидя, Тяга нижнего блока.
     </div>
 
     <div class="card">
@@ -8110,13 +8136,13 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
   </section>
 
 <footer class="foot">
-  <p>Сборка 15 октября · версия d13af901</p>
+  <p>Сборка 16 октября · версия eaa989da</p>
 </footer>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script>window.__PROGRAM__={"day":"legs","dayTitle":"ноги","planDate":"2026-10-10","bodyweight":80.2,"items":[{"role":"main","slot":"quads-compound","pick":0,"shared":false,"rest":180,"pair":null,"pairStart":false,"meta":"отдых 3 мин","options":[{"id":"leg-press","name":"Жим ногами","kind":"machine","weight":330,"sets":4,"stepWeight":2.5,"targetText":"Поднять вес выше 330 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">200\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">15\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">300\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">330\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">330\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">330\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>","chipCols":3,"warmup":"140 × 8, 200 × 4 — потом 2 мин","warmText":"140 × 8, 200 × 4","warmSets":[{"w":"140","r":8,"tail":["потом 1 мин"]},{"w":"200","r":4,"tail":["потом 2 мин"]}]}]},{"role":"accessory","slot":"quads","pick":0,"shared":false,"rest":75,"pair":"ext-curl","pairStart":true,"meta":"отдых 1 мин 15 сек","options":[{"id":"leg-extension","name":"Разгибание ног сидя","kind":"machine","weight":64,"sets":4,"stepWeight":2.5,"targetText":"Поднять вес выше 64 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">64\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">64\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">64\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>","chipCols":3,"warmup":"","warmText":"","warmSets":[]}]},{"role":"accessory","slot":"hams","pick":0,"shared":false,"rest":75,"pair":"ext-curl","pairStart":false,"meta":"отдых 1 мин 15 сек","options":[{"id":"leg-curl-seated","name":"Сгибание ног сидя","kind":"machine","weight":"","sets":4,"stepWeight":2.5,"targetText":"Подбор веса на 6–9 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":"","warmText":"","warmSets":[]},{"id":"leg-curl","name":"Сгибание ног лёжа","kind":"machine","weight":68,"sets":4,"stepWeight":2.5,"targetText":"68 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">64\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">64\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">68\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":3,"warmup":"35 × 8 — до суперсета, без отдыха","warmText":"35 × 8","warmSets":[{"w":"35","r":8,"tail":["до суперсета","без отдыха"]}]}]},{"role":"accessory","slot":"biceps","pick":0,"shared":false,"rest":60,"pair":"biceps-side","pairStart":true,"meta":"отдых 1 мин","options":[{"id":"biceps-machine","name":"Подъём на бицепс в тренажёре сидя","kind":"machine","weight":54,"sets":3,"stepWeight":2.5,"targetText":"54 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">50\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":2,"warmup":"25 × 8 — до суперсета, без отдыха","warmText":"25 × 8","warmSets":[{"w":"25","r":8,"tail":["до суперсета","без отдыха"]}]},{"id":"db-curl-standing","name":"Подъём гантелей на бицепс стоя","kind":"dumbbell","weight":15,"sets":3,"stepWeight":1,"targetText":"15 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">15\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">5\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">14\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":2,"warmup":"8 × 8 — до суперсета, без отдыха","warmText":"8 × 8","warmSets":[{"w":"8","r":8,"tail":["до суперсета","без отдыха"]}]},{"id":"barbell-curl","name":"Подъём штанги на бицепс стоя","kind":"barbell","weight":37.5,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 37,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":"20 × 8 — до суперсета, без отдыха","warmText":"20 × 8","warmSets":[{"w":"20","r":8,"tail":["до суперсета","без отдыха"]}]}]},{"role":"accessory","slot":"delts-side","pick":0,"shared":false,"rest":60,"pair":"biceps-side","pairStart":false,"meta":"отдых 1 мин","options":[{"id":"db-lateral-raise","name":"Разведение гантелей в стороны","kind":"dumbbell","weight":17.5,"sets":3,"stepWeight":1,"targetText":"17,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">17,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">17,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">17,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>","chipCols":3,"warmup":"8 × 8 — до суперсета, без отдыха","warmText":"8 × 8","warmSets":[{"w":"8","r":8,"tail":["до суперсета","без отдыха"]}]}]},{"role":"accessory","slot":"calves","pick":0,"shared":false,"rest":60,"pair":"calves-abs","pairStart":true,"meta":"отдых 1 мин","options":[{"id":"calf-raise-hack","name":"Икры в гакк-машине","kind":"bodyweight-plus","weight":120,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 120 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">+110\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">15\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">+120\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">+120\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">14\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">+120\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">13\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">+120\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>","chipCols":3,"warmup":"+55 × 8 — до суперсета, без отдыха","warmText":"+55 × 8","warmSets":[{"w":"55","r":8,"tail":["до суперсета","без отдыха"]}]},{"id":"calf-raise-seated","name":"Икры в тренажёре сидя","kind":"bodyweight-plus","weight":40,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 40 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">+40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">11\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">+40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">11\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">+40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">11\u003c/span>\u003c/span>","chipCols":3,"warmup":"+20 × 8 — до суперсета, без отдыха","warmText":"+20 × 8","warmSets":[{"w":"20","r":8,"tail":["до суперсета","без отдыха"]}]}]},{"role":"accessory","slot":"abs","pick":0,"shared":false,"rest":60,"pair":"calves-abs","pairStart":false,"meta":"отдых 1 мин","options":[{"id":"abs-crunch-db","name":"Скручивания на наклонной скамье с гантелью","kind":"dumbbell","weight":10,"sets":3,"stepWeight":1,"targetText":"Подбор веса: начни с 10 кг","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":"","warmText":"","warmSets":[]},{"id":"abs-crunch-cable","name":"Скручивания на верхнем блоке стоя на коленях","kind":"machine","weight":"","sets":3,"stepWeight":2.5,"targetText":"Подбор веса на 10–15 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":"","warmText":"","warmSets":[]}]}]};</script>
+<script>window.__PROGRAM__={"day":"legs","dayTitle":"ноги","planDate":"2026-10-10","bodyweight":80.2,"items":[{"role":"main","slot":"quads-compound","pick":0,"shared":false,"rest":180,"pair":null,"pairStart":false,"meta":"отдых 3 мин","options":[{"id":"leg-press","name":"Жим ногами","kind":"machine","weight":250,"sets":4,"stepWeight":2.5,"targetText":"250 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">200\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">13\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">230\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">250\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">10\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">270\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>","chipCols":2,"warmup":"130 × 8, 190 × 4 — потом 2 мин","warmText":"130 × 8, 190 × 4","warmSets":[{"w":"130","r":8,"tail":["потом 1 мин"]},{"w":"190","r":4,"tail":["потом 2 мин"]}]}]},{"role":"accessory","slot":"quads","pick":0,"shared":false,"rest":75,"pair":"ext-curl","pairStart":true,"meta":"отдых 1 мин 15 сек","options":[{"id":"leg-extension","name":"Разгибание ног сидя","kind":"machine","weight":54,"sets":4,"stepWeight":2.5,"targetText":"54 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>","chipCols":3,"warmup":"","warmText":"","warmSets":[]}]},{"role":"accessory","slot":"hams","pick":0,"shared":false,"rest":75,"pair":"ext-curl","pairStart":false,"meta":"отдых 1 мин 15 сек","options":[{"id":"leg-curl-seated","name":"Сгибание ног сидя","kind":"machine","weight":"","sets":4,"stepWeight":2.5,"targetText":"Подбор веса на 10–15 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":"","warmText":"","warmSets":[]},{"id":"leg-curl","name":"Сгибание ног лёжа","kind":"machine","weight":68,"sets":4,"stepWeight":2.5,"targetText":"68 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">64\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">64\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">68\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":3,"warmup":"35 × 8 — до суперсета, без отдыха","warmText":"35 × 8","warmSets":[{"w":"35","r":8,"tail":["до суперсета","без отдыха"]}]}]},{"role":"accessory","slot":"biceps","pick":0,"shared":false,"rest":60,"pair":"biceps-side","pairStart":true,"meta":"отдых 1 мин","options":[{"id":"biceps-machine","name":"Подъём на бицепс в тренажёре сидя","kind":"machine","weight":54,"sets":3,"stepWeight":2.5,"targetText":"54 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">50\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">54\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":2,"warmup":"25 × 8 — до суперсета, без отдыха","warmText":"25 × 8","warmSets":[{"w":"25","r":8,"tail":["до суперсета","без отдыха"]}]},{"id":"db-curl-standing","name":"Подъём гантелей на бицепс стоя","kind":"dumbbell","weight":15,"sets":3,"stepWeight":1,"targetText":"15 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">15\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">5\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">14\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">6\u003c/span>\u003c/span>","chipCols":2,"warmup":"8 × 8 — до суперсета, без отдыха","warmText":"8 × 8","warmSets":[{"w":"8","r":8,"tail":["до суперсета","без отдыха"]}]},{"id":"barbell-curl","name":"Подъём штанги на бицепс стоя","kind":"barbell","weight":37.5,"sets":3,"stepWeight":2.5,"targetText":"Поднять вес выше 37,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">9\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">37,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">7\u003c/span>\u003c/span>","chipCols":3,"warmup":"20 × 8 — до суперсета, без отдыха","warmText":"20 × 8","warmSets":[{"w":"20","r":8,"tail":["до суперсета","без отдыха"]}]}]},{"role":"accessory","slot":"delts-side","pick":0,"shared":false,"rest":60,"pair":"biceps-side","pairStart":false,"meta":"отдых 1 мин","options":[{"id":"db-lateral-raise","name":"Разведение гантелей в стороны","kind":"dumbbell","weight":17.5,"sets":3,"stepWeight":1,"targetText":"17,5 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">17,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">17,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">17,5\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">8\u003c/span>\u003c/span>","chipCols":3,"warmup":"8 × 8 — до суперсета, без отдыха","warmText":"8 × 8","warmSets":[{"w":"8","r":8,"tail":["до суперсета","без отдыха"]}]}]},{"role":"accessory","slot":"calves","pick":0,"shared":false,"rest":60,"pair":"calves-abs","pairStart":true,"meta":"отдых 1 мин","options":[{"id":"calf-raise-hack","name":"Икры в гакк-машине","kind":"bodyweight-plus","weight":120,"sets":3,"stepWeight":2.5,"targetText":"120 кг","chips":"\u003cspan class=\"set\">\u003cspan class=\"set__w\">+110\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">15\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">+120\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">+120\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">14\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">+120\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">13\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">+120\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">12\u003c/span>\u003c/span>","chipCols":3,"warmup":"+60 × 8 — до суперсета, потом 1 мин","warmText":"+60 × 8","warmSets":[{"w":"60","r":8,"tail":["до суперсета","потом 1 мин"]}]},{"id":"calf-raise-seated","name":"Икры в тренажёре сидя","kind":"bodyweight-plus","weight":40,"sets":3,"stepWeight":2.5,"targetText":"40 кг","chips":"\u003cspan class=\"set set--best\">\u003cspan class=\"set__w\">+40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">11\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">+40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">11\u003c/span>\u003c/span>\u003cspan class=\"set\">\u003cspan class=\"set__w\">+40\u003c/span>\u003cspan class=\"set__x\">×\u003c/span>\u003cspan class=\"set__r\">11\u003c/span>\u003c/span>","chipCols":3,"warmup":"+20 × 8 — до суперсета, потом 1 мин","warmText":"+20 × 8","warmSets":[{"w":"20","r":8,"tail":["до суперсета","потом 1 мин"]}]}]},{"role":"accessory","slot":"abs","pick":0,"shared":false,"rest":60,"pair":"calves-abs","pairStart":false,"meta":"отдых 1 мин","options":[{"id":"abs-crunch-db","name":"Скручивания на наклонной скамье с гантелью","kind":"dumbbell","weight":10,"sets":3,"stepWeight":1,"targetText":"Подбор веса: начни с 10 кг","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":"","warmText":"","warmSets":[]},{"id":"abs-crunch-cable","name":"Скручивания на верхнем блоке стоя на коленях","kind":"machine","weight":"","sets":3,"stepWeight":2.5,"targetText":"Подбор веса на 10–15 повторов","chips":"\u003cspan class=\"plan__first\">Впервые\u003c/span>","chipCols":1,"warmup":"","warmText":"","warmSets":[]}]}]};</script>
 <script>
 (function () {
   'use strict';
@@ -8520,11 +8546,13 @@ details[open] > .details__body { animation: accOpen var(--t-move) var(--ease) bo
         var canDel = st.sets.length > minSets(o);
         html += '<div class="btn-row live-ex__foot' + (canDel ? ' has-del' : '') + '">';
         html += '<button type="button" class="btn btn--ghost live-ex__btn" data-addset="' + pos + '">+ подход</button>';
-        // Слово «подход» — отдельно: на узком экране у «− подход» остаётся
-        // знак, и подпись «Сменить» помещается рядом.
+        // На узком экране у «− подход» остаётся знак, и подпись «Сменить»
+        // помещается рядом. Знак — фигурой: глиф «−» со своими припусками
+        // стоял в кнопке не по центру (предложение 15.10.2026, «ок» Никиты).
         if (canDel) {
           html += '<button type="button" class="btn btn--ghost live-ex__btn live-ex__del" data-delset="' + pos +
-            '" aria-label="Убрать подход"><span>−<span class="live-ex__btn-word"> подход</span></span></button>';
+            '" aria-label="Убрать подход"><span class="live-ex__btn-word">− подход</span>' +
+            '<span class="live-ex__del-ico">' + ICO_MINUS + '</span></button>';
         }
         if (swappable) {
           html += '<button type="button" class="btn btn--ghost live-ex__btn swap__open' + (open ? ' is-open' : '') + '" data-swapopen="' + pos +
