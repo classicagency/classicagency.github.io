@@ -1,6 +1,6 @@
-/* Офлайн-кэш дневника. Версия eaa989da — меняется при каждой пересборке,
+/* Офлайн-кэш дневника. Версия 5babf477 — меняется при каждой пересборке,
    поэтому старая копия не залипает после обновления. */
-var CACHE = 'nk-training-eaa989da';
+var CACHE = 'nk-training-5babf477';
 var ASSETS = ['./', './index.html', './manifest.webmanifest', './apple-touch-icon.png', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', function (e) {
